@@ -33,19 +33,50 @@ export default async function handler(req, res) {
 
         // Construct order data for WooCommerce
         const orderData = {
-          payment_method: "stripe",
-          payment_method_title: "Card",
-          set_paid: true,
-          billing: {
-            first_name: session.customer_details.name.split(" ")[0], // Extract first name from customer name
-            last_name: session.customer_details.name.split(" ")[1], // Extract last name from customer name
-            email: session.customer_details.email,
-          },
-          line_items: lineItems.map((item) => ({
-            product_id: item.custom.name, // Assuming your product ID is stored in the custom attribute of the item
-            quantity: item.quantity,
-          })),
-        };
+            payment_method: "bacs",
+            payment_method_title: "Direct Bank Transfer",
+            set_paid: true,
+            billing: {
+              first_name: "John",
+              last_name: "Doe",
+              address_1: "969 Market",
+              address_2: "",
+              city: "San Francisco",
+              state: "CA",
+              postcode: "94103",
+              country: "US",
+              email: "john.doe@example.com",
+              phone: "(555) 555-5555"
+            },
+            shipping: {
+              first_name: "John",
+              last_name: "Doe",
+              address_1: "969 Market",
+              address_2: "",
+              city: "San Francisco",
+              state: "CA",
+              postcode: "94103",
+              country: "US"
+            },
+            line_items: [
+              {
+                product_id: 93,
+                quantity: 2
+              },
+              {
+                product_id: 22,
+                variation_id: 23,
+                quantity: 1
+              }
+            ],
+            shipping_lines: [
+              {
+                method_id: "flat_rate",
+                method_title: "Flat Rate",
+                total: "10.00"
+              }
+            ]
+          };
 
         // Create order in WooCommerce using Axios
         const createdOrder = await axios.post(
