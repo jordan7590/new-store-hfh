@@ -37,7 +37,7 @@ export default async function handler(req, res) {
             payment_method_title: "Direct Bank Transfer",
             set_paid: true,
             billing: {
-              first_name: "John",
+              first_name: "Ronalld",
               last_name: "Doe",
               address_1: "969 Market",
               address_2: "",
@@ -49,7 +49,7 @@ export default async function handler(req, res) {
               phone: "(555) 555-5555"
             },
             shipping: {
-              first_name: "John",
+              first_name: "Ronalld",
               last_name: "Doe",
               address_1: "969 Market",
               address_2: "",
@@ -64,9 +64,8 @@ export default async function handler(req, res) {
                 quantity: 2
               },
               {
-                product_id: 22,
-                variation_id: 23,
-                quantity: 1
+                product_id: 84,
+                quantity: 10
               }
             ],
             shipping_lines: [
