@@ -6,12 +6,12 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 export default async function handler(req, res) {
   const event = req.body;
 
-  // Ensure that the request body is received as a string or a Buffer
-  const requestBody = typeof req.body === 'object' ? JSON.stringify(req.body) : req.body;
+  // Ensure that the request body is received as a Buffer
+  const requestBody = Buffer.from(JSON.stringify(req.body));
 
   // Verify the event by fetching it from Stripe
   try {
-    const stripeEvent = await stripe.webhooks.constructEvent(
+    const stripeEvent = stripe.webhooks.constructEvent(
       requestBody,
       req.headers["stripe-signature"],
       process.env.STRIPE_WEBHOOK_SECRET
@@ -23,7 +23,7 @@ export default async function handler(req, res) {
       const session = stripeEvent.data.object;
 
       // Assuming your form data includes information about the purchased items
-      const formData = req.body.formData;
+      const formData = session.metadata.formData;
 
       // Construct order data for WooCommerce
       const orderData = {
