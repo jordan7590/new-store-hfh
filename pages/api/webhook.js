@@ -13,20 +13,15 @@ export const config = {
 
 export default async function handler(req, res) {
   if (req.method === "POST") {
-    const buf = await buffer(req);
-    const sig = req.headers["stripe-signature"];
-    let event;
-
     try {
-      event = stripe.webhooks.constructEvent(buf.toString(), sig, process.env.STRIPE_WEBHOOK_SECRET);
-    } catch (err) {
-      console.error("Webhook signature verification failed.", err.message);
-      return res.status(400).send(`Webhook Error: ${err.message}`);
-    }
+      const buf = await buffer(req);
+      const sig = req.headers["stripe-signature"];
 
-    // Handle the event
-    if (event.type === "checkout.session.completed") {
-      try {
+      // Construct event from Stripe webhook payload
+      const event = stripe.webhooks.constructEvent(buf.toString(), sig, process.env.STRIPE_WEBHOOK_SECRET);
+
+      // Handle the event
+      if (event.type === "checkout.session.completed") {
         // Extract necessary data from the event
         const session = event.data.object;
         const lineItems = session.display_items;
@@ -79,30 +74,30 @@ export default async function handler(req, res) {
 
         // Create order in WooCommerce using Axios
         const createdOrder = await axios.post(
-          `${process.env.WOOCOMMERCE_URL}/wp-json/wc/v3/orders`,
-          orderData,
-          {
-            auth: {
-              username: process.env.WOOCOMMERCE_CONSUMER_KEY,
-              password: process.env.WOOCOMMERCE_CONSUMER_SECRET,
-            },
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        console.log("Order created in WooCommerce:", createdOrder.data);
-        res.status(200).json({ received: true });
+            `${process.env.WOOCOMMERCE_URL}/wp-json/wc/v3/orders`,
+            orderData,
+            {
+              auth: {
+                username: process.env.WOOCOMMERCE_CONSUMER_KEY,
+                password: process.env.WOOCOMMERCE_CONSUMER_SECRET,
+              },
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+  
+          console.log("Order created in WooCommerce:", createdOrder.data);
+          res.status(200).json({ received: true });
+        } else {
+          res.status(200).json({ received: true });
+        }
       } catch (err) {
-        console.error("Error creating order in WooCommerce:", err.message);
-        res.status(500).send("Error creating order in WooCommerce");
+        console.error("Error handling Stripe webhook:", err.message);
+        res.status(400).send(`Webhook Error: ${err.message}`);
       }
     } else {
-      res.status(200).json({ received: true });
+      res.setHeader("Allow", "POST");
+      res.status(405).end("Method Not Allowed");
     }
-  } else {
-    res.setHeader("Allow", "POST");
-    res.status(405).end("Method Not Allowed");
   }
-}
