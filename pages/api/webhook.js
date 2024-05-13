@@ -35,10 +35,51 @@ export default async function handler(req, res) {
         const session = event.data.object;
         const lineItems = session.display_items;
 
-        // Construct order data for WooCommerce
-        const orderData = {
-          // Order data construction as before...
-        };
+         // Construct order data for WooCommerce
+         const orderData = {
+            payment_method: "bacs",
+            payment_method_title: "Direct Bank Transfer",
+            set_paid: true,
+            billing: {
+              first_name: "Ronalld",
+              last_name: "Doe",
+              address_1: "969 Market",
+              address_2: "",
+              city: "San Francisco",
+              state: "CA",
+              postcode: "94103",
+              country: "US",
+              email: "john.doe@example.com",
+              phone: "(555) 555-5555"
+            },
+            shipping: {
+              first_name: "Ronalld",
+              last_name: "Doe",
+              address_1: "969 Market",
+              address_2: "",
+              city: "San Francisco",
+              state: "CA",
+              postcode: "94103",
+              country: "US"
+            },
+            line_items: [
+              {
+                product_id: 93,
+                quantity: 2
+              },
+              {
+                product_id: 84,
+                quantity: 10
+              }
+            ],
+            shipping_lines: [
+              {
+                method_id: "flat_rate",
+                method_title: "Flat Rate",
+                total: "10.00"
+              }
+            ]
+          };
 
         // Create order in WooCommerce using Axios
         const createdOrder = await axios.post(
