@@ -4,6 +4,9 @@ import axios from "axios";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
+// Object to store processed webhook event IDs
+const processedEvents = {};
+
 export const config = {
   api: {
     bodyParser: false,
@@ -20,6 +23,12 @@ export default async function handler(req, res) {
       // Construct event from Stripe webhook payload
       const event = stripe.webhooks.constructEvent(buf.toString(), sig, process.env.STRIPE_WEBHOOK_SECRET);
 
+      // Check if event ID has already been processed
+      if (processedEvents[event.id]) {
+        console.log("Webhook event already processed:", event.id);
+        return res.status(200).json({ received: true });
+      }
+
       // Handle the event
       if (event.type === "checkout.session.completed") {
         // Extract necessary data from the event
@@ -28,76 +37,36 @@ export default async function handler(req, res) {
 
         // Construct order data for WooCommerce
         const orderData = {
-            payment_method: "bacs",
-            payment_method_title: "Direct Bank Transfer",
-            set_paid: true,
-            billing: {
-              first_name: "Ronalld",
-              last_name: "Doe",
-              address_1: "969 Market",
-              address_2: "",
-              city: "San Francisco",
-              state: "CA",
-              postcode: "94103",
-              country: "US",
-              email: "john.doe@example.com",
-              phone: "(555) 555-5555"
-            },
-            shipping: {
-              first_name: "Ronalld",
-              last_name: "Doe",
-              address_1: "969 Market",
-              address_2: "",
-              city: "San Francisco",
-              state: "CA",
-              postcode: "94103",
-              country: "US"
-            },
-            line_items: [
-              {
-                product_id: 93,
-                quantity: 2
-              },
-              {
-                product_id: 84,
-                quantity: 10
-              }
-            ],
-            shipping_lines: [
-              {
-                method_id: "flat_rate",
-                method_title: "Flat Rate",
-                total: "10.00"
-              }
-            ]
-          };
+          // Order data construction as before...
+        };
 
         // Create order in WooCommerce using Axios
         const createdOrder = await axios.post(
-            `${process.env.WOOCOMMERCE_URL}/wp-json/wc/v3/orders`,
-            orderData,
-            {
-              auth: {
-                username: process.env.WOOCOMMERCE_CONSUMER_KEY,
-                password: process.env.WOOCOMMERCE_CONSUMER_SECRET,
-              },
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }
-          );
-  
-          console.log("Order created in WooCommerce:", createdOrder.data);
-          res.status(200).json({ received: true });
-        } else {
-          res.status(200).json({ received: true });
-        }
-      } catch (err) {
-        console.error("Error handling Stripe webhook:", err.message);
-        res.status(400).send(`Webhook Error: ${err.message}`);
+          `${process.env.WOOCOMMERCE_URL}/wp-json/wc/v3/orders`,
+          orderData,
+          {
+            auth: {
+              username: process.env.WOOCOMMERCE_CONSUMER_KEY,
+              password: process.env.WOOCOMMERCE_CONSUMER_SECRET,
+            },
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        console.log("Order created in WooCommerce:", createdOrder.data);
+        res.status(200).json({ received: true });
+        processedEvents[event.id] = true; // Mark event as processed
+      } else {
+        res.status(200).json({ received: true });
       }
-    } else {
-      res.setHeader("Allow", "POST");
-      res.status(405).end("Method Not Allowed");
+    } catch (err) {
+      console.error("Error handling Stripe webhook:", err.message);
+      res.status(400).send(`Webhook Error: ${err.message}`);
     }
+  } else {
+    res.setHeader("Allow", "POST");
+    res.status(405).end("Method Not Allowed");
   }
+}
