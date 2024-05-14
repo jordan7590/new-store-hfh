@@ -35,28 +35,34 @@ const CheckoutPage = () => {
 
   const handleBillingInputChange = (event) => {
     const { name, value } = event.target;
-    setBillingFormData((prevFormData) => {
-      const updatedFormData = { ...prevFormData, [name]: value };
-      console.log("Billing Details:", updatedFormData);
-      return updatedFormData;
-    });
+    const updatedBillingFormData = { ...billingFormData, [name]: value };
+    setBillingFormData(updatedBillingFormData);
+    
+    if (!shipToDifferentAddress) {
+      // If shipToDifferentAddress is false, copy billing data to shipping data
+      const updatedShippingFormData = { ...shippingFormData, [name]: value };
+      // Remove email and phone fields from shipping data
+      if (name !== "email" && name !== "phone") {
+        setShippingFormData(updatedShippingFormData);
+      }
+    }
   };
   
   const handleShippingInputChange = (event) => {
     const { name, value } = event.target;
+    console.log("Shipping Form Data:", { ...shippingFormData, [name]: value });
     setShippingFormData((prevFormData) => {
       const updatedFormData = { ...prevFormData, [name]: value };
-      console.log("Shipping Details:", updatedFormData);
       return updatedFormData;
     });
   };
   
 
 
-  const setStateFromInput = (event) => {
-    obj[event.target.name] = event.target.value;
-    setObj(obj);
-  };
+  // const setStateFromInput = (event) => {
+  //   obj[event.target.name] = event.target.value;
+  //   setObj(obj);
+  // };
 
 
 
@@ -80,11 +86,8 @@ const CheckoutPage = () => {
                       className={`${errors.first_name ? "error_border" : ""}`}
                       name="first_name"
                       onChange={handleBillingInputChange}
-                      {...register("first_name", { required: true })}
                     />
-                    <span className="error-message">
-                      {errors.first_name && "First name is required"}
-                    </span>
+                 
                   </div>
                   <div className="form-group col-md-6 col-sm-6 col-xs-12">
                     <div className="field-label">Last Name</div>
@@ -93,11 +96,7 @@ const CheckoutPage = () => {
                       className={`${errors.last_name ? "error_border" : ""}`}
                       name="last_name"
                       onChange={handleBillingInputChange}
-                      {...register("last_name", { required: true })}
                     />
-                    <span className="error-message">
-                      {errors.last_name && "Last name is required"}
-                    </span>
                   </div>
                   <div className="form-group col-md-6 col-sm-6 col-xs-12">
                     <div className="field-label">Phone</div>
@@ -106,11 +105,8 @@ const CheckoutPage = () => {
                       name="phone"
                       className={`${errors.phone ? "error_border" : ""}`}
                       onChange={handleBillingInputChange}
-                      {...register("phone", { pattern: /\d+/ })}
                     />
-                    <span className="error-message">
-                      {errors.phone && "Please enter number for phone."}
-                    </span>
+
                   </div>
                   <div className="form-group col-md-6 col-sm-6 col-xs-12">
                     <div className="field-label">Email Address</div>
@@ -119,21 +115,15 @@ const CheckoutPage = () => {
                       type="text"
                       name="email"
                       onChange={handleBillingInputChange}
-                      {...register("email", {
-                        required: true,
-                        pattern: /^\S+@\S+$/i,
-                      })}
+                     
                     />
-                    <span className="error-message">
-                      {errors.email && "Please enter proper email address ."}
-                    </span>
+                   
                   </div>
                   <div className="form-group col-md-12 col-sm-12 col-xs-12">
                     <div className="field-label">Country</div>
                     <select
                       name="country"
                       onChange={handleBillingInputChange}
-                      {...register("country", { required: true })}
                     >
                       <option>US</option>
                       <option>Canada</option>
@@ -146,16 +136,10 @@ const CheckoutPage = () => {
                               type="text"
                               name="address1"
                               onChange={handleBillingInputChange}
-                              {...register("address1", {
-                                required: true,
-                                min: 20,
-                                max: 120,
-                              })}
+                             
                               placeholder="House number & street name"
                             />
-                            <span className="error-message">
-                              {errors.address1 && "Please right your address ."}
-                            </span>
+                            
                           </div>
                           <div className="form-group col-md-12 col-sm-12 col-xs-12">
                             <div className="field-label">Address 2</div>
@@ -164,16 +148,10 @@ const CheckoutPage = () => {
                               type="text"
                               name="address2"
                               onChange={handleBillingInputChange}
-                              {...register("address2", {
-                                required: true,
-                                min: 20,
-                                max: 120,
-                              })}
+                              
                               placeholder="Apartment, suite, unit, etc (optional) "
                             />
-                            <span className="error-message">
-                              {errors.address2 && "Please right your address ."}
-                            </span>
+                            
                           </div>
                   <div className="form-group col-md-12 col-sm-12 col-xs-12">
                     <div className="field-label">City</div>
@@ -182,11 +160,8 @@ const CheckoutPage = () => {
                       className={`${errors.city ? "error_border" : ""}`}
                       name="city"
                       onChange={handleBillingInputChange}
-                      {...register("city", { required: true })}
                     />
-                    <span className="error-message">
-                      {errors.city && "Select one city"}
-                    </span>
+                   
                   </div>
                   <div className="form-group col-md-12 col-sm-6 col-xs-12">
                     <div className="field-label">State</div>
@@ -195,11 +170,8 @@ const CheckoutPage = () => {
                       className={`${errors.state ? "error_border" : ""}`}
                       name="state"
                       onChange={handleBillingInputChange}
-                      {...register("state", { required: true })}
                     />
-                    <span className="error-message">
-                      {errors.state && "Select one state"}
-                    </span>
+                   
                   </div>
                   <div className="form-group col-md-12 col-sm-6 col-xs-12">
                     <div className="field-label">Postal Code</div>
@@ -208,11 +180,8 @@ const CheckoutPage = () => {
                       name="pincode"
                       onChange={handleBillingInputChange}
                       className={`${errors.pincode ? "error_border" : ""}`}
-                      {...register("pincode", { pattern: /\d+/ })}
                     />
-                    <span className="error-message">
-                      {errors.pincode && "Required integer"}
-                    </span>
+                   
                   </div>
                 </div>
               </Form>
@@ -244,11 +213,8 @@ const CheckoutPage = () => {
                               className={`${errors.first_name ? "error_border" : ""}`}
                               name="first_name"
                               onChange={handleShippingInputChange}
-                              {...register("first_name", { required: true })}
                             />
-                            <span className="error-message">
-                              {errors.first_name && "First name is required"}
-                            </span>
+                            
                           </div>
                           <div className="form-group col-md-6 col-sm-6 col-xs-12">
                             <div className="field-label">Last Name</div>
@@ -257,18 +223,14 @@ const CheckoutPage = () => {
                               className={`${errors.last_name ? "error_border" : ""}`}
                               name="last_name"
                               onChange={handleShippingInputChange}
-                              {...register("last_name", { required: true })}
                             />
-                            <span className="error-message">
-                              {errors.last_name && "Last name is required"}
-                            </span>
+                           
                           </div>
                           <div className="form-group col-md-12 col-sm-12 col-xs-12">
                             <div className="field-label">Country</div>
                             <select
                               name="country"
                               onChange={handleShippingInputChange}
-                              {...register("country", { required: true })}
                             >
                               <option>US</option>
                               <option>Canada</option>
@@ -281,16 +243,10 @@ const CheckoutPage = () => {
                               type="text"
                               name="address1"
                               onChange={handleShippingInputChange}
-                              {...register("address1", {
-                                required: true,
-                                min: 20,
-                                max: 120,
-                              })}
+                              
                               placeholder="House number & street name"
                             />
-                            <span className="error-message">
-                              {errors.address1 && "Please right your address ."}
-                            </span>
+                          
                           </div>
                           <div className="form-group col-md-12 col-sm-12 col-xs-12">
                             <div className="field-label">Address 2</div>
@@ -299,16 +255,10 @@ const CheckoutPage = () => {
                               type="text"
                               name="address2"
                               onChange={handleShippingInputChange}
-                              {...register("address2", {
-                                required: true,
-                                min: 20,
-                                max: 120,
-                              })}
+                             
                               placeholder="Apartment, suite, unit, etc (optional) "
                             />
-                            <span className="error-message">
-                              {errors.address2 && "Please right your address ."}
-                            </span>
+                           
                           </div>
                           
                           <div className="form-group col-md-12 col-sm-12 col-xs-12">
@@ -318,11 +268,8 @@ const CheckoutPage = () => {
                               className={`${errors.city ? "error_border" : ""}`}
                               name="city"
                               onChange={handleShippingInputChange}
-                              {...register("city", { required: true })}
                             />
-                            <span className="error-message">
-                              {errors.city && "Select one city"}
-                            </span>
+                            
                           </div>
                           <div className="form-group col-md-12 col-sm-6 col-xs-12">
                             <div className="field-label">State</div>
@@ -331,11 +278,8 @@ const CheckoutPage = () => {
                               className={`${errors.state ? "error_border" : ""}`}
                               name="state"
                               onChange={handleShippingInputChange}
-                              {...register("state", { required: true })}
                             />
-                            <span className="error-message">
-                              {errors.state && "Select one state"}
-                            </span>
+                            
                           </div>
                           <div className="form-group col-md-12 col-sm-6 col-xs-12">
                             <div className="field-label">Postal Code</div>
@@ -344,11 +288,8 @@ const CheckoutPage = () => {
                               name="pincode"
                               onChange={handleShippingInputChange}
                               className={`${errors.pincode ? "error_border" : ""}`}
-                              {...register("pincode", { pattern: /\d+/ })}
                             />
-                            <span className="error-message">
-                              {errors.pincode && "Required integer"}
-                            </span>
+                           
                           </div>
                           <div className="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
                             <input
@@ -364,6 +305,19 @@ const CheckoutPage = () => {
 
                     )}
 
+{Object.keys(billingFormData).length > 0 && (
+  <div>
+    <h4>Billing Form Data:</h4>
+    <pre>{JSON.stringify(billingFormData, null, 2)}</pre>
+  </div>
+)}
+
+{Object.keys(shippingFormData).length > 0 && (
+  <div>
+    <h4>Shipping Form Data:</h4>
+    <pre>{JSON.stringify(shippingFormData, null, 2)}</pre>
+  </div>
+)}
 
                 </Col>
                 <Col lg="6" sm="12" xs="12">
