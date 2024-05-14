@@ -42,7 +42,7 @@ export default async function handler(req, res) {
         metadata: {
           'billing': billingData, 
           'shipping': shippingData,
-          'line-items': cartOrders,
+          'line-items': cartOrders
         },
       });
 
