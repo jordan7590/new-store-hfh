@@ -33,6 +33,7 @@ const CheckoutPage = () => {
   } = useForm(); // initialise the hook
   const router = useRouter();
 
+  
   const handleBillingInputChange = (event) => {
     const { name, value } = event.target;
     const updatedBillingFormData = { ...billingFormData, [name]: value };
@@ -56,6 +57,8 @@ const CheckoutPage = () => {
       return updatedFormData;
     });
   };
+  
+
   
 
 
