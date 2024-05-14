@@ -35,16 +35,38 @@ export default async function handler(req, res) {
         // Extract necessary data from the event
         const session = event.data.object;
         const lineItems = session.line_items;
-        const billingFormData = session.metadata.billing;
-        const shippingFormData = session.metadata.shipping;
+        
+        const billingData = JSON.parse(session.metadata.billing);
+        const shippingData = JSON.parse(session.metadata.shipping);
+        
 
          // Construct order data for WooCommerce
          const orderData ={
          payment_method: "Stripe",
          payment_method_title: "Credit Card",
          set_paid: true,
-         billing: billingFormData,
-         shipping: shippingFormData,
+         billing: {
+          first_name: billingData.first_name,
+          last_name: billingData.last_name,
+          address_1: billingData.address1,
+          address_2: billingData.address2,
+          city: billingData.city,
+          state: billingData.state,
+          postcode: billingData.pincode,
+          country: "US", // Assuming the country is always US
+          email: billingData.email,
+          phone: billingData.phone
+        },
+        shipping: {
+          first_name: shippingData.first_name,
+          last_name: shippingData.last_name,
+          address_1: shippingData.address1,
+          address_2: shippingData.address2,
+          city: shippingData.city,
+          state: shippingData.state,
+          postcode: shippingData.pincode,
+          country: "US", // Assuming the country is always US
+        },
          line_items: [
            {
              product_id: 93,
