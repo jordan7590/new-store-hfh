@@ -37,7 +37,7 @@ export default async function handler(req, res) {
         metadata: {
           billingFormData: billingFormData, 
           shippingFormData: shippingFormData
-        }
+        },
       });
 
 

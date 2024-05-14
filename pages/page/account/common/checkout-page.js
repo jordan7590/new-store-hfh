@@ -64,7 +64,7 @@ const handleShippingSubmit = (data) => {
     postcode: data.pincode,
     country: data.country,
   };
-  console.log("Billing Details:", shippingDetails);
+  console.log("Shipping Details:", shippingDetails);
 
   setShippingFormData(shippingDetails);
 
