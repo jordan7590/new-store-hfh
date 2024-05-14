@@ -39,6 +39,9 @@ export default async function handler(req, res) {
         };
     });
 
+    const orderData = JSON.stringify(orderItems);   
+
+
       const session = await stripe.checkout.sessions.create({
         payment_method_types: ["card"],
         line_items: lineItems,
@@ -48,7 +51,7 @@ export default async function handler(req, res) {
         metadata: {
           'billing': billingData, 
           'shipping': shippingData,
-          'order-data' : orderItems
+          'order-data' : orderData
         },
       });
 
