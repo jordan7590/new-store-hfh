@@ -32,12 +32,11 @@ export default async function handler(req, res) {
       });
 
 
-      const orderItems = cartData.map(item => {
-        return {
-          product_id: item.sizesQuantities.item_number, 
-          quantity: item.sizesQuantities.quantity
-        };
+      const orderItems = cartItems.flatMap(item => {
+        // Extracting sizeQuantities data and directly returning it
+        return item.sizesQuantities.map(({ item_number, quantity }) => ({ item_number, quantity }));
     });
+    
 
     const orderData = JSON.stringify(orderItems);   
 

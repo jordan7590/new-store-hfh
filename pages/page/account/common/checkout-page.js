@@ -59,7 +59,11 @@ const CheckoutPage = () => {
   };
   
 
-  
+  const orderItems = cartItems.flatMap(item => {
+    // Extracting sizeQuantities data and directly returning it
+    return item.sizesQuantities.map(({ item_number, quantity }) => ({ item_number, quantity }));
+});
+
 
 
   // const setStateFromInput = (event) => {
@@ -321,6 +325,14 @@ const CheckoutPage = () => {
     <pre>{JSON.stringify(shippingFormData, null, 2)}</pre>
   </div>
 )}
+{Object.keys(orderItems).length > 0 && (
+  <div>
+    <h4>OrderItems:</h4>
+    <pre>{JSON.stringify(orderItems, null, 2)}</pre>
+  </div>
+)}
+
+
 
                 </Col>
                 <Col lg="6" sm="12" xs="12">
