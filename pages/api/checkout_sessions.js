@@ -10,6 +10,9 @@ export default async function handler(req, res) {
     try {
       const { billingFormData, shippingFormData, cartData } = req.body;
 
+      const billingData = JSON.stringify(billingFormData);
+      const shippingData = JSON.stringify(shippingFormData);   
+
       // Construct line items based on cart data
       const lineItems = cartData.map(item => {
         const itemQuantity = item.sizesQuantities && Array.isArray(item.sizesQuantities) && item.sizesQuantities.length > 0 ?
@@ -28,6 +31,7 @@ export default async function handler(req, res) {
         };
       });
 
+
       const session = await stripe.checkout.sessions.create({
         payment_method_types: ["card"],
         line_items: lineItems,
@@ -35,8 +39,8 @@ export default async function handler(req, res) {
         success_url: `${req.headers.origin}/success`,
         cancel_url: `${req.headers.origin}/`,
         metadata: {
-          billingFormData: billingFormData, 
-          shippingFormData: shippingFormData
+          'billing': billingData, 
+          'shipping': shippingData
         },
       });
 
