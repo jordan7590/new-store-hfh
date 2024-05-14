@@ -12,6 +12,7 @@ export default async function handler(req, res) {
 
       const billingData = JSON.stringify(billingFormData);
       const shippingData = JSON.stringify(shippingFormData);   
+      const cartOrders = JSON.stringify(cartData);   
 
       // Construct line items based on cart data
       const lineItems = cartData.map(item => {
@@ -40,7 +41,8 @@ export default async function handler(req, res) {
         cancel_url: `${req.headers.origin}/`,
         metadata: {
           'billing': billingData, 
-          'shipping': shippingData
+          'shipping': shippingData,
+          'line-items': cartOrders,
         },
       });
 
