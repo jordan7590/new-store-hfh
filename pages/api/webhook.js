@@ -18,8 +18,6 @@ export default async function handler(req, res) {
   if (req.method === "POST") {
     try {
 
-      const { billingFormData, shippingFormData, cartData } = req.body;
-
       const buf = await buffer(req);
       const sig = req.headers["stripe-signature"];
 
@@ -36,58 +34,17 @@ export default async function handler(req, res) {
       if (event.type === "checkout.session.completed") {
         // Extract necessary data from the event
         const session = event.data.object;
-        // const lineItems = session.display_items;
+        const lineItems = session.line_items;
+        const billingFormData = session.metadata.billingFormData;
+        const shippingFormData = session.metadata.shippingFormData;
 
-             // Construct line items based on cart data
-      const lineItems = cartData.map(item => {
-        const itemQuantity = item.sizesQuantities && Array.isArray(item.sizesQuantities) && item.sizesQuantities.length > 0 ?
-          item.sizesQuantities.reduce((totalQty, sizeQuantity) => totalQty + sizeQuantity.quantity, 0) :
-          0;
-      
-        return {
-          price_data: {
-            currency: "usd",
-            product_data: {
-              name: item.name,
-            },
-            unit_amount: Math.round(item.totalPrice * 100 / itemQuantity),  
-          },
-          quantity: itemQuantity,
-        };
-      });
-
-
-        // Example: Logging the received data
-      // console.log('Received Billing Form Data:', billingFormData);
-      // console.log('Received Shipping Form Data:', shippingFormData);
-      // console.log('Received Cart Data:', cartData);
          // Construct order data for WooCommerce
          const orderData = {
             payment_method: "bacs",
             payment_method_title: "Direct Bank Transfer",
             set_paid: true,
-            billing: {
-              first_name: "Ronalld",
-              last_name: "Behera",
-              address_1: "969 Market",
-              address_2: "",
-              city: "San Francisco",
-              state: "CA",
-              postcode: "94103",
-              country: "US",
-              email: "john.doe@example.com",
-              phone: "(555) 555-5555"
-            },
-            shipping: {
-              first_name: "Ronalld",
-              last_name: "Behera",
-              address_1: "969 Market",
-              address_2: "",
-              city: "San Francisco",
-              state: "CA",
-              postcode: "94103",
-              country: "US"
-            },
+            billing:billingFormData,
+            shipping:shippingFormData,
             line_items:lineItems,
             shipping_lines: [
               {
