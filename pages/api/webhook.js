@@ -35,8 +35,8 @@ export default async function handler(req, res) {
         // Extract necessary data from the event
         const session = event.data.object;
         const lineItems = session.line_items;
-        const billingFormData = session.metadata.billingFormData;
-        const shippingFormData = session.metadata.shippingFormData;
+        const billingFormData = session.metadata.billing;
+        const shippingFormData = session.metadata.shipping;
 
          // Construct order data for WooCommerce
          const orderData ={
