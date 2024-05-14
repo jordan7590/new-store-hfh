@@ -38,13 +38,7 @@ export default async function handler(req, res) {
         const session = event.data.object;
         // const lineItems = session.display_items;
 
-
-        // Example: Logging the received data
-      // console.log('Received Billing Form Data:', billingFormData);
-      // console.log('Received Shipping Form Data:', shippingFormData);
-      // console.log('Received Cart Data:', cartData);
-
-
+             // Construct line items based on cart data
       const lineItems = cartData.map(item => {
         const itemQuantity = item.sizesQuantities && Array.isArray(item.sizesQuantities) && item.sizesQuantities.length > 0 ?
           item.sizesQuantities.reduce((totalQty, sizeQuantity) => totalQty + sizeQuantity.quantity, 0) :
@@ -63,19 +57,43 @@ export default async function handler(req, res) {
       });
 
 
+        // Example: Logging the received data
+      // console.log('Received Billing Form Data:', billingFormData);
+      // console.log('Received Shipping Form Data:', shippingFormData);
+      // console.log('Received Cart Data:', cartData);
          // Construct order data for WooCommerce
          const orderData = {
             payment_method: "bacs",
             payment_method_title: "Direct Bank Transfer",
             set_paid: true,
-            billing: billingFormData,
-            shipping: shippingFormData,
+            billing: {
+              first_name: "Ronalld",
+              last_name: "Behera",
+              address_1: "969 Market",
+              address_2: "",
+              city: "San Francisco",
+              state: "CA",
+              postcode: "94103",
+              country: "US",
+              email: "john.doe@example.com",
+              phone: "(555) 555-5555"
+            },
+            shipping: {
+              first_name: "Ronalld",
+              last_name: "Behera",
+              address_1: "969 Market",
+              address_2: "",
+              city: "San Francisco",
+              state: "CA",
+              postcode: "94103",
+              country: "US"
+            },
             line_items:lineItems,
             shipping_lines: [
               {
                 method_id: "flat_rate",
                 method_title: "Flat Rate",
-                total: "12.25"
+                total: "10.00"
               }
             ]
           };
