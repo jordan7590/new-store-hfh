@@ -33,44 +33,24 @@ const CheckoutPage = () => {
   } = useForm(); // initialise the hook
   const router = useRouter();
 
-const handleBillingSubmit = (data) => {
-  // Prepare billing details object
-  const billingDetails = {
-    first_name: data.first_name,
-    last_name: data.last_name,
-    address_1: data.address1,
-    address_2: data.address2,
-    city: data.city,
-    state: data.state,
-    postcode: data.pincode,
-    country: data.country,
-    email: data.email,
-    phone: data.phone,
+  const handleBillingInputChange = (event) => {
+    const { name, value } = event.target;
+    setBillingFormData((prevFormData) => {
+      const updatedFormData = { ...prevFormData, [name]: value };
+      console.log("Billing Details:", updatedFormData);
+      return updatedFormData;
+    });
   };
-  console.log("Billing Details:", billingDetails);
-
-  setBillingFormData(billingDetails);
-};
-
-const handleShippingSubmit = (data) => {
-  // Prepare shipping details object
-  const shippingDetails = {
-    first_name: data.first_name,
-    last_name: data.last_name,
-    address_1: data.address1,
-    address_2: data.address2,
-    city: data.city,
-    state: data.state,
-    postcode: data.pincode,
-    country: data.country,
+  
+  const handleShippingInputChange = (event) => {
+    const { name, value } = event.target;
+    setShippingFormData((prevFormData) => {
+      const updatedFormData = { ...prevFormData, [name]: value };
+      console.log("Shipping Details:", updatedFormData);
+      return updatedFormData;
+    });
   };
-  console.log("Shipping Details:", shippingDetails);
-
-  setShippingFormData(shippingDetails);
-
-};
-
-
+  
 
 
   const setStateFromInput = (event) => {
@@ -79,12 +59,6 @@ const handleShippingSubmit = (data) => {
   };
 
 
-  const handleCheckoutButtonClick = () => {
-    // Submit forms before CheckoutButton click
-    handleSubmit(handleBillingSubmit)();
-    handleSubmit(handleShippingSubmit)();
-    // You may add further logic here if needed
-  };
 
 
   return (
@@ -94,7 +68,7 @@ const handleShippingSubmit = (data) => {
           <div className="checkout-form">
               <Row>
               <Col lg="6" sm="12" xs="12">
-              <Form onSubmit={handleSubmit(handleBillingSubmit)}>
+              <Form>
                 <div className="checkout-title">
                   <h3>Billing Details</h3>
                 </div>
@@ -105,6 +79,7 @@ const handleShippingSubmit = (data) => {
                       type="text"
                       className={`${errors.first_name ? "error_border" : ""}`}
                       name="first_name"
+                      onChange={handleBillingInputChange}
                       {...register("first_name", { required: true })}
                     />
                     <span className="error-message">
@@ -117,6 +92,7 @@ const handleShippingSubmit = (data) => {
                       type="text"
                       className={`${errors.last_name ? "error_border" : ""}`}
                       name="last_name"
+                      onChange={handleBillingInputChange}
                       {...register("last_name", { required: true })}
                     />
                     <span className="error-message">
@@ -129,6 +105,7 @@ const handleShippingSubmit = (data) => {
                       type="text"
                       name="phone"
                       className={`${errors.phone ? "error_border" : ""}`}
+                      onChange={handleBillingInputChange}
                       {...register("phone", { pattern: /\d+/ })}
                     />
                     <span className="error-message">
@@ -141,6 +118,7 @@ const handleShippingSubmit = (data) => {
                       className={`${errors.email ? "error_border" : ""}`}
                       type="text"
                       name="email"
+                      onChange={handleBillingInputChange}
                       {...register("email", {
                         required: true,
                         pattern: /^\S+@\S+$/i,
@@ -154,6 +132,7 @@ const handleShippingSubmit = (data) => {
                     <div className="field-label">Country</div>
                     <select
                       name="country"
+                      onChange={handleBillingInputChange}
                       {...register("country", { required: true })}
                     >
                       <option>US</option>
@@ -166,6 +145,7 @@ const handleShippingSubmit = (data) => {
                               className={`${errors.address1 ? "error_border" : ""}`}
                               type="text"
                               name="address1"
+                              onChange={handleBillingInputChange}
                               {...register("address1", {
                                 required: true,
                                 min: 20,
@@ -183,6 +163,7 @@ const handleShippingSubmit = (data) => {
                               className={`${errors.address2 ? "error_border" : ""}`}
                               type="text"
                               name="address2"
+                              onChange={handleBillingInputChange}
                               {...register("address2", {
                                 required: true,
                                 min: 20,
@@ -200,6 +181,7 @@ const handleShippingSubmit = (data) => {
                       type="text"
                       className={`${errors.city ? "error_border" : ""}`}
                       name="city"
+                      onChange={handleBillingInputChange}
                       {...register("city", { required: true })}
                     />
                     <span className="error-message">
@@ -212,6 +194,7 @@ const handleShippingSubmit = (data) => {
                       type="text"
                       className={`${errors.state ? "error_border" : ""}`}
                       name="state"
+                      onChange={handleBillingInputChange}
                       {...register("state", { required: true })}
                     />
                     <span className="error-message">
@@ -223,6 +206,7 @@ const handleShippingSubmit = (data) => {
                     <input
                       type="text"
                       name="pincode"
+                      onChange={handleBillingInputChange}
                       className={`${errors.pincode ? "error_border" : ""}`}
                       {...register("pincode", { pattern: /\d+/ })}
                     />
@@ -248,7 +232,7 @@ const handleShippingSubmit = (data) => {
 
 
                       {shipToDifferentAddress && (
-                      <Form onSubmit={handleSubmit(handleShippingSubmit)}>
+                      <Form>
                       <div className="checkout-title">
                           <h3>Shipping Details</h3>
                         </div>
@@ -259,6 +243,7 @@ const handleShippingSubmit = (data) => {
                               type="text"
                               className={`${errors.first_name ? "error_border" : ""}`}
                               name="first_name"
+                              onChange={handleShippingInputChange}
                               {...register("first_name", { required: true })}
                             />
                             <span className="error-message">
@@ -271,6 +256,7 @@ const handleShippingSubmit = (data) => {
                               type="text"
                               className={`${errors.last_name ? "error_border" : ""}`}
                               name="last_name"
+                              onChange={handleShippingInputChange}
                               {...register("last_name", { required: true })}
                             />
                             <span className="error-message">
@@ -281,6 +267,7 @@ const handleShippingSubmit = (data) => {
                             <div className="field-label">Country</div>
                             <select
                               name="country"
+                              onChange={handleShippingInputChange}
                               {...register("country", { required: true })}
                             >
                               <option>US</option>
@@ -293,6 +280,7 @@ const handleShippingSubmit = (data) => {
                               className={`${errors.address1 ? "error_border" : ""}`}
                               type="text"
                               name="address1"
+                              onChange={handleShippingInputChange}
                               {...register("address1", {
                                 required: true,
                                 min: 20,
@@ -310,6 +298,7 @@ const handleShippingSubmit = (data) => {
                               className={`${errors.address2 ? "error_border" : ""}`}
                               type="text"
                               name="address2"
+                              onChange={handleShippingInputChange}
                               {...register("address2", {
                                 required: true,
                                 min: 20,
@@ -328,6 +317,7 @@ const handleShippingSubmit = (data) => {
                               type="text"
                               className={`${errors.city ? "error_border" : ""}`}
                               name="city"
+                              onChange={handleShippingInputChange}
                               {...register("city", { required: true })}
                             />
                             <span className="error-message">
@@ -340,6 +330,7 @@ const handleShippingSubmit = (data) => {
                               type="text"
                               className={`${errors.state ? "error_border" : ""}`}
                               name="state"
+                              onChange={handleShippingInputChange}
                               {...register("state", { required: true })}
                             />
                             <span className="error-message">
@@ -351,6 +342,7 @@ const handleShippingSubmit = (data) => {
                             <input
                               type="text"
                               name="pincode"
+                              onChange={handleShippingInputChange}
                               className={`${errors.pincode ? "error_border" : ""}`}
                               {...register("pincode", { pattern: /\d+/ })}
                             />
@@ -487,7 +479,6 @@ const handleShippingSubmit = (data) => {
                                         billingFormData={billingFormData}
                                         shippingFormData={shippingFormData}
                                         cartData={cartItems}
-                                        onClick={handleCheckoutButtonClick}
                                       />
                             </Elements>
                           
