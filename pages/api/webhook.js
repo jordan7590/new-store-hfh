@@ -39,21 +39,31 @@ export default async function handler(req, res) {
         const shippingFormData = session.metadata.shippingFormData;
 
          // Construct order data for WooCommerce
-         const orderData = {
-            payment_method: "bacs",
-            payment_method_title: "Direct Bank Transfer",
-            set_paid: true,
-            billing:billingFormData,
-            shipping:shippingFormData,
-            line_items:lineItems,
-            shipping_lines: [
-              {
-                method_id: "flat_rate",
-                method_title: "Flat Rate",
-                total: "10.00"
-              }
-            ]
-          };
+         const orderData ={
+         payment_method: "Stripe",
+         payment_method_title: "Credit Card",
+         set_paid: true,
+         billing: billingFormData,
+         shipping: shippingFormData,
+         line_items: [
+           {
+             product_id: 93,
+             quantity: 2
+           },
+           {
+             product_id: 22,
+             variation_id: 23,
+             quantity: 1
+           }
+         ],
+         shipping_lines: [
+           {
+             method_id: "flat_rate",
+             method_title: "Flat Rate",
+             total: "10.00"
+           }
+         ]
+       };
 
         // Create order in WooCommerce using Axios
         const createdOrder = await axios.post(
