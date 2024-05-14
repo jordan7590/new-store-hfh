@@ -38,7 +38,8 @@ export default async function handler(req, res) {
     });
     
 
-    const orderData = JSON.stringify(orderItems);   
+    // const orderData = JSON.stringify(orderItems);   
+    const orderData = "[{\"item_number\":614,\"quantity\":6},{\"item_number\":606,\"quantity\":4},{\"item_number\":603,\"quantity\":1},{\"item_number\":173,\"quantity\":5},{\"item_number\":162,\"quantity\":5}]";   
 
 
       const session = await stripe.checkout.sessions.create({
