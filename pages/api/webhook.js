@@ -38,9 +38,8 @@ export default async function handler(req, res) {
 
         const billingData = JSON.parse(session.metadata.billing);
         const shippingData = JSON.parse(session.metadata.shipping);
-        const orderItems = JSON.parse(session.metadata.order-items);
+        const orderItems = JSON.parse(session.metadata["order-items"]);
         
-
          // Construct order data for WooCommerce
          const orderData ={
          payment_method: "Stripe",
