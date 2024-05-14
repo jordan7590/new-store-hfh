@@ -16,7 +16,11 @@ const CheckoutButton = ({ billingFormData, shippingFormData, cartData }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({billingFormData, shippingFormData, cartData }), // Serialize object to JSON
+        body: JSON.stringify({
+          billingFormData: billingFormData,
+          shippingFormData: shippingFormData,
+          cartData: cartData,
+        }),
       });
 
       const { sessionId } = await response.json();
