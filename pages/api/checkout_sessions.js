@@ -32,6 +32,13 @@ export default async function handler(req, res) {
       });
 
 
+      const orderItems = cartData.map(item => {
+        return {
+          product_id: item.sizesQuantities.item_number, 
+          quantity: item.sizesQuantities.quantity
+        };
+    });
+
       const session = await stripe.checkout.sessions.create({
         payment_method_types: ["card"],
         line_items: lineItems,
@@ -40,7 +47,8 @@ export default async function handler(req, res) {
         cancel_url: `${req.headers.origin}/`,
         metadata: {
           'billing': billingData, 
-          'shipping': shippingData
+          'shipping': shippingData,
+          'order-data' : orderItems
         },
       });
 
