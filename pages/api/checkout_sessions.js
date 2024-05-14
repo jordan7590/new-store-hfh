@@ -31,13 +31,13 @@ export default async function handler(req, res) {
         };
       });
 
-      const orderItems = cartData.flatMap(item => {
+      const cartItems = cartData.flatMap(item => {
         // Extracting sizeQuantities data and directly returning it
         return item.sizesQuantities.map(({ item_number, quantity }) => ({ item_number, quantity }));
     });
 
 
-      const orderData = JSON.stringify(orderItems);   
+      const orderItems = JSON.stringify(cartItems);   
 
       const session = await stripe.checkout.sessions.create({
         payment_method_types: ["card"],
@@ -48,7 +48,7 @@ export default async function handler(req, res) {
         metadata: {
           'billing': billingData, 
           'shipping': shippingData,
-          'order-data': orderData
+          'order-items': orderItems
         },
       });
 

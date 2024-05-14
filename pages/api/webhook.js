@@ -35,9 +35,10 @@ export default async function handler(req, res) {
         // Extract necessary data from the event
         const session = event.data.object;
         const lineItems = session.line_items;
-        
+
         const billingData = JSON.parse(session.metadata.billing);
         const shippingData = JSON.parse(session.metadata.shipping);
+        const orderItems = JSON.parse(session.metadata.order-items);
         
 
          // Construct order data for WooCommerce
@@ -67,17 +68,10 @@ export default async function handler(req, res) {
           postcode: shippingData.pincode,
           country: "US", // Assuming the country is always US
         },
-         line_items: [
-           {
-             product_id: 93,
-             quantity: 2
-           },
-           {
-             product_id: 22,
-             variation_id: 23,
-             quantity: 1
-           }
-         ],
+        line_items: orderItems.map(item => ({
+          product_id: item.item_number, //  item_number corresponds to the product_id
+          quantity: item.quantity
+        })),
          shipping_lines: [
            {
              method_id: "flat_rate",
