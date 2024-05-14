@@ -5,7 +5,7 @@ const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 );
 
-const CheckoutButton = ({ formData, cartData }) => {
+const CheckoutButton = ({ billingFormData, shippingFormData, cartData }) => {
   const router = useRouter();
   
   const handleCheckout = async () => {
@@ -16,7 +16,7 @@ const CheckoutButton = ({ formData, cartData }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ formData, cartData }), // Serialize object to JSON
+        body: JSON.stringify({billingFormData, shippingFormData, cartData }), // Serialize object to JSON
       });
 
       const { sessionId } = await response.json();

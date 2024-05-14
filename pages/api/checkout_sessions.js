@@ -8,7 +8,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 export default async function handler(req, res) {
   if (req.method === "POST") {
     try {
-      const { formData, cartData } = req.body;
+      const { billingFormData, shippingFormData, cartData } = req.body;
 
       // Construct line items based on cart data
       const lineItems = cartData.map(item => {
