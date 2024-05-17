@@ -174,7 +174,7 @@ const fetchShippingMethods = async () => {
 
  // Convert selectedMethod to an array
  const selectedMethodArray = [{
-  id: selectedMethod.method_id,
+  method_id: selectedMethod.method_id,
   title: selectedMethod.title,
   amount: selectedMethod.price
 }];
