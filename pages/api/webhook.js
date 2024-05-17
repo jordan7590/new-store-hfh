@@ -39,6 +39,8 @@ export default async function handler(req, res) {
         const billingData = JSON.parse(session.metadata.billing);
         const shippingData = JSON.parse(session.metadata.shipping);
         const orderItems = JSON.parse(session.metadata["order-items"]);
+        const shippingLines = JSON.parse(session.metadata.shipping_lines);
+
         
          // Construct order data for WooCommerce
          const orderData ={
@@ -73,9 +75,9 @@ export default async function handler(req, res) {
         })),
          shipping_lines: [
            {
-             method_id: "flat_rate",
-             method_title: "Flat Rate",
-             total: "10.00"
+             method_id: shippingLines.method_id,
+             method_title: shippingLines.method_title,
+             total: shippingLines.total
            }
          ]
        };

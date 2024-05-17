@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Media, Container, Form, Row, Col } from "reactstrap";
 import CartContext from "../../../../helpers/cart";
 import paypal from "../../../../public/assets/images/paypal.png";
@@ -25,6 +25,15 @@ const CheckoutPage = () => {
   const [billingFormData, setBillingFormData] = useState({});
   const [shippingFormData, setShippingFormData] = useState({});
   const [shipToDifferentAddress, setShipToDifferentAddress] = useState(false); // State to manage whether to ship to a different address
+  const [shippingAvailable, setShippingAvailable] = useState(true); // State to track shipping availability
+  const [shippingMethods, setShippingMethods] = useState([]); // State to store available shipping methods
+  const [loading, setLoading] = useState(true); // State to track loading state
+  const [error, setError] = useState(null); // State to store error
+  const [selectedShippingMethod, setSelectedShippingMethod] = useState(null); // State to store selected shipping method
+  const [shippingCost, setShippingCost] = useState(0); // State to store shipping cost
+  const [stripeShippingOptions, setStripeShippingOptions] = useState(0); // State to store shipping cost
+  const [orderTotal, setOrderTotal] = useState(0);
+
 
   const {
     register,
@@ -58,13 +67,133 @@ const CheckoutPage = () => {
     });
   };
   
-
+// only for test, delete latter
   const orderItems = cartItems.flatMap(item => {
     // Extracting sizeQuantities data and directly returning it
     return item.sizesQuantities.map(({ item_number, quantity }) => ({ item_number, quantity }));
 });
 
 
+useEffect(() => {
+  const fetchShippingZones = async () => {
+    try {
+      const response = await fetch("https://tonserve.com/hfh/wp-json/wc/v3/shipping/zones/2/locations?consumer_key=ck_86a3fc5979726afb7a1dd66fb12329bef3b365e2&consumer_secret=cs_19bb38d1e28e58f10b3ee8829b3cfc182b8eb3ea");
+      if (!response.ok) {
+        throw new Error("Failed to fetch shipping zones");
+      }
+      const data = await response.json();
+      const country = shippingFormData.country;
+      const postcode = shippingFormData.pincode;
+
+      console.log("Country:", country, "Postcode:", postcode);
+
+      const match = data.find(location => location.code === country || location.code === postcode);
+
+      console.log("Matching location:", match);
+
+      if (match) {
+        setShippingAvailable(true);
+        // If shipping is available, fetch shipping methods
+        console.log("Shipping available. Fetching shipping methods...");
+        const methodsResponse = await fetchShippingMethods();
+        console.log("Methods response:", methodsResponse);
+
+      // Filter shipping methods based on conditions
+          const filteredMethods = methodsResponse.filter(method => {
+            if (method.method_id === "free_shipping") {
+              // Check if free shipping has a minimum amount set
+              if (method.settings && method.settings.min_amount && cartTotal >= method.settings.min_amount.value) {
+                method.price = 0; // Set price for free shipping as 0
+                return true; // Include free shipping method if the cart total meets the minimum amount
+              }
+            } else if (method.method_id === "flat_rate") {
+              // Set price for flat rate shipping
+              method.price = method.settings.cost.value;
+              return true;
+            }
+            return false;
+          });
+
+        // Set the filtered shipping methods in state
+        setShippingMethods(filteredMethods);
+        
+        console.log("filtered Methods:", filteredMethods);
+
+        setLoading(false);
+      } else {
+        console.log("Shipping not available for the provided location.");
+        setShippingAvailable(false);
+        setLoading(false);
+      }
+    } catch (error) {
+      setError(error.message);
+      setLoading(false);
+    }
+  };
+
+  if (Object.keys(shippingFormData).length > 0) {
+    console.log("Shipping form data:", shippingFormData);
+    fetchShippingZones();
+  }
+}, [shippingFormData]);
+
+
+const fetchShippingMethods = async () => {
+  try {
+    console.log("Fetching shipping methods...");
+    const response = await fetch("https://tonserve.com/hfh/wp-json/wc/v3/shipping/zones/2/methods?consumer_key=ck_86a3fc5979726afb7a1dd66fb12329bef3b365e2&consumer_secret=cs_19bb38d1e28e58f10b3ee8829b3cfc182b8eb3ea");
+    if (!response.ok) {
+      throw new Error("Failed to fetch shipping methods");
+    }
+    const data = await response.json();
+    console.log("Shipping methods data:", data);
+    return data;
+  } catch (error) {
+    console.error("Error fetching shipping methods:", error);
+    return [];
+  }
+};
+
+
+  // Function to handle selection of shipping method
+  const handleShippingMethodChange = (event) => {
+    const { value } = event.target;
+    setSelectedShippingMethod(value);
+    console.log("Selected shipping method:", value);
+  
+    // Convert value to a number
+    const selectedValue = parseInt(value, 10);
+  
+    // Find the selected shipping method from the shippingMethods array
+    const selectedMethod = shippingMethods.find(method => method.id === selectedValue);
+  
+    if (selectedMethod) {
+      // Update the shipping cost with the price of the selected method
+      setShippingCost(selectedMethod.price);
+      console.log("shippingCost:", shippingCost);
+
+ // Convert selectedMethod to an array
+ const selectedMethodArray = [{
+  id: selectedMethod.id,
+  title: selectedMethod.title,
+  amount: selectedMethod.price
+}];
+  // Call setStripeShippingOptions function with selectedMethodArray as parameter
+  setStripeShippingOptions(selectedMethodArray);
+  console.log("StripeShippingOptions:", stripeShippingOptions);
+
+    }
+  };
+
+  
+
+
+  // calclulating Total Order Price here (cart price + shipping + tax - discount[coupons])
+ useEffect(() => {
+  // Convert cartTotal and shippingCost to numbers using parseFloat
+  const total = parseFloat(cartTotal) + parseFloat(shippingCost);
+  setOrderTotal(total); // Update orderTotal
+}, [cartTotal, shippingCost]);
 
   // const setStateFromInput = (event) => {
   //   obj[event.target.name] = event.target.value;
@@ -131,6 +260,7 @@ const CheckoutPage = () => {
                     <select
                       name="country"
                       onChange={handleBillingInputChange}
+                      defaultValue="US" // Set the default value to "US"
                     >
                       <option>US</option>
                       <option>Canada</option>
@@ -238,6 +368,7 @@ const CheckoutPage = () => {
                             <select
                               name="country"
                               onChange={handleShippingInputChange}
+                              defaultValue="US" // Set the default value to "US"
                             >
                               <option>US</option>
                               <option>Canada</option>
@@ -402,37 +533,41 @@ const CheckoutPage = () => {
                             </span>
                           </li>
                           <li>
-                            Shipping
-                            <div className="shipping">
-                              <div className="shopping-option">
-                                <input
-                                  type="checkbox"
-                                  name="free-shipping"
-                                  id="free-shipping"
-                                />
-                                <label htmlFor="free-shipping">
-                                  Free Shipping
-                                </label>
-                              </div>
-                              <div className="shopping-option">
-                                <input
-                                  type="checkbox"
-                                  name="local-pickup"
-                                  id="local-pickup"
-                                />
-                                <label htmlFor="local-pickup">
-                                  Local Pickup
-                                </label>
-                              </div>
-                            </div>
+                           {/* Shipping options */}
+
+
+
+                  {!loading && shippingAvailable && (
+                    <div className="shipping-methods">
+                      <h4>Shipping Methods:</h4>
+                      <ul>
+                        {shippingMethods.map(method => (
+                          <li key={method.id}>
+                           <input
+                            type="radio"
+                            name="shippingMethod"
+                            value={method.id}
+                            defaultChecked ={selectedShippingMethod === method.id}
+                            onChange={handleShippingMethodChange}
+                          />
+                            <label>
+                                  {method.title}
+                                  {method.method_id === "flat_rate" && ` : ${method.price}`} {/* Render price if method_id is flat_rate */}
+                            </label>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
                           </li>
                         </ul>
                         <ul className="total">
                           <li>
-                            Total{" "}
+                          Order Total{" "}
                             <span className="count">
-                              {symbol}
-                              {cartTotal.toFixed(2)}
+                            {symbol}
+                            {orderTotal}
                             </span>
                           </li>
                         </ul>
@@ -448,6 +583,7 @@ const CheckoutPage = () => {
                                         billingFormData={billingFormData}
                                         shippingFormData={shippingFormData}
                                         cartData={cartItems}
+                                        stripeShippingOptions={stripeShippingOptions}
                                       />
                             </Elements>
                           

@@ -8,7 +8,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 export default async function handler(req, res) {
   if (req.method === "POST") {
     try {
-      const { billingFormData, shippingFormData, cartData } = req.body;
+      const { billingFormData, shippingFormData, cartData, stripeShippingOptions } = req.body;
 
       const billingData = JSON.stringify(billingFormData);
       const shippingData = JSON.stringify(shippingFormData);   
@@ -31,6 +31,27 @@ export default async function handler(req, res) {
         };
       });
 
+      const shippingOptions = stripeShippingOptions.map(item => {      
+        return {
+            shipping_rate_data: {
+              type: 'fixed_amount',
+              fixed_amount: {
+                amount:  parseInt(parseFloat(item.amount) * 100),
+                currency: 'usd',
+              },
+              display_name: item.title,
+            },
+        };
+      });
+
+      const shippingforOrderCreation ={
+              method_id: stripeShippingOptions[0].id,
+              total: stripeShippingOptions[0].amount,
+              method_title: stripeShippingOptions[0].title,
+        };
+      const shippingline = JSON.stringify(shippingforOrderCreation);   
+
+ 
       const cartItems = cartData.flatMap(item => {
         // Extracting sizeQuantities data and directly returning it
         return item.sizesQuantities.map(({ item_number, quantity }) => ({ item_number, quantity }));
@@ -39,6 +60,7 @@ export default async function handler(req, res) {
 
       const orderItems = JSON.stringify(cartItems);   
 
+      
       const session = await stripe.checkout.sessions.create({
         payment_method_types: ["card"],
         line_items: lineItems,
@@ -48,9 +70,11 @@ export default async function handler(req, res) {
         metadata: {
           'billing': billingData, 
           'shipping': shippingData,
-          'order-items': orderItems
+          'order-items': orderItems,
+          'shipping_lines': shippingline
         },
-      });
+        shipping_options: shippingOptions,
+        });
 
 
        
