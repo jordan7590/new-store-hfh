@@ -45,7 +45,7 @@ export default async function handler(req, res) {
       });
 
       const shippingforOrderCreation ={
-              method_id: stripeShippingOptions[0].id,
+              method_id: stripeShippingOptions[0].method_id,
               total: stripeShippingOptions[0].amount,
               method_title: stripeShippingOptions[0].title,
         };
