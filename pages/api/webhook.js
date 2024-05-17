@@ -34,7 +34,7 @@ export default async function handler(req, res) {
       if (event.type === "checkout.session.completed") {
         // Extract necessary data from the event
         const session = event.data.object;
-        const lineItems = session.line_items;
+        // const lineItems = session.line_items;
 
         const billingData = JSON.parse(session.metadata.billing);
         const shippingData = JSON.parse(session.metadata.shipping);

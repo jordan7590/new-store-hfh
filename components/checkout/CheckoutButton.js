@@ -5,7 +5,8 @@ const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 );
 
-const CheckoutButton = ({ billingFormData, shippingFormData, cartData, stripeShippingOptions }) => {
+
+const CheckoutButton = ({ billingFormData, shippingFormData, cartData, stripeShippingOptions, cartTotal, shippingCost, taxAmount, taxRate }) => {
   const router = useRouter();
   
   const handleCheckout = async () => {
@@ -20,7 +21,8 @@ const CheckoutButton = ({ billingFormData, shippingFormData, cartData, stripeShi
           billingFormData: billingFormData,
           shippingFormData: shippingFormData,
           cartData: cartData,
-          stripeShippingOptions: stripeShippingOptions
+          stripeShippingOptions: stripeShippingOptions,
+          taxRate: taxRate
         }),
       });
 

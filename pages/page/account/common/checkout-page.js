@@ -33,6 +33,8 @@ const CheckoutPage = () => {
   const [shippingCost, setShippingCost] = useState(0); // State to store shipping cost
   const [stripeShippingOptions, setStripeShippingOptions] = useState(0); // State to store shipping cost
   const [orderTotal, setOrderTotal] = useState(0);
+  const [taxRate, setTaxRate] = useState(""); // State to store tax rate
+  const [taxAmount, setTaxAmount] = useState(0); // State to store tax amount
 
 
   const {
@@ -188,17 +190,76 @@ const fetchShippingMethods = async () => {
   
 
 
-  // calclulating Total Order Price here (cart price + shipping + tax - discount[coupons])
- useEffect(() => {
-  // Convert cartTotal and shippingCost to numbers using parseFloat
-  const total = parseFloat(cartTotal) + parseFloat(shippingCost);
-  setOrderTotal(total); // Update orderTotal
-}, [cartTotal, shippingCost]);
-
   // const setStateFromInput = (event) => {
   //   obj[event.target.name] = event.target.value;
   //   setObj(obj);
   // };
+
+
+
+   // Function to calculate tax based on billing address and cart total
+   const calculateTax = async () => {
+    try {
+      // Fetch taxes
+      const response = await fetch(`https://tonserve.com/hfh/wp-json/wc/v3/taxes?consumer_key=ck_86a3fc5979726afb7a1dd66fb12329bef3b365e2&consumer_secret=cs_19bb38d1e28e58f10b3ee8829b3cfc182b8eb3ea`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch taxes");
+      }
+      const taxes = await response.json();
+
+      // Extract relevant information from billing address
+      const billingCountry = billingFormData.country || "";
+      const billingState = billingFormData.state || "";
+      const billingPostcode = billingFormData.pincode || "";
+      const billingCity = billingFormData.city || "";
+
+      // Find matching tax rate based on the hierarchy of matching conditions
+      let matchingTax = "";
+
+      // Match by country, state, postcode, and city
+      matchingTax = taxes.find(tax => {
+        return (tax.country === billingCountry || tax.country === "") &&
+               (tax.state === billingState || tax.state === "") &&
+               (tax.postcode === billingPostcode || tax.postcode === "") &&
+               (tax.city === billingCity || tax.city === "");
+      });
+      
+      // If matching tax is found, set tax rate and calculate tax amount
+      if (matchingTax) {
+        const taxRate = parseFloat(matchingTax.rate);
+        setTaxRate(taxRate);
+        const tax = (cartTotal * taxRate) / 100;
+        setTaxAmount(tax);
+        console.log("tax rate", taxRate)
+      } else {
+        // If no matching tax is found, set tax rate to blank and tax amount to 0
+        setTaxRate("");
+        setTaxAmount(0);
+      }
+    } catch (error) {
+      console.error("Error calculating tax:", error);
+      // Handle error
+    }
+  };
+
+
+  // Call calculateTax function when billing address is set or updated
+  useEffect(() => {
+    if (Object.keys(billingFormData).length > 0) {
+      calculateTax();
+    }
+  }, [billingFormData]);
+
+
+
+  
+  // calclulating Total Order Price here (cart price + shipping + tax - discount[coupons])
+ useEffect(() => {
+  // Convert cartTotal and shippingCost to numbers using parseFloat
+  const total = parseFloat(cartTotal) + parseFloat(shippingCost) + parseFloat(taxAmount);
+  setOrderTotal(total); // Update orderTotal
+}, [cartTotal, shippingCost, taxAmount]);
+
 
 
 
@@ -560,6 +621,21 @@ const fetchShippingMethods = async () => {
                     </div>
                   )}
 
+                    <div className="shipping-methods">
+                      <h4>Shipping Methods:</h4>
+                      <ul>
+                        <li>
+                          Tax Amount{" "}
+                          <span className="count">
+                            {symbol}
+                            {taxAmount.toFixed(2)}
+                          </span>
+                        </li>
+                      </ul>
+                    </div>
+
+
+
                           </li>
                         </ul>
                         <ul className="total">
@@ -584,6 +660,10 @@ const fetchShippingMethods = async () => {
                                         shippingFormData={shippingFormData}
                                         cartData={cartItems}
                                         stripeShippingOptions={stripeShippingOptions}
+                                        cartTotal={cartTotal}
+                                        shippingCost={shippingCost}
+                                        taxAmount={taxAmount}
+                                        taxRate={taxRate}
                                       />
                             </Elements>
                           

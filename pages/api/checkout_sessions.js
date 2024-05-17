@@ -8,7 +8,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 export default async function handler(req, res) {
   if (req.method === "POST") {
     try {
-      const { billingFormData, shippingFormData, cartData, stripeShippingOptions } = req.body;
+      const { billingFormData, shippingFormData, cartData, stripeShippingOptions, cartTotal, shippingCost, taxAmount, taxRate } = req.body;
 
       const billingData = JSON.stringify(billingFormData);
       const shippingData = JSON.stringify(shippingFormData);   
@@ -25,7 +25,7 @@ export default async function handler(req, res) {
             product_data: {
               name: item.name,
             },
-            unit_amount: Math.round(item.totalPrice * 100 / itemQuantity),  
+            unit_amount: Math.round(item.totalPrice * 100 / itemQuantity) + ((item.totalPrice * 100 / itemQuantity * taxRate) / 100),  
           },
           quantity: itemQuantity,
         };
@@ -60,7 +60,8 @@ export default async function handler(req, res) {
 
       const orderItems = JSON.stringify(cartItems);   
 
-      
+      const orderAmount = parseFloat(cartTotal) + parseFloat(shippingCost) + parseFloat(taxAmount);
+
       const session = await stripe.checkout.sessions.create({
         payment_method_types: ["card"],
         line_items: lineItems,
@@ -74,6 +75,7 @@ export default async function handler(req, res) {
           'shipping_lines': shippingline
         },
         shipping_options: shippingOptions,
+        
         });
 
 
