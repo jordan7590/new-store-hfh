@@ -22,8 +22,28 @@ const CheckoutPage = () => {
   const symbol = curContext.state.symbol;
   const [obj, setObj] = useState({});
   const [payment, setPayment] = useState("cod");
-  const [billingFormData, setBillingFormData] = useState({});
-  const [shippingFormData, setShippingFormData] = useState({});
+  const [billingFormData, setBillingFormData] = useState({
+    "country": "",
+    "first_name": "",
+    "last_name": "",
+    "phone": "",
+    "email": "",
+    "address1": "",
+    "address2": "",
+    "city": "",
+    "state": "",
+    "pincode": ""
+  });
+  const [shippingFormData, setShippingFormData] = useState({
+    "country": "",
+  "first_name": "",
+  "last_name": "",
+  "address1": "",
+  "address2": "",
+  "city": "",
+  "state": "",
+  "pincode": ""
+  });
   const [shipToDifferentAddress, setShipToDifferentAddress] = useState(false); // State to manage whether to ship to a different address
   const [shippingAvailable, setShippingAvailable] = useState(true); // State to track shipping availability
   const [shippingMethods, setShippingMethods] = useState([]); // State to store available shipping methods
@@ -35,7 +55,10 @@ const CheckoutPage = () => {
   const [orderTotal, setOrderTotal] = useState(0);
   const [taxRate, setTaxRate] = useState(""); // State to store tax rate
   const [taxAmount, setTaxAmount] = useState(0); // State to store tax amount
-
+  const [billingFormValid, setBillingFormValid] = useState(false);
+  const [shippingFormValid, setShippingFormValid] = useState(false);
+  const [billingFormErrors, setBillingFormErrors] = useState({});
+  const [shippingFormErrors, setShippingFormErrors] = useState({});
 
   const {
     register,
@@ -56,8 +79,15 @@ const CheckoutPage = () => {
       // Remove email and phone fields from shipping data
       if (name !== "email" && name !== "phone") {
         setShippingFormData(updatedShippingFormData);
+        setShippingFormValid(true);
       }
     }
+    const isFormValidBilling = Object.keys(updatedBillingFormData).every(fieldName => updatedBillingFormData[fieldName].trim() !== "");
+    setBillingFormValid(isFormValidBilling);
+        setBillingFormErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: value.trim() === "" ? "Field is required" : "",
+    }));
   };
   
   const handleShippingInputChange = (event) => {
@@ -67,8 +97,16 @@ const CheckoutPage = () => {
       const updatedFormData = { ...prevFormData, [name]: value };
       return updatedFormData;
     });
+    const isFormValidShipping = Object.keys(updatedShippingFormData).every(fieldName => updatedShippingFormData[fieldName].trim() !== "");
+    setBillingFormValid(isFormValidShipping);    setShippingFormErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: value.trim() === "" ? "Field is required" : "",
+    }));
   };
   
+
+
+
 // only for test, delete latter
   const orderItems = cartItems.flatMap(item => {
     // Extracting sizeQuantities data and directly returning it
@@ -261,7 +299,15 @@ const fetchShippingMethods = async () => {
 }, [cartTotal, shippingCost, taxAmount]);
 
 
-
+useEffect(() => {
+  // Check if shipping methods are available and not loading
+  if (shippingMethods.length > 0 && !loading) {
+    // Select the first shipping method
+    const firstShippingMethod = shippingMethods[0];
+    setSelectedShippingMethod(firstShippingMethod.id); // Select the first shipping method
+    handleShippingMethodChange({ target: { value: firstShippingMethod.id } }); // Trigger the handleShippingMethodChange function
+  }
+}, [shippingMethods, loading]);
 
 
   return (
@@ -284,7 +330,9 @@ const fetchShippingMethods = async () => {
                       name="first_name"
                       onChange={handleBillingInputChange}
                     />
-                 
+               
+                  {billingFormErrors.first_name && <p style={{ color: "red" }}>{billingFormErrors.first_name}</p>}
+      
                   </div>
                   <div className="form-group col-md-6 col-sm-6 col-xs-12">
                     <div className="field-label">Last Name</div>
@@ -321,11 +369,15 @@ const fetchShippingMethods = async () => {
                     <select
                       name="country"
                       onChange={handleBillingInputChange}
-                      defaultValue="US" // Set the default value to "US"
                     >
+                      <option>Select</option>
                       <option>US</option>
                       <option>Canada</option>
                     </select>
+                    {billingFormErrors.country && (
+                        <span className="error">{billingFormErrors.country}</span>
+                      )}
+                      
                   </div>
                   <div className="form-group col-md-12 col-sm-12 col-xs-12">
                             <div className="field-label">Address 1</div>
@@ -429,8 +481,8 @@ const fetchShippingMethods = async () => {
                             <select
                               name="country"
                               onChange={handleShippingInputChange}
-                              defaultValue="US" // Set the default value to "US"
                             >
+                              <option>Select</option>
                               <option>US</option>
                               <option>Canada</option>
                             </select>
@@ -598,31 +650,48 @@ const fetchShippingMethods = async () => {
 
 
 
-                  {!loading && shippingAvailable && (
-                    <div className="shipping-methods">
-                      <h4>Shipping Methods:</h4>
-                      <ul>
-                        {shippingMethods.map(method => (
-                          <li key={method.id}>
-                           <input
-                            type="radio"
-                            name="shippingMethod"
-                            value={method.id}
-                            defaultChecked ={selectedShippingMethod === method.id}
-                            onChange={handleShippingMethodChange}
-                          />
-                            <label>
-                                  {method.title}
-                                  {method.method_id === "flat_rate" && ` : ${method.price}`} {/* Render price if method_id is flat_rate */}
-                            </label>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
+                           {!loading && shippingAvailable ? (
+                              <div className="shipping-methods">
+                                  <ul>
+                                      <li>
+                                          Shipping:
+                                          <ul>
+                                          {shippingMethods.map((method, index) => (
+                                                  <li key={method.id}>
+                                                      <span className="count">
+                                                          <input
+                                                              type="radio"
+                                                              name="shippingMethod"
+                                                              value={method.id}
+                                                              // defaultChecked={selectedShippingMethod === method.id}
+                                                              onChange={handleShippingMethodChange}
+                                                              defaultChecked={index === 0}
+                                                          />
+                                                          <label>
+                                                              {method.title}
+                                                              {method.method_id === "flat_rate" && ` : ${method.price}`}
+                                                          </label> 
+                                                      </span>
+                                                  </li>
+                                              ))}
+                                          </ul>
+                                      </li>
+                                  </ul>
+                              </div>
+                          ) : (
+                              <div className="shipping-methods">
+                                  <ul>
+                                      <li>
+                                          Shipping : 
+                                          <span className="count">
+                                              Shipping not available for the provided location
+                                          </span>
+                                      </li>
+                                  </ul>
+                              </div>
+                          )}
 
                     <div className="shipping-methods">
-                      <h4>Shipping Methods:</h4>
                       <ul>
                         <li>
                           Tax Amount{" "}
@@ -660,10 +729,11 @@ const fetchShippingMethods = async () => {
                                         shippingFormData={shippingFormData}
                                         cartData={cartItems}
                                         stripeShippingOptions={stripeShippingOptions}
-                                        cartTotal={cartTotal}
-                                        shippingCost={shippingCost}
-                                        taxAmount={taxAmount}
                                         taxRate={taxRate}
+                                        billingFormValid={billingFormValid}
+                                        shippingFormValid={shippingFormValid}
+                                        shippingAvailable={shippingAvailable}
+                          
                                       />
                             </Elements>
                           
