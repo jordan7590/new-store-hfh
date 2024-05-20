@@ -16,11 +16,11 @@ const CommonLayout = ({ children, title, parent, subTitle }) => {
       <Breadcrubs title={title} parent={parent} subTitle={subTitle} />
       <>{children}</>
       <MasterFooter
-        footerClass={`footer-light `}
+        footerClass={`footer-black `}
         footerLayOut={"light-layout upper-footer"}
         footerSection={"small-section border-section border-top-0"}
         belowSection={"section-b-space light-layout"}
-        newLatter={true}
+        newLatter={false}
       />
     </>
   );

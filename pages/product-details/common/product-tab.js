@@ -44,7 +44,7 @@ const ProductTab = ({item}) => {
               <TabContent activeTab={activeTab} className="nav-material">
                 <TabPane tabId="1">
                   <p className="mb-0 pb-0">
-                   {product.full_feature_description}
+                  <div dangerouslySetInnerHTML={{ __html: product.description }} />
                   </p>
                 </TabPane>
                 <TabPane tabId="2">

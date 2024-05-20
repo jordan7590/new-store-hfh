@@ -9,7 +9,7 @@ const MasterBanner = ({ img, title, desc, link, classes, btn, btnClass }) => {
           <Row>
             <Col>
               <div className="slider-contain">
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                <div className="slider-content" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
                   <h4>{title}</h4>
                   <h1>{desc}</h1>
                   <Link href={link}>

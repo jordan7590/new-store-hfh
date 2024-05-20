@@ -236,16 +236,15 @@ header {
         display: block;
         > a {
           display: block;
-          padding-right: 45px;
-          color: $dark-font;
-          font-size: 16px;
-          font-weight: 400;
+          padding-right: 20px;
+          color: #000;
+          font-size: 14px;
+          font-weight: 700;
           line-height: 23px;
+          font-family: avertabold, San Francisco, Roboto, Segoe UI, Helvetica Neue, Lucida Grande, Arial, sans-serif;
           text-decoration: none;
-          text-transform: uppercase;
-          padding-top: 42px;
-          padding-bottom: 42px;
-          padding-left: 0;
+          text-transform: capitalize;
+          padding-left: 0px;
           letter-spacing: 0.07em;
           position: relative;
           .sub-arrow {
@@ -596,8 +595,8 @@ header {
 }
 .toggle-nav {
   position: relative;
-  padding-top: 40px;
-  padding-bottom: 40px;
+  // padding-top: 40px;
+  // padding-bottom: 40px;
   cursor: pointer;
   i {
     font-size: 28px;

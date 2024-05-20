@@ -234,7 +234,7 @@ const ProductList = ({ colClass, layoutList, openSidebar, noSidebar }) => {
           <Col sm="12">
             {/* banner to paragraph  */}
 
-            <div className="top-banner-wrapper">
+            {/* <div className="top-banner-wrapper">
               <a href={null}>
                 <Media
                   src={Menu2}
@@ -261,10 +261,10 @@ const ProductList = ({ colClass, layoutList, openSidebar, noSidebar }) => {
                   like Aldus PageMaker including versions of Lorem Ipsum.
                 </p>
               </div>
-            </div>
+            </div> */}
 
             {/* Filter Tags  */}
-            <Row>
+            {/* <Row>
               <Col xs="12">
                 <ul className="product-filter-tags">
                   {selectedBrands.map((brand, i) => (
@@ -308,26 +308,29 @@ const ProductList = ({ colClass, layoutList, openSidebar, noSidebar }) => {
                   }
                 </ul>
               </Col>
-            </Row>
+            </Row> */}
 
             <div className="collection-product-wrapper">
               {/* Product Filter  */}
+
 
               <div className="product-top-filter">
                 {!noSidebar ? (
                   <Row>
                     <Col xl="12">
                       <div
-                        className="filter-main-btn"
+                        className="filter-main-btn sideCategory"
                         onClick={() => openSidebar()}
                       >
                         <span className="filter-btn btn btn-theme">
                           <i className="fa fa-filter" aria-hidden="true"></i>{" "}
-                          Filter
+                          Categories
                         </span>
                       </div>
                     </Col>
                   </Row>
+
+
                 ) : (
                   ""
                 )}
@@ -452,7 +455,7 @@ const ProductList = ({ colClass, layoutList, openSidebar, noSidebar }) => {
                                 des={true}
                                 product={product}
                                 symbol={symbol}
-                                backImage={true}
+                                backImage={false}
                                 cartClass="cart-info cart-wrap"
                                 addCompare={() =>
                                   compareContext.addToCompare(product)

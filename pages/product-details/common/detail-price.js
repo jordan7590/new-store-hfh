@@ -10,9 +10,9 @@ import { toast } from "react-toastify";
 
 
 
-const DetailsWithPrice = ({ item, stickyClass, changeColorVar }) => {
+const DetailsWithPrice = ({ item, stickyClass, changeColorVar, variants }) => {
   const [modal, setModal] = useState(false);
-  const [variants, setVariants] = useState([]);
+  // const [variants, setVariants] = useState([]);
   const CurContect = useContext(CurrencyContext);
   const symbol = CurContect.state.symbol;
   const toggle = () => setModal(!modal);
@@ -27,27 +27,28 @@ const DetailsWithPrice = ({ item, stickyClass, changeColorVar }) => {
   const [sizeQuantities, setSizeQuantities] = useState({});
   const [isInStock, setIsInStock] = useState(false);
 
-  useEffect(() => {
-    // Fetch variants when component mounts
-    fetchVariants();
-  }, []);
+  // useEffect(() => {
+  //   // Fetch variants when component mounts
+  //   fetchVariants();
+  // }, []);
 
-  const fetchVariants = async () => {
-    try {
-      const response = await fetch(
-        `https://tonserve.com/hfh/wp-json/wc/v3/products/${product.id}/variations?per_page=100`,
-        {
-          headers: {
-            Authorization: "Basic " + btoa("ck_86a3fc5979726afb7a1dd66fb12329bef3b365e2:cs_19bb38d1e28e58f10b3ee8829b3cfc182b8eb3ea"),
-          },
-        }
-      );
-      const data = await response.json();
-      setVariants(data);
-    } catch (error) {
-      console.error("Error fetching variants:", error);
-    }
-  };
+  // const fetchVariants = async () => {
+  //   try {
+  //     const response = await fetch(
+  //       `https://tonserve.com/hfh/wp-json/wc/v3/products/${product.id}/variations?per_page=100`,
+  //       {
+  //         headers: {
+  //           Authorization: "Basic " + btoa("ck_86a3fc5979726afb7a1dd66fb12329bef3b365e2:cs_19bb38d1e28e58f10b3ee8829b3cfc182b8eb3ea"),
+  //         },
+  //       }
+  //     );
+  //     const data = await response.json();
+  //     setVariants(data);
+  //     console.log("Variants:", variants)
+  //   } catch (error) {
+  //     console.error("Error fetching variants:", error);
+  //   }
+  // };
 
 
 
@@ -82,7 +83,10 @@ const DetailsWithPrice = ({ item, stickyClass, changeColorVar }) => {
   };
 
   const handleColorChange = (e) => {
-    setSelectedColor(e.target.value);
+    const selectedColor = e.target.value;
+    setSelectedColor(selectedColor);
+    changeColorVar(selectedColor); // Call changeColorVar with the selected color
+    console.log("color selected : ", selectedColor)
   };
 
   const changeQty = (e) => {
@@ -251,13 +255,16 @@ const handleSizeQuantityChange = (size, quantity) => {
         </h4> */}
         <h3>
           {symbol}
-          {product.price}
+          {product.price} <span> /each</span>
           {/* {lowestPrice} - {highestPrice} */}
         </h3>
         {/* Render color dropdown */}
-        {variants.length > 0 && (
-          <div>
-            <label>Select Color:</label>
+        <div className="product-description border-product customColorSize">
+          <h6 className="product-title">Choose your colors : </h6>
+          
+          <div className="colorChange">
+          {variants.length > 0 && (
+          <div className="colorSelect">
             <select value={selectedColor} onChange={handleColorChange}>
               <option value="">Select Color</option>
               {uniqueColors.map((color) => (
@@ -268,59 +275,62 @@ const handleSizeQuantityChange = (size, quantity) => {
             </select>
           </div>
         )}
-        {/* Render quantity input */}
-        <div className="product-description border-product" style={{display:'flex'}}>
-          <span className="instock-cls">{stock}</span>
-          <h6 className="product-title">quantity</h6>
-          {renderSizeQuantities()}
-        </div>
-
-         {/* Render total price */}
-         <div className="border-product">
-          <h6 className="product-title">Total Price</h6>
-          <p>{symbol} {calculateTotalPrice()}</p>
-        </div>
-
-
-        {/* Render buttons */}
-        <div className="border-product">
-          {isInStock ? (
-            <div className="product-buttons">
-              <button
-                className="btn btn-solid"
-                onClick={handleAddToCart} // to call the handleAddToCart function
-                disabled={!isSizeSelected()} // Disable button if no size with quantity selected
-              >
-                add to cart
-              </button>             
-            </div>
-          ) : (
-            <div className="product-buttons">
-              <button className="btn btn-solid" disabled>
-                add to cart
-              </button>
-            </div>
-          )}
-        </div>
-
-
-        {/* Render product details */}
-        <div className="border-product">
-          <h6 className="product-title">product details</h6>
-          <p>{product.description}</p>
-        </div>
-        {/* Render share icons */}
-        <div className="border-product">
-          <h6 className="product-title">share it</h6>
-          <div className="product-icon">
-            <MasterSocial />
           </div>
         </div>
-        {/* Render countdown */}
-        <div className="border-product">
-          <h6 className="product-title">Time Reminder</h6>
-          <CountdownComponent />
+
+        
+        {/* Render quantity input */}
+        <div className="product-description border-product customColorSize">
+          {/* <span className="instock-cls">{stock}</span> */}
+          <h6 className="product-title">Select Sizes & Quantities : 
+             <span className="sizeChart">
+              <Link href="/assets/images/default/size-chart.jpg">
+                <a data-lng="en" target="_blank">Size Chart</a>
+              </Link>
+             </span>
+          </h6>
+          
+          <div style={{display:"flex"}}>
+          {renderSizeQuantities()}
+          </div>
         </div>
+
+       
+
+          <div className="productFooter">
+          <div className="productionTime">
+            <div class="primaryTime">Production Time:</div>
+            <div class="secondaryTime">Standard - 14 Business Days</div>
+            </div>
+            
+            <div className="totalPrice">
+              <p>Total Price:</p>
+              <h6>{symbol} {calculateTotalPrice()}</h6>
+            </div>
+            <div className="cartButton">
+            {isInStock ? (
+                      <div className="product-buttons">
+                        <button
+                          className="btn btn-solid"
+                          onClick={handleAddToCart} // to call the handleAddToCart function
+                          disabled={!isSizeSelected()} // Disable button if no size with quantity selected
+                        >
+                          add to cart
+                        </button>             
+                      </div>
+                    ) : (
+                      <div className="product-buttons">
+                        <button className="btn btn-solid" disabled>
+                          add to cart
+                        </button>
+                      </div>
+                    )}
+            </div>
+          </div>
+          
+
+       
+      
       </div>
     </>
   );

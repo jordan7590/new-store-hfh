@@ -65,7 +65,7 @@ const ProductItem = ({
         <div className="front" onClick={clickProductDetail}>
           <Media
             src={`${image ? image : (product.images && product.images.length > 0 ? product.images[0].src : defaultImageUrl)}`}
-            className="img-fluid"
+            className="img-fluid product-image-front"
             alt=""
           />
         </div>
@@ -76,7 +76,7 @@ const ProductItem = ({
             <div className="back" onClick={clickProductDetail}>
               <Media
             src={`${image ? image : (product.images && product.images.length > 0 ? product.images[0].src : defaultImageUrl)}`}
-            className="img-fluid m-auto"
+            className="img-fluid m-auto product-image-back"
                 alt=""
               />
             </div>
@@ -86,9 +86,9 @@ const ProductItem = ({
         )}
 
         <div className={cartClass}>
-          <button title="Add to cart" onClick={addCart}>
+          {/* <button title="Add to cart" onClick={addCart}>
             <i className="fa fa-shopping-cart" aria-hidden="true"></i>
-          </button>
+          </button> */}
           <a href={null} title="Add to Wishlist" onClick={addWishlist}>
             <i className="fa fa-heart" aria-hidden="true"></i>
           </a>
@@ -98,7 +98,7 @@ const ProductItem = ({
           <a href={null} title="Compare" onClick={toggleCompare}>
             <i className="fa fa-refresh" aria-hidden="true"></i>
           </a> */}
-          <Modal
+          {/* <Modal
             isOpen={modalCompare}
             toggle={toggleCompare}
             size="lg"
@@ -138,9 +138,9 @@ const ProductItem = ({
                 </Col>
               </Row>
             </ModalBody>
-          </Modal>
+          </Modal> */}
         </div>
-        {product.images ? (
+        {/* {product.images ? (
           <ul className="product-thumb-list">
             {product.images.map((img, i) => (
               <li
@@ -161,7 +161,7 @@ const ProductItem = ({
           </ul>
         ) : (
           ""
-        )}
+        )} */}
       </div>
       <MasterProductDetail
         product={product}

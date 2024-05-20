@@ -59,7 +59,7 @@ const Category = () => {
   return (
     <div className="collection-collapse-block open">
       <h3 className="collapse-block-title" onClick={toggleCategory}>
-        Category
+      Categories
       </h3>
       <Collapse isOpen={isCategoryOpen}>
         <div className="collection-collapse-block-content">

@@ -32,7 +32,7 @@ const ServiceLayout = ({ sectionClass }) => {
         <Row>
           {Data.map((data, index) => {
             return (
-              <Col md="4" className="service-block" key={index}>
+              <Col md="4" className="service-block" key={index} style={{margin:"10px 0px"}}>
                 <MasterServiceContent
                   link={data.link}
                   title={data.title}

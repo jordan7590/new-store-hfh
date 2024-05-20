@@ -7,6 +7,7 @@ import CartContext from "../../../helpers/cart";
 import { WishlistContext } from "../../../helpers/wishlist/WishlistContext";
 import { CompareContext } from "../../../helpers/Compare/CompareContext";
 import { useRouter } from "next/router";
+import PostLoader from "../../../components/common/PostLoader";
 
 const GET_PRODUCTS = gql`
   query products($type: _CategoryType!, $indexFrom: Int!, $limit: Int!) {
@@ -82,7 +83,7 @@ const ProductSection = () => {
   });
 
   return (
-    <section className="section-b-space ratio_asos">
+    <section className="section-b-space ratio_asos" style={{background:"#fafafa"}}>
       <Container>
         <Row>
           <Col className="product-related">
@@ -94,7 +95,7 @@ const ProductSection = () => {
             !data.products ||
             data.products.items.length === 0 ||
             loading ? (
-            "loading"
+             <PostLoader />
           ) : (
             <>
               {data &&

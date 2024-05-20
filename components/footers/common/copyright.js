@@ -7,14 +7,14 @@ const CopyRight = ({layout, fluid}) => {
             <div className={`sub-footer ${layout}`}>
                 <Container fluid={fluid}>
                     <Row>
-                        <Col xl="6" md="6" sm="12">
-                            <div className="footer-end">
+                        <Col className="col-sm-12 d-flex justify-content-center">
+                            <div className="footer-end ">
                                 <p><i className="fa fa-copyright" aria-hidden="true"></i> 
-                                Copyright © 2023 · Henry Ford Health Uniform Apparel. All Rights Reserved. Powered by <b>tonserve.</b>
+                                Copyright © 2024 · Henry Ford Health Uniform Apparel. All Rights Reserved. Powered by <b>tonserve.</b>
                                 </p>
                             </div>
                         </Col>
-                        <Col xl="6" md="6" sm="12">
+                        {/* <Col xl="6" md="6" sm="12">
                             <div className="payment-card-bottom">
                                 <ul>
                                     <li>
@@ -34,7 +34,7 @@ const CopyRight = ({layout, fluid}) => {
                                     </li>
                                 </ul>
                             </div>
-                        </Col>
+                        </Col> */}
                     </Row>
                 </Container>
             </div>

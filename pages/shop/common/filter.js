@@ -11,13 +11,14 @@ import Price from './price';
 const FilterPage = ({sm,sidebarView,closeSidebar}) => {
     return (
         <>
-            <Col sm={sm} className="collection-filter" style={sidebarView ? {left:"0px"} : {}}>
+            <Col sm={sm} className="collection-filter custom-filter-bar" style={sidebarView ? {left:"0px"} : {}}>
                 {/* <!-- side-bar colleps block stat --> */}
                 <div className="collection-filter-block">
                     {/* <!-- brand filter start --> */}
+                  
                     <div className="collection-mobile-back" onClick={() => closeSidebar()}>
                         <span className="filter-back">
-                            <i className="fa fa-angle-left" aria-hidden="true"></i> back
+                            <i className="fa fa-close" aria-hidden="true"></i> Close
                         </span>
                     </div>
                     <Category />
@@ -27,7 +28,7 @@ const FilterPage = ({sm,sidebarView,closeSidebar}) => {
                     <Price /> */}
                 </div>
                 {/* <!-- silde-bar colleps block end here -->*/}
-                <NewProduct />
+                {/* <NewProduct /> */}
                 {/* <!-- side-bar banner start here -->  */}
                 <div className="collection-sidebar-banner">
                     <a href={null}><Media src={sideBanner.src} className="img-fluid blur-up lazyload" alt="" /></a>

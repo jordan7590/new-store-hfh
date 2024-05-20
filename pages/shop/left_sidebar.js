@@ -17,13 +17,15 @@ const LeftSidebar = () => {
         }
     }
     return (
-        <CommonLayout title="collection" parent="home" >
-            <section className="section-b-space ratio_asos">
-                <div className="collection-wrapper">
-                    <Container>
+        <CommonLayout title="all products" parent="home" >
+            <section className="section-b-space ratio_asos" style={{background:"#FAFAFA"}}>
+                                            <FilterPage sm="3" sidebarView={sidebarView} closeSidebar={() => openCloseSidebar(sidebarView)} />
+
+                <div className="collection-wrapper" style={sidebarView ? {marginLeft:"125px"} : {}}>
+                    <Container  style={sidebarView ? {maxWidth:"1280px"} : {}}>
                         <Row>
-                            <FilterPage sm="3" sidebarView={sidebarView} closeSidebar={() => openCloseSidebar(sidebarView)} />
-                            <ProductList colClass="col-xl-3 col-6 col-grid-box" layoutList=''  openSidebar={() => openCloseSidebar(sidebarView)}/>
+                         
+                            <ProductList colClass="col-xl-3 col-6 col-grid-box" layoutList=''  openSidebar={() => openCloseSidebar(sidebarView) } />
                         </Row>
                     </Container>
                 </div>

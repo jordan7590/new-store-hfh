@@ -19,10 +19,10 @@ const CartContainer = ({ icon }) => {
         <Link href={`/page/account/cart`}>
           <div href={null}>
             <Media src={icon} className="img-fluid" alt="" />
-            <i className="fa fa-shopping-cart"></i>
+            <img alt="Cart icon" src="/assets/images/icon/hfh-cart-icon.svg" class="hfh-cart-icon"/>
           </div>
         </Link>
-        <ul className="show-div shopping-cart">
+        {/* <ul className="show-div shopping-cart">
           {cartList.map((item, index) => (
             <CartHeader key={index} item={item} total={total} symbol={symbol} />
           ))}
@@ -55,7 +55,7 @@ const CartContainer = ({ icon }) => {
               <h5>Your cart is currently empty.</h5>
             </li>
           )}
-        </ul>
+        </ul> */}
       </li>
     </Fragment>
   );

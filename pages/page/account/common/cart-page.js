@@ -17,9 +17,10 @@ const CartPage = () => {
   const [quantityError, setQuantityError] = useState(false);
   const updateQty = context.updateQty;
 
-  
+  console.log("Cart Item:", cartItems);
 
   return (
+    
     <div>
       {cartItems && cartItems.length > 0 ? (
         <section className="cart-section section-b-space">
@@ -43,15 +44,11 @@ const CartPage = () => {
                           <td>
                             <Link href={`/product-details/` + item.id}>
                               <a>
-                              {item.variations && Array.isArray(item.variations) && item.variations.length > 0 && item.sizesQuantities && Array.isArray(item.sizesQuantities) && item.sizesQuantities.length > 0 ? (
                                   <Media
-                                    src={`https://www.alphabroder.com/media/hires/${item.variations.find(product => product.item_number === item.sizesQuantities[0].item_number)?.front_image}`}
+                                    src={item.images[0].src}
                                     alt=""
                                   />
-                              ) : (
-                              <img src={defaultImageUrl} alt="Default" />
-                              )}
-
+                             
                               </a>
                             </Link>
                           </td>

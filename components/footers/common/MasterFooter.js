@@ -108,51 +108,13 @@ const MasterFooter = ({
                 >
                   <div className="footer-contant">
                     <div className="footer-logo">
-                      <LogoImage logo={logoName} />
+                      {/* <LogoImage logo={logoName} /> */}
+                      <img src={`/assets/images/icon/hc-full-no-background.png`} alt="Hoyt & Company Logo" style={{height:"80px", margin:"0px 0px 0px 7px"}} />
                     </div>
                     <p>
-                    Welcome to Henry Ford Health Uniforms by Hoyt & Company. 
-                    Explore our range of customizable apparel and promotional products.
-                    Create a professional image with our selection. 
-                    Please ensure correct sizes and approved colors, as orders are custom and non-returnable.</p>
-                    <div className="footer-social">
-                      <ul>
-                        <li>
-                          <a href="https://www.facebook.com" target="_blank">
-                            <i
-                              className="fa fa-facebook"
-                              aria-hidden="true"
-                            ></i>
-                          </a>
-                        </li>
-                        <li>
-                          <a href="https://plus.google.com" target="_blank">
-                            <i
-                              className="fa fa-google-plus"
-                              aria-hidden="true"
-                            ></i>
-                          </a>
-                        </li>
-                        <li>
-                          <a href="https://twitter.com" target="_blank">
-                            <i className="fa fa-twitter" aria-hidden="true"></i>
-                          </a>
-                        </li>
-                        <li>
-                          <a href="https://www.instagram.com" target="_blank">
-                            <i
-                              className="fa fa-instagram"
-                              aria-hidden="true"
-                            ></i>
-                          </a>
-                        </li>
-                        <li>
-                          <a href="https://rss.com" target="_blank">
-                            <i className="fa fa-rss" aria-hidden="true"></i>
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
+                    Welcome to Henry Ford Health Employee Uniform website provided by Hoyt & Company.
+                    Our company offers a full line of decorated or blank apparel, uniforms, and promotional products. Our wide selection of apparel and promotional merchandise gives you the flexibility needed to create the professional image. Our orders are custom to fit your needs, please make sure you order correct sizes and approved colors for your department due to all items are custom and non-returnable.
+                    </p>
                   </div>
                 </Collapse>
               </Col>
@@ -170,7 +132,7 @@ const MasterFooter = ({
                         } else setIsOpen(true);
                       }}
                     >
-                      my account
+                      Useful Links
                       <span className="according-menu"></span>
                     </h4>
                   </div>
@@ -203,8 +165,6 @@ const MasterFooter = ({
                     </div>
                   </Collapse>
                 </div>
-              </Col>
-              <Col>
                 <div className="sub-title">
                   <div
                     className={`footer-title ${isOpen && collapse == 3 ? "active" : ""
@@ -218,7 +178,7 @@ const MasterFooter = ({
                         } else setIsOpen(true);
                       }}
                     >
-                      why we choose
+                      Services
                       <span className="according-menu"></span>
                     </h4>
                   </div>
@@ -233,15 +193,89 @@ const MasterFooter = ({
                         <li>
                           <a href="#">secure shopping</a>
                         </li>
+                        
+                      </ul>
+                    </div>
+                  </Collapse>
+                </div>
+              </Col>
+              <Col>
+              <div className="sub-title">
+                  <div
+                    className={`footer-title ${isOpen && collapse == 2 ? "active" : ""
+                      } `}
+                  >
+                    <h4
+                      onClick={() => {
+                        if (width) {
+                          setIsOpen(!isOpen);
+                          setCollapse(2);
+                        } else setIsOpen(true);
+                      }}
+                    >
+                      Products
+                      <span className="according-menu"></span>
+                    </h4>
+                  </div>
+                  <Collapse
+                    isOpen={width ? (collapse === 2 ? isOpen : false) : true}
+                  >
+                    <div className="footer-contant">
+                      <ul>
                         <li>
-                          <a href="#">gallary</a>
+                          <Link href={`/shop/left_sidebar`}>
+                            <a>womens</a>
+                          </Link>
                         </li>
                         <li>
-                          <a href="#">affiliates</a>
+                          <Link href={`/shop/left_sidebar`}>
+                            <a> clothing </a>
+                          </Link>
                         </li>
                         <li>
-                          <a href="#">contacts</a>
+                          <Link href={`/shop/left_sidebar`}>
+                            <a>accessories</a>
+                          </Link>
                         </li>
+                        <li>
+                          <Link href={`/shop/left_sidebar`}>
+                            <a> featured </a>
+                          </Link>
+                        </li>
+                      </ul>
+                    </div>
+                  </Collapse>
+                </div>
+               
+                <div className="sub-title">
+                  <div
+                    className={`footer-title ${isOpen && collapse == 3 ? "active" : ""
+                      } `}
+                  >
+                    <h4
+                      onClick={() => {
+                        if (width) {
+                          setIsOpen(!isOpen);
+                          setCollapse(3);
+                        } else setIsOpen(true);
+                      }}
+                    >
+                      Company
+                      <span className="according-menu"></span>
+                    </h4>
+                  </div>
+                  <Collapse
+                    isOpen={width ? (collapse === 3 ? isOpen : false) : true}
+                  >
+                    <div className="footer-contant">
+                      <ul>
+                        <li>
+                          <a href="#">shipping & return</a>
+                        </li>
+                        <li>
+                          <a href="#">secure shopping</a>
+                        </li>
+                       
                       </ul>
                     </div>
                   </Collapse>
@@ -261,35 +295,76 @@ const MasterFooter = ({
                         } else setIsOpen(true);
                       }}
                     >
-                      store information
+                      Get In Touch
                       <span className="according-menu"></span>
                     </h4>
                   </div>
                   <Collapse
                     isOpen={width ? (collapse === 4 ? isOpen : false) : true}
                   >
-                    <div className="footer-contant">
-                      <ul className="contact-list">
+
+                 
+                    <div className="footer-social social-custom">
+                      <ul>
                         <li>
-                          <i className="fa fa-map-marker"></i>
-                          12555 N. Saginaw Rd.<br />
-                          Clio, MI 48420
+                          <a href="https://www.facebook.com/HoytCompany/" target="_blank">
+                            <i
+                              className="fa fa-facebook"
+                              aria-hidden="true"
+                            ></i>
+                          </a>
                         </li>
+                        
                         <li>
-                          <i className="fa fa-phone"></i>  <a href="tel:810.547.1646">Services: 810.547.1646</a>
+                          <a href="https://www.instagram.com/hoytcompany/" target="_blank">
+                            <i
+                              className="fa fa-instagram"
+                              aria-hidden="true"
+                            ></i>
+                          </a>
                         </li>
-                        <li>
-                          <i className="fa fa-phone"></i> <a href="tel:810.624.4445">Sales: 810.624.4445</a>
-                        </li>
-                        <li>
-                          <i className="fa fa-envelope-o"></i>Email:{" "}
-                          <a href="mailto:sales@hotcompany.com">sales@hoytcompany.com</a>
-                        </li>
-                        {/* <li>
-                          <i className="fa fa-fax"></i>Fax: 123456
-                        </li> */}
+                       
                       </ul>
                     </div>
+                    
+                   
+                  </Collapse>
+                </div>
+                <div className="sub-title">
+                  <div
+                    className={`footer-title ${isOpen && collapse == 4 ? "active" : ""
+                      } `}
+                  >
+                    <h4
+                      onClick={() => {
+                        if (width) {
+                          setIsOpen(!isOpen);
+                          setCollapse(4);
+                        } else setIsOpen(true);
+                      }}
+                    >
+                      subscribe
+                      <span className="according-menu"></span>
+                    </h4>
+                  </div>
+                  <Collapse
+                    isOpen={width ? (collapse === 4 ? isOpen : false) : true}
+                  >
+
+                    
+                    <Form className="form-inline subscribe-form">
+                      <div className="my-sm-3">
+                        <Input
+                          type="text"
+                          className="form-control"
+                          id="exampleFormControlInput1"
+                          placeholder="Enter your email"
+                        />
+                      </div>
+                      <Button type="submit" className="btn btn-solid">
+                        subscribe
+                      </Button>
+                    </Form>
                   </Collapse>
                 </div>
               </Col>

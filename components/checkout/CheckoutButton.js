@@ -79,6 +79,7 @@ const CheckoutButton = ({
     <div>
       <button
         onClick={handleCheckout}
+        className="btn btn-solid"
         // disabled={!billingFormValid || !shippingFormValid || !shippingAvailable}
       >
         Buy Now

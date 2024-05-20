@@ -399,7 +399,7 @@ const ThemeSettings = () => {
                     <input
                       id="colorPicker1"
                       type="color"
-                      defaultValue="#ff4c3b"
+                      defaultValue="#8056BF"
                       name="Background"
                       onChange={(e) => layoutColorFunc(e)}
                     />

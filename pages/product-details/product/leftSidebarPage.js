@@ -8,6 +8,7 @@ import ImageZoom from '../common/image-zoom';
 import DetailsWithPrice from '../common/detail-price';
 import Filter from '../common/filter';
 import { Container, Row, Col, Media } from 'reactstrap';
+import PostLoader from "../../../components/common/PostLoader";
 
 const LeftSidebarPage = ({ pathId }) => {
   const [product, setProduct] = useState(null);
@@ -16,6 +17,7 @@ const LeftSidebarPage = ({ pathId }) => {
   const slider1 = useRef();
   const slider2 = useRef();
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [variants, setVariants] = useState([]);
 
   const productsSliderSettings = {
     slidesToShow: 1,
@@ -26,7 +28,7 @@ const LeftSidebarPage = ({ pathId }) => {
   };
 
   const productsNavSliderSettings = {
-    slidesToShow: 3,
+    slidesToShow: 6,
     swipeToSlide: true,
     arrows: false,
     dots: false,
@@ -55,6 +57,32 @@ const LeftSidebarPage = ({ pathId }) => {
     fetchProduct();
   }, [pathId]);
 
+
+  useEffect(() => {
+    // Fetch variants when component mounts
+    fetchVariants();
+  }, [pathId]);
+
+  const fetchVariants = async () => {
+    try {
+      const response = await fetch(
+        `https://tonserve.com/hfh/wp-json/wc/v3/products/${pathId}/variations?per_page=100`,
+        {
+          headers: {
+            Authorization: "Basic " + btoa("ck_86a3fc5979726afb7a1dd66fb12329bef3b365e2:cs_19bb38d1e28e58f10b3ee8829b3cfc182b8eb3ea"),
+          },
+        }
+      );
+      const data = await response.json();
+      setVariants(data);
+      console.log("Variants:", data)
+    } catch (error) {
+      console.error("Error fetching variants:", error);
+    }
+  };
+
+
+
   const handleImageChange = (index) => {
     setSelectedImageIndex(index);
     if (slider1.current) {
@@ -75,14 +103,24 @@ const LeftSidebarPage = ({ pathId }) => {
     document.getElementById("filter").style.left = "-15px";
   };
 
-  const changeColorVar = (imgId) => {
-    if (slider2.current) {
-      slider2.current.slickGoTo(imgId);
+  
+  const changeColorVar = (selectedColor) => {
+    // Find the index of the variant with the selected color
+    const index = variants.findIndex(item => item.attributes[1].option === selectedColor);
+    
+    // If the index is found, navigate the slider to that index
+    if (index !== -1 && slider2.current) {
+      slider2.current.slickGoTo(index);
+      // Trigger a re-render by updating a state variable
+      setSelectedImageIndex(index);
     }
   };
 
+
+
+
   if (loading) {
-    return <div>Loading...</div>;
+    return <PostLoader />;
   }
 
   if (!product || !product.variations || product.variations.length === 0) {
@@ -90,18 +128,18 @@ const LeftSidebarPage = ({ pathId }) => {
   }
 
   return (
-    <section className="">
+    <section className="" style={{background:"#FAFAFA"}}>
       <div className="collection-wrapper">
         <Container>
           <Row>
-            <Col sm="3" className="collection-filter" id="filter">
+            {/* <Col sm="3" className="collection-filter" id="filter">
               <Filter />
               <Service />
               <NewProduct />
-            </Col>
-            <Col lg="9" sm="12" xs="12">
+            </Col> */}
+            <Col lg="12" sm="12" xs="12">
               <Container fluid={true}>
-                <Row>
+                {/* <Row>
                   <Col xl="12" className="filter-col">
                     <div className="filter-main-btn mb-2">
                       <span onClick={filterClick} className="filter-btn">
@@ -109,9 +147,9 @@ const LeftSidebarPage = ({ pathId }) => {
                       </span>
                     </div>
                   </Col>
-                </Row>
+                </Row> */}
                 <Row>
-                  <Col lg="6" className="product-thumbnail">
+                  <Col lg="4" className="product-thumbnail">
                   <Slider
                         {...productsSliderSettings}
                         asNavFor={nav2}
@@ -119,15 +157,15 @@ const LeftSidebarPage = ({ pathId }) => {
                         className="product-slick"
                         beforeChange={(oldIndex, newIndex) => setSelectedImageIndex(newIndex)}
                       >
-                        {product.variations.map((item, index) => (
+                        {variants.map((item, index) => (
                           <div key={index}>
-                            {item.images && item.images.length > 0 && (
-                              <ImageZoom
-                                image={{
-                                  src: item.images[0].src,
-                                }}
-                              />
-                            )}
+                             {item.image && (
+                                <Media
+                                  src={item.image.src}
+                                  alt={`Product image ${index + 1}`}
+                                  className="img-fluid"
+                                />
+                              )}
                           </div>
                         ))}
                       </Slider>
@@ -137,23 +175,24 @@ const LeftSidebarPage = ({ pathId }) => {
                             asNavFor={nav1}
                             ref={slider2}
                           >
-                            {product.variations.map((item, index) => (
-                              <div key={index} onClick={() => handleImageChange(index)}>
-                                {item.images && item.images.length > 0 && (
-                                  <Media
-                                    src={item.images[0].src}
-                                    alt={`Product image ${index + 1}`}
-                                    className="img-fluid"
-                                  />
-                                )}
-                              </div>
-                            ))}
+                         {variants.map((item, index) => (
+                            <div key={index} onClick={() => handleImageChange(index)}>
+                              {item.image && (
+                                <Media
+                                  src={item.image.src}
+                                  alt={`Product image ${index + 1}`}
+                                  className="img-fluid"
+                                />
+                              )}
+                            </div>
+                          ))}
                           </Slider>
                   </Col>
-                  <Col lg="6" className="rtl-text">
+                  <Col lg="8" className="rtl-text">
                     <DetailsWithPrice
                       item={product}
                       changeColorVar={changeColorVar}
+                      variants={variants}
                     />
                   </Col>
                 </Row>

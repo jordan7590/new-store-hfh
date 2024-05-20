@@ -76,14 +76,14 @@ const HeaderOne = ({
       <header id="sticky" className={`sticky ${headerClass}`}>
         <div className="mobile-fix-option"></div>
         {/*Top Header Component*/}
-        {noTopBar ? "" : <TopBarDark topClass={topClass} />}
+        {noTopBar ? "" : <TopBarDark topClass={topClass} direction={direction} />}
 
         <Container>
           <Row>
             <Col>
               <div className="main-menu">
                 <div className="menu-left">
-                  <div className="navbar">
+                  {/* <div className="navbar">
                     <a href={null} onClick={openNav}>
                       <div className="bar-style">
                         <i
@@ -92,9 +92,8 @@ const HeaderOne = ({
                         ></i>
                       </div>
                     </a>
-                    {/*SideBar Navigation Component*/}
                     <SideBar />
-                  </div>
+                  </div> */}
                   <div className="brand-logo">
                     <LogoImage logo={logoName} />
                   </div>
@@ -103,7 +102,7 @@ const HeaderOne = ({
                   {/*Top Navigation Bar Component*/}
                    <NavBar />
 
-                  <div>
+                  {/* <div>
                     <div className="icon-nav">
                       <ul>
                         <li className="onhover-div mobile-search">
@@ -121,7 +120,6 @@ const HeaderOne = ({
                           </div>
                         </li>
                         <Currency icon={settings.src} />
-                        {/*Header Cart Component */}
                         {direction === undefined ? (
                           // <></>
                           <CartContainer layout={direction} icon={cart.src} />
@@ -131,7 +129,7 @@ const HeaderOne = ({
                         )}
                       </ul>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </Col>
