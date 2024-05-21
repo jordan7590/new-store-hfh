@@ -16730,3 +16730,70 @@ h1{
   text-transform: capitalize;
 }
 }
+
+
+// /returnPolicy page
+
+.bg-img {
+  position: relative !important;
+  background-position-x: 50%;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.main-img {
+  width: 100%;
+}
+
+.text-bottom {
+  display: inline-block !important;
+  padding: 6.25rem 0 0 0;
+  text-align: center !important;
+}
+
+.text-bottom .title-text {
+  padding: 30px 77px 0;
+  float: none !important;
+  background: #fff;
+  color: #c45003;
+  font-size: 1.75rem;
+  font-weight: bold;
+  letter-spacing: .1875rem;
+  text-transform: uppercase !important;
+  margin: 0;
+}
+.text-gray {
+  color: #767674 !important;
+}
+
+.policy-body{
+p{
+  color: #777777;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 30px;
+}
+
+h6{
+  color: #363f40;
+  text-transform: capitalize;
+  font-weight: 700;
+  margin: 20px 0px;
+  font-size: 20px;
+}
+
+.bullet-points{
+  list-style-type: circle; /* You can change this to circle, square, etc. */
+  padding-left: 20px; /* Adjust the left padding to your preference */
+  margin-bottom: 1rem; /* Space below the list */
+
+  li{
+    display: list-item;
+    list-style-type: circle;
+    color: #777777;
+    margin-bottom: 0.5rem;
+    font-size: 16px;
+    line-height: 30px;
+  }
+}
+}
+
