@@ -142,23 +142,23 @@ const MasterFooter = ({
                     <div className="footer-contant">
                       <ul>
                         <li>
-                          <Link href={`/shop/left_sidebar`}>
-                            <a>womens</a>
+                          <Link href={`/page/return-policy`}>
+                            <a>Return Policy</a>
                           </Link>
                         </li>
                         <li>
-                          <Link href={`/shop/left_sidebar`}>
-                            <a> clothing </a>
+                          <Link href={`/page/privacy-policy`}>
+                            <a> Privacy Policy </a>
                           </Link>
                         </li>
                         <li>
-                          <Link href={`/shop/left_sidebar`}>
-                            <a>accessories</a>
+                          <Link href={`/page/terms-of-use`}>
+                            <a>Terms & Conditions</a>
                           </Link>
                         </li>
                         <li>
-                          <Link href={`/shop/left_sidebar`}>
-                            <a> featured </a>
+                          <Link href={`/page/contact-us`}>
+                            <a> Contact Us </a>
                           </Link>
                         </li>
                       </ul>
