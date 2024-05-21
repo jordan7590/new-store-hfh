@@ -16784,8 +16784,8 @@ h6{
 .bullet-points{
   list-style-type: circle; /* You can change this to circle, square, etc. */
   padding-left: 20px; /* Adjust the left padding to your preference */
-  margin-bottom: 1rem; /* Space below the list */
-
+  margin-bottom: 1rem; /* Space below the list */  
+  
   li{
     display: list-item;
     list-style-type: circle;
@@ -16793,6 +16793,38 @@ h6{
     margin-bottom: 0.5rem;
     font-size: 16px;
     line-height: 30px;
+    ul{
+      li{
+        display: list-item;
+        list-style-type: circle;
+        color: #777777;
+        margin-bottom: 0.5rem;
+        font-size: 16px;
+        line-height: 30px; 
+      }
+    }
+  }
+}
+
+ul{
+  li{
+    display: list-item;
+    list-style-type: circle;
+    color: #777777;
+    margin-bottom: 0.5rem;
+    font-size: 16px;
+    line-height: 30px;
+    ul{
+      margin-left: 50px;
+      li{
+        display: list-item;
+        list-style-type: circle;
+        color: #777777;
+        margin-bottom: 0.5rem;
+        font-size: 16px;
+        line-height: 30px; 
+      }
+    }
   }
 }
 }
