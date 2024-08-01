@@ -67,7 +67,7 @@ const TopBarDark = ({ topClass, fluid, direction }) => {
             <ul className="header-dropdown headerTop-account">
               {isLoggedIn ? (
                 <>
-                  Welcome, {userData.displayName}
+                  Welcome, {userData.name}
                   <img
                     src="/assets/images/icon/angle-arrow-down-white.svg"
                     alt="White arrow pointing downwards"

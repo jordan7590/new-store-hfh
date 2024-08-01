@@ -19,13 +19,37 @@ export const AuthProvider = ({ children }) => {
     setIsLoggedIn(!!storedToken);
   }, [storedToken]);
 
-  const login = (token, user) => {
+  const fetchUserData = async (accessToken) => {
+    try {
+      const response = await fetch('https://hfh.tonserve.com/wp-json/wp/v2/users/me', {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
+      });
+      if (!response.ok) throw new Error('Failed to fetch user data');
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+      return null;
+    }
+  };
+
+  const login = async (token, initialUserData) => {
     localStorage.setItem('accessToken', token);
-    localStorage.setItem('userData', JSON.stringify(user));
     localStorage.setItem('isLoggedIn', 'true');
     setAccessToken(token);
-    setUserData(user);
     setIsLoggedIn(true);
+
+    // Fetch additional user data
+    const fullUserData = await fetchUserData(token);
+    if (fullUserData) {
+      localStorage.setItem('userData', JSON.stringify(fullUserData));
+      setUserData(fullUserData);
+    } else {
+      // Fallback to initial user data if fetch fails
+      localStorage.setItem('userData', JSON.stringify(initialUserData));
+      setUserData(initialUserData);
+    }
   };
 
   const logout = () => {
@@ -50,7 +74,7 @@ export const AuthProvider = ({ children }) => {
       const data = await response.json();
 
       if (data.success && data.data && data.data.token) {
-        login(data.data.token, userData);
+        await login(data.data.token, userData);
         return true;
       } else {
         throw new Error("Failed to refresh token");
@@ -92,12 +116,16 @@ export const AuthProvider = ({ children }) => {
     return response;
   };
 
+  const loginHandler = async (token, user) => {
+    await login(token, user);
+  };
+
   return (
     <AuthContext.Provider value={{ 
       accessToken, 
       userData, 
       isLoggedIn, 
-      login, 
+      login: loginHandler, 
       logout, 
       refreshToken,
       authenticatedFetch 

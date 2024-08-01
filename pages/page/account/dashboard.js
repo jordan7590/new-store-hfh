@@ -24,6 +24,8 @@ const Dashboard = () => {
 
     if (!userData) {
         return <div>Loading...</div>;
+    }else{
+        console.log(userData);
     }
 
     return (
@@ -32,9 +34,11 @@ const Dashboard = () => {
                 <Container>
                     <Row>
                         <Col lg="3">
-                            {window.innerWidth <= 991 ?
-                            <div className="account-sidebar" onClick={() => setAccountInfo(!accountInfo)}><a className="popup-btn">my account</a></div>
-                            : null}
+                            {window.innerWidth <= 991 &&
+                                <div className="account-sidebar" onClick={() => setAccountInfo(!accountInfo)}>
+                                    <a className="popup-btn">my account</a>
+                                </div>
+                            }
                             <div className="dashboard-left" style={accountInfo ? {left:"0px"} : {}}> 
                                 <div className="collection-mobile-back" onClick={() => setAccountInfo(!accountInfo)}>
                                     <span className="filter-back">
@@ -62,10 +66,8 @@ const Dashboard = () => {
                                         <h2>My Dashboard</h2>
                                     </div>
                                     <div className="welcome-msg">
-                                        <p>Hello, {userData.displayName}!</p>
-                                        <p>From your My Account Dashboard you have the ability to view a snapshot of your recent
-                                        account activity and update your account information. Select a link below to view or
-                                        edit information.</p>
+                                        <p>Hello, {userData.name}!</p>
+                                        <p>{userData.bio}</p>
                                     </div>
                                     <div className="box-account box-info">
                                         <div className="box-head">
@@ -78,8 +80,8 @@ const Dashboard = () => {
                                                         <h3>Contact Information</h3><a href="#">Edit</a>
                                                     </div>
                                                     <div className="box-content">
-                                                        <h6>{userData.displayName}</h6>
-                                                        <h6>{userData.email}</h6>
+                                                        <h6>{userData.name}</h6>
+                                                        <h6>{userData.woocommerce_data.billing.email}</h6>
                                                         <h6><a href="#">Change Password</a></h6>
                                                     </div>
                                                 </div>
@@ -104,14 +106,28 @@ const Dashboard = () => {
                                                     <Col sm="6">
                                                         <h6>Default Billing Address</h6>
                                                         <address>
-                                                            You have not set a default billing address.<br />
+                                                            {userData.woocommerce_data.billing.first_name} {userData.woocommerce_data.billing.last_name}<br />
+                                                            {userData.woocommerce_data.billing.company}<br />
+                                                            {userData.woocommerce_data.billing.address_1}<br />
+                                                            {userData.woocommerce_data.billing.address_2 && `${userData.woocommerce_data.billing.address_2}<br />`}
+                                                            {userData.woocommerce_data.billing.city}, {userData.woocommerce_data.billing.state} {userData.woocommerce_data.billing.postcode}<br />
+                                                            {userData.woocommerce_data.billing.country}<br />
+                                                            Phone: {userData.woocommerce_data.billing.phone}
+                                                            <br />
                                                             <a href="#">Edit Address</a>
                                                         </address>
                                                     </Col>
                                                     <Col sm="6">
                                                         <h6>Default Shipping Address</h6>
                                                         <address>
-                                                            You have not set a default shipping address.<br />
+                                                            {userData.woocommerce_data.shipping.first_name} {userData.woocommerce_data.shipping.last_name}<br />
+                                                            {userData.woocommerce_data.shipping.company}<br />
+                                                            {userData.woocommerce_data.shipping.address_1}<br />
+                                                            {userData.woocommerce_data.shipping.address_2 && `${userData.woocommerce_data.shipping.address_2}<br />`}
+                                                            {userData.woocommerce_data.shipping.city}, {userData.woocommerce_data.shipping.state} {userData.woocommerce_data.shipping.postcode}<br />
+                                                            {userData.woocommerce_data.shipping.country}<br />
+                                                            Phone: {userData.woocommerce_data.shipping.phone}
+                                                            <br />
                                                             <a href="#">Edit Address</a>
                                                         </address>
                                                     </Col>
