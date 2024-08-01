@@ -23,10 +23,6 @@ import { CompareContext } from "../../../helpers/Compare/CompareContext";
 import axios from "axios";
 import { UniqueOperationTypesRule } from "graphql";
 
-// Replace with your actual E-Commerce API URL and credentials
-// const API_URL = "https://medicallogowear.com/wp-json/wc/v3/";
-// const CONSUMER_KEY = "ck_8425a729582a4b0e6830dfa3581301ec2ee02f31";
-// const CONSUMER_SECRET = "cs_f4412e8c668a08166522ae9d2d5a034cdb5ea575";
 
 const ProductList = ({ colClass, layoutList, openSidebar, noSidebar }) => {
   const cartContext = useContext(CartContext);
@@ -76,7 +72,7 @@ const ProductList = ({ colClass, layoutList, openSidebar, noSidebar }) => {
       try {
         setIsLoading(true);
   
-        let apiUrl = `https://tonserve.com/hfh/wp-json/wc/v3/products?per_page=${limit}&page=${currentPage}&order=${sortBy}`;
+        let apiUrl = `https://hfh.tonserve.com/wp-json/wc/v3/products?per_page=${limit}&page=${currentPage}&order=${sortBy}`;
   
         if (selectedCategory) {
           apiUrl += `&category=${selectedCategory}`;

@@ -18,7 +18,7 @@ const Category = () => {
 
         // WooCommerce API endpoint
         const response = await axios.get(
-          'https://tonserve.com/hfh/wp-json/wc/v3/products/categories',
+          'https://hfh.tonserve.com/wp-json/wc/v3/products/categories',
           {
             auth: {
               username: 'ck_86a3fc5979726afb7a1dd66fb12329bef3b365e2',

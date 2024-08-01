@@ -117,7 +117,7 @@ const CheckoutPage = () => {
 useEffect(() => {
   const fetchShippingZones = async () => {
     try {
-      const response = await fetch("https://tonserve.com/hfh/wp-json/wc/v3/shipping/zones/2/locations?consumer_key=ck_86a3fc5979726afb7a1dd66fb12329bef3b365e2&consumer_secret=cs_19bb38d1e28e58f10b3ee8829b3cfc182b8eb3ea");
+      const response = await fetch("https://hfh.tonserve.com/wp-json/wc/v3/shipping/zones/2/locations?consumer_key=ck_86a3fc5979726afb7a1dd66fb12329bef3b365e2&consumer_secret=cs_19bb38d1e28e58f10b3ee8829b3cfc182b8eb3ea");
       if (!response.ok) {
         throw new Error("Failed to fetch shipping zones");
       }
@@ -181,7 +181,7 @@ useEffect(() => {
 const fetchShippingMethods = async () => {
   try {
     console.log("Fetching shipping methods...");
-    const response = await fetch("https://tonserve.com/hfh/wp-json/wc/v3/shipping/zones/2/methods?consumer_key=ck_86a3fc5979726afb7a1dd66fb12329bef3b365e2&consumer_secret=cs_19bb38d1e28e58f10b3ee8829b3cfc182b8eb3ea");
+    const response = await fetch("https://hfh.tonserve.com/wp-json/wc/v3/shipping/zones/2/methods?consumer_key=ck_86a3fc5979726afb7a1dd66fb12329bef3b365e2&consumer_secret=cs_19bb38d1e28e58f10b3ee8829b3cfc182b8eb3ea");
     if (!response.ok) {
       throw new Error("Failed to fetch shipping methods");
     }
@@ -239,7 +239,7 @@ const fetchShippingMethods = async () => {
    const calculateTax = async () => {
     try {
       // Fetch taxes
-      const response = await fetch(`https://tonserve.com/hfh/wp-json/wc/v3/taxes?consumer_key=ck_86a3fc5979726afb7a1dd66fb12329bef3b365e2&consumer_secret=cs_19bb38d1e28e58f10b3ee8829b3cfc182b8eb3ea`);
+      const response = await fetch(`https://hfh.tonserve.com/wp-json/wc/v3/taxes?consumer_key=ck_86a3fc5979726afb7a1dd66fb12329bef3b365e2&consumer_secret=cs_19bb38d1e28e58f10b3ee8829b3cfc182b8eb3ea`);
       if (!response.ok) {
         throw new Error("Failed to fetch taxes");
       }

@@ -39,7 +39,7 @@ const LeftSidebarPage = ({ pathId }) => {
     const fetchProduct = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`https://tonserve.com/hfh/wp-json/wc/v3/products/${pathId}`, {
+        const response = await axios.get(`https://hfh.tonserve.com/wp-json/wc/v3/products/${pathId}`, {
           auth: {
             username: 'ck_86a3fc5979726afb7a1dd66fb12329bef3b365e2',
             password: 'cs_19bb38d1e28e58f10b3ee8829b3cfc182b8eb3ea'
@@ -66,7 +66,7 @@ const LeftSidebarPage = ({ pathId }) => {
   const fetchVariants = async () => {
     try {
       const response = await fetch(
-        `https://tonserve.com/hfh/wp-json/wc/v3/products/${pathId}/variations?per_page=100`,
+        `https://hfh.tonserve.com/wp-json/wc/v3/products/${pathId}/variations?per_page=100`,
         {
           headers: {
             Authorization: "Basic " + btoa("ck_86a3fc5979726afb7a1dd66fb12329bef3b365e2:cs_19bb38d1e28e58f10b3ee8829b3cfc182b8eb3ea"),

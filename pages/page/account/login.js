@@ -28,7 +28,7 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch("https://tonserve.com/hfh/wp-json/wc/v3/users/login", {
+      const response = await fetch("https://hfh.tonserve.com/wp-json/wc/v3/users/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
