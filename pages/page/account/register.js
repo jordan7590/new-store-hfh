@@ -3,29 +3,27 @@ import CommonLayout from "../../../components/shop/common-layout";
 import { Input, Container, Row, Form, Label, Col } from "reactstrap";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
-import { useAuth } from './AuthContext'; // Import useAuth hook
+import { useAuth } from './AuthContext';
 
 const Register = () => {
   const router = useRouter();
   const [formData, setFormData] = useState({
+    username: "",
     email: "",
-    password1: "",
-    password2: "",
+    password: "",
+    confirm_password: "",
     first_name: "",
     last_name: "",
-    phone_number: "",
   });
 
-  const {isLoggedIn } = useAuth(); // Assuming there's an 'isLoggedIn' property in your auth context
+  const { isLoggedIn } = useAuth();
 
   useEffect(() => {
-    // If the user is already logged in, redirect to the dashboard
     if (isLoggedIn) {
       router.push("/page/account/dashboard");
-      toast.error('You are logged In, Logout for new Registration')
+      toast.error('You are logged in. Logout for new registration');
     }
   }, [isLoggedIn, router]);
-
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -35,61 +33,76 @@ const Register = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
 
-    if (formData.password1 !== formData.password2) {
-      // Passwords don't match, handle this case
-      console.error("Passwords do not match");
+    if (formData.password !== formData.confirm_password) {
       toast.error("Passwords do not match");
-      // Display an error message or handle UI accordingly
       return;
     }
 
     try {
       const response = await fetch(
-        "https://backend.tonserve.com:8000/api/user/register/",
+        "https://hfh.tonserve.com/wp-json/wp/v2/users/register",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "X-CSRFTOKEN":
-              "6AmBjCELe3D11wq4Iehdog7FsBQbi5z7nucJnZI1WENuv25T3gcNu1rl0o4mMwS5", // Your CSRF token
           },
-          body: JSON.stringify(formData),
+          body: JSON.stringify({
+            username: formData.username,
+            email: formData.email,
+            password: formData.password,
+            first_name: formData.first_name,
+            last_name: formData.last_name,
+          }),
+          credentials: 'include', 
         }
       );
 
-      const responseData = await response.json();
+      console.log('Response status:', response.status);
+      console.log('Response headers:', response.headers);
 
+      const responseData = await response.text();
+      console.log('Response body:', responseData);
+
+      let jsonData;
+      try {
+        jsonData = JSON.parse(responseData);
+      } catch (error) {
+        console.error('Error parsing JSON:', error);
+        toast.error('Invalid response from server');
+        return;
+      }
+      
       if (response.ok) {
-        // Registration successful, redirect to login page
-        router.push("/page/account/login"); // Replace '/login' with your actual login route
+        toast.success("Registration successful. Please login with your username/email and password.");
+        router.push("/page/account/login");
       } else {
         // Handle registration errors
-        if (responseData.email && responseData.email.length > 0) {
-          // Handle email error
-          console.log("Email Error:", responseData.email[0]);
-          // Display email error message or handle UI accordingly
-          toast.error(responseData.email[0]);
-        }
-        if (responseData.password1 && responseData.password1.length > 0) {
-          // Handle password1 error
-          console.log("Password Error:", responseData.password1[0]);
-          // Display password1 error message or handle UI accordingly
-          toast.error(responseData.password1[0]);
-        }
-        if (responseData.phone_number && responseData.phone_number.length > 0) {
-          // Handle phone_number error
-          console.log("Phone Number Error:", responseData.phone_number[0]);
-          // Display phone_number error message or handle UI accordingly
-          toast.error(responseData.phone_number[0]);
+        if (jsonData.code === 'existing_user_login' || jsonData.code === 'existing_user_email') {
+          toast.error("This username or email is already registered. Please try logging in or use a different email/username.");
+        } else if (jsonData.message) {
+          toast.error(jsonData.message);
+        } else {
+          // Check for specific field errors
+          const fieldErrors = ['username', 'email', 'password', 'first_name', 'last_name'];
+          let errorDisplayed = false;
+          
+          fieldErrors.forEach(field => {
+            if (jsonData[field] && jsonData[field].length > 0) {
+              console.log(`${field.charAt(0).toUpperCase() + field.slice(1)} Error:`, jsonData[field][0]);
+              toast.error(jsonData[field][0]);
+              errorDisplayed = true;
+            }
+          });
+
+          // If no specific error was caught, display a generic error message
+          if (!errorDisplayed) {
+            toast.error("Registration failed. Please try again.");
+          }
         }
       }
     } catch (error) {
       console.error("Error:", error);
-      console.log("Error:", error);
-      // Handle server errors or connection issues
-      toast.error(
-        "Unable to Create an Account now, Please try after sometime!"
-      );
+      toast.error("Unable to create an account now. Please try again later.");
     }
   };
 
@@ -102,6 +115,36 @@ const Register = () => {
               <h3>Create Account</h3>
               <div className="theme-card">
                 <Form className="theme-form" onSubmit={handleRegister}>
+                  <Row>
+                    <Col md="6">
+                      <Label className="form-label" for="username">
+                        Username
+                      </Label>
+                      <Input
+                        type="text"
+                        className="form-control"
+                        id="username"
+                        placeholder="Username"
+                        required=""
+                        value={formData.username}
+                        onChange={handleChange}
+                      />
+                    </Col>
+                    <Col md="6">
+                      <Label className="form-label" for="email">
+                        Email
+                      </Label>
+                      <Input
+                        type="email"
+                        className="form-control"
+                        id="email"
+                        placeholder="Email"
+                        required=""
+                        value={formData.email}
+                        onChange={handleChange}
+                      />
+                    </Col>
+                  </Row>
                   <Row>
                     <Col md="6">
                       <Label className="form-label" for="first_name">
@@ -134,68 +177,35 @@ const Register = () => {
                   </Row>
                   <Row>
                     <Col md="6">
-                      <Label className="form-label" for="email">
-                        Email
-                      </Label>
-                      <Input
-                        type="email"
-                        className="form-control"
-                        id="email"
-                        placeholder="Email"
-                        required=""
-                        value={formData.email}
-                        onChange={handleChange}
-                      />
-                    </Col>
-                    <Col md="6">
-                      <Label className="form-label" for="phone_number">
-                        Phone Number
-                      </Label>
-                      <Input
-                        type="text"
-                        className="form-control"
-                        id="phone_number"
-                        placeholder="Phone Number"
-                        required=""
-                        value={formData.phone_number}
-                        onChange={handleChange}
-                      />
-                    </Col>
-                    <Col md="6">
-                      <Label className="form-label" for="review">
+                      <Label className="form-label" for="password">
                         Password
                       </Label>
                       <Input
                         type="password"
                         className="form-control"
-                        id="password1"
+                        id="password"
                         placeholder="Enter your password"
                         required=""
-                        value={formData.password1}
-                        onChange={(e) =>
-                          setFormData({ ...formData, password1: e.target.value })
-                        }
+                        value={formData.password}
+                        onChange={handleChange}
                       />
                     </Col>
                     <Col md="6">
-                      <Label className="form-label" for="review">
+                      <Label className="form-label" for="confirm_password">
                         Confirm Password
                       </Label>
                       <Input
                         type="password"
                         className="form-control"
-                        id="password2"
+                        id="confirm_password"
                         placeholder="Confirm your password"
                         required=""
-                        value={formData.password2}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            password2: e.target.value,
-                          })
-                        }
+                        value={formData.confirm_password}
+                        onChange={handleChange}
                       />
                     </Col>
+                  </Row>
+                  <Row>
                     <Col md="12">
                       <button type="submit" className="btn btn-solid w-auto">
                         Create Account

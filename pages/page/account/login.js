@@ -2,21 +2,20 @@ import React, { useState, useEffect } from "react";
 import CommonLayout from "../../../components/shop/common-layout";
 import { Container, Row, Form, Label, Input, Col } from "reactstrap";
 import { useRouter } from "next/router";
-import { useAuth } from './AuthContext'; // Import useAuth hook
+import { useAuth } from './AuthContext';
 import { toast } from "react-toastify";
 
 const Login = () => {
-  const { login, isLoggedIn } = useAuth(); // Assuming there's an 'isLoggedIn' property in your auth context
+  const { login, isLoggedIn } = useAuth();
   const router = useRouter();
-  const [username, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // If the user is already logged in, redirect to the dashboard
     if (isLoggedIn) {
       router.push("/page/account/dashboard");
-      toast.error('You are already Logged In, Logout first to Login again')
+      toast.error('You are already Logged In, Logout first to Login again');
     }
   }, [isLoggedIn, router]);
 
@@ -28,31 +27,41 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch("https://hfh.tonserve.com/wp-json/wc/v3/users/login", {
+      const response = await fetch("https://hfh.tonserve.com/wp-json/jwt-auth/v1/token", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ username, password }),
       });
-      console.log(response);
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || "Login failed");
-      }
 
       const data = await response.json();
+      console.log("Login response:", data);
 
-      login(data.access_token, data.user);
-console.log(data);
+      if (!data.success) {
+        throw new Error(data.message || "Login failed");
+      }
 
-      // Redirect or perform any action upon successful login
-      // For example, you can redirect to a different page
-      router.push("/page/account/dashboard"); // Replace '/dashboard' with your desired URL
+      if (data.data && data.data.token) {
+        login(data.data.token, {
+          id: data.data.id,
+          email: data.data.email,
+          nicename: data.data.nicename,
+          firstName: data.data.firstName,
+          lastName: data.data.lastName,
+          displayName: data.data.displayName
+        });
+
+        toast.success('Login successful!');
+        router.push("/page/account/dashboard");
+      } else {
+        throw new Error("Token not received");
+      }
 
     } catch (error) {
+      console.error("Login error:", error);
       setError(error.message || "Login failed");
+      toast.error(error.message || "Login failed");
     }
   };
 
@@ -66,16 +75,16 @@ console.log(data);
               <div className="theme-card">
                 <Form className="theme-form" onSubmit={handleLogin}>
                   <div className="form-group">
-                    <Label className="form-label" htmlFor="email">
-                      Email
+                    <Label className="form-label" htmlFor="username">
+                      Username or Email
                     </Label>
                     <Input
                       type="text"
                       className="form-control"
-                      id="email"
-                      placeholder="Email"
+                      id="username"
+                      placeholder="Username or Email"
                       value={username}
-                      onChange={(e) => setEmail(e.target.value)}
+                      onChange={(e) => setUsername(e.target.value)}
                       required
                     />
                   </div>
@@ -109,7 +118,6 @@ console.log(data);
                   and easy. It allows you to be able to order from our shop. To
                   start shopping click register.
                 </p>
-
                 <button
                   className="btn btn-solid w-auto"
                   onClick={handleCreateAccountRouter}

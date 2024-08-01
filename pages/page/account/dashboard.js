@@ -1,9 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import CommonLayout from '../../../components/shop/common-layout';
-import { Container, Row ,Col} from 'reactstrap';
+import { Container, Row, Col } from 'reactstrap';
+import { useAuth } from './AuthContext';
+import { toast } from 'react-toastify';
 
 const Dashboard = () => {
-    const [accountInfo,setAccountInfo] = useState(false)
+    const [accountInfo, setAccountInfo] = useState(false);
+    const { userData, logout, isLoggedIn } = useAuth();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (!isLoggedIn) {
+            router.push('/page/account/login');
+        }
+    }, [isLoggedIn, router]);
+
+    const handleLogout = () => {
+        logout();
+        toast.success('Logged out successfully');
+        router.push('/page/account/login');
+    };
+
+    if (!userData) {
+        return <div>Loading...</div>;
+    }
+
     return (
         <CommonLayout parent="home" title="dashboard">
             <section className="section-b-space">
@@ -12,7 +34,7 @@ const Dashboard = () => {
                         <Col lg="3">
                             {window.innerWidth <= 991 ?
                             <div className="account-sidebar" onClick={() => setAccountInfo(!accountInfo)}><a className="popup-btn">my account</a></div>
-                            :""}
+                            : null}
                             <div className="dashboard-left" style={accountInfo ? {left:"0px"} : {}}> 
                                 <div className="collection-mobile-back" onClick={() => setAccountInfo(!accountInfo)}>
                                     <span className="filter-back">
@@ -28,7 +50,7 @@ const Dashboard = () => {
                                         <li><a href="#">Newsletter</a></li>
                                         <li><a href="#">My Account</a></li>
                                         <li><a href="#">Change Password</a></li>
-                                        <li className="last"><a href="#">Log Out</a></li>
+                                        <li className="last"><a href="#" onClick={handleLogout}>Log Out</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -40,10 +62,10 @@ const Dashboard = () => {
                                         <h2>My Dashboard</h2>
                                     </div>
                                     <div className="welcome-msg">
-                                        <p>Hello, MARK JECNO !</p>
+                                        <p>Hello, {userData.displayName}!</p>
                                         <p>From your My Account Dashboard you have the ability to view a snapshot of your recent
                                         account activity and update your account information. Select a link below to view or
-                                    edit information.</p>
+                                        edit information.</p>
                                     </div>
                                     <div className="box-account box-info">
                                         <div className="box-head">
@@ -56,8 +78,8 @@ const Dashboard = () => {
                                                         <h3>Contact Information</h3><a href="#">Edit</a>
                                                     </div>
                                                     <div className="box-content">
-                                                        <h6>MARK JECNO</h6>
-                                                        <h6>MARk-JECNO@gmail.com</h6>
+                                                        <h6>{userData.displayName}</h6>
+                                                        <h6>{userData.email}</h6>
                                                         <h6><a href="#">Change Password</a></h6>
                                                     </div>
                                                 </div>
@@ -81,13 +103,17 @@ const Dashboard = () => {
                                                 <Row>
                                                     <Col sm="6">
                                                         <h6>Default Billing Address</h6>
-                                                        <address>You have not set a default billing address.<br /><a href="#">Edit
-                                                        Address</a></address>
+                                                        <address>
+                                                            You have not set a default billing address.<br />
+                                                            <a href="#">Edit Address</a>
+                                                        </address>
                                                     </Col>
                                                     <Col sm="6">
                                                         <h6>Default Shipping Address</h6>
-                                                        <address>You have not set a default shipping address.<br /><a
-                                                            href="#">Edit Address</a></address>
+                                                        <address>
+                                                            You have not set a default shipping address.<br />
+                                                            <a href="#">Edit Address</a>
+                                                        </address>
                                                     </Col>
                                                 </Row>
                                             </div>
@@ -103,4 +129,4 @@ const Dashboard = () => {
     )
 }
 
-export default Dashboard
+export default Dashboard;
