@@ -15,7 +15,7 @@ const Login = () => {
   useEffect(() => {
     if (isLoggedIn) {
       router.push("/page/account/dashboard");
-      toast.error('You are already Logged In, Logout first to Login again');
+      // toast.error('You are already Logged In, Logout first to Login again');
     }
   }, [isLoggedIn, router]);
 
