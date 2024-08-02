@@ -65,7 +65,7 @@ const TopBarDark = ({ topClass, fluid, direction }) => {
 
             <div class="hfh-account__divider___vYQzs"></div>
             <ul className="header-dropdown headerTop-account">
-              {isLoggedIn ? (
+            {isLoggedIn && userData ? (
                 <>
                   Welcome, {userData.name}
                   <img
