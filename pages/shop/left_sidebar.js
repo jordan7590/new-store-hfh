@@ -35,5 +35,4 @@ const LeftSidebar = () => {
 }
 
 
-// comment for W
 export default LeftSidebar;
