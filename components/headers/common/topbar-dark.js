@@ -53,8 +53,8 @@ const TopBarDark = ({ topClass, fluid, direction }) => {
                     >
                       What We Offer
                       <img
-                        src={/assets/images/icon/angle-arrow-down-white.svg}
-                        alt="White arrow pointing downwards"
+src="/assets/images/icon/angle-arrow-down-white.svg"
+alt="White arrow pointing downwards"
                         style={{ height: "10px", margin: "0px 0px 0px 7px" }}
                       />
                     </button>
@@ -175,12 +175,12 @@ const TopBarDark = ({ topClass, fluid, direction }) => {
               ) : (
                 <>
                   <li>
-                    <Link href={/page/account/login}>
-                      <a>Login</a>
+                  <Link href="/page/account/login">
+                  <a>Login</a>
                     </Link>
                   </li>
                   <li>
-                    <Link href={/page/account/register}>
+                    <Link href="/page/account/register">
                       <a>Sign Up</a>
                     </Link>
                   </li>

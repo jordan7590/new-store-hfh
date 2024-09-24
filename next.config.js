@@ -22,7 +22,7 @@ const withImages = require('next-images');
 
 module.exports = withImages({
   ...nextConfig,
-  target: 'serverless',
+  // target: 'serverless',
   images: {
     disableStaticImages: true,
   },
