@@ -329,7 +329,7 @@ const ProductList = ({ colClass, layoutList, openSidebar, noSidebar }) => {
                             padding: 10,
                             position: "relative",
                             width: 60,
-                            backgroundColor: "#8056bf",
+                            backgroundColor: "#009bda",
                           }}
                         >
                           <i
@@ -340,7 +340,7 @@ const ProductList = ({ colClass, layoutList, openSidebar, noSidebar }) => {
                         </button>
                         <p
                           style={{
-                            color: "#8056bf",
+                            color: "#009bda",
                             fontFamily:
                               " avertabold, San Francisco, Roboto, Segoe UI, Helvetica Neue, Lucida Grande, Arial, sans-serif",
                             fontWeight: "800",
