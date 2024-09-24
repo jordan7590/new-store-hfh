@@ -65,7 +65,8 @@ const PrivacyPolicy = () => {
                             <p>We use this information we automatically collect about you to monitor the effectiveness of the Site and to consider potential improvements to the Site.</p>
                           </li>
                           <li>
-                            <p>We may request that you provide certain personally identifiable information or information specific to your business ("<strong>Personal Information</strong>") to view certain areas of the Site and/or purchase products from the Site. We request that you provide (1) contact information, including but not limited to your name, address, e-mail address and phone number and (2) certain credit card information when making a purchase on the Site. <strong>Your credit card information is encrypted and provided to the credit card issuer for verification and approval. We do not retain any credit card information following verification and approval. At your option, you may save your card for future purchases. This information is maintained on our credit card processor, not on our website.</strong> If you wish to apply for credit with S&amp;S, you may download a credit application, fill it out and submit through the Site. We do not collect any Personal Information about you when you visit the Site unless you give us that information. You may view the products on the Site without registering or providing any Personal Information. You may choose not to provide Personal Information via the Site by not purchasing any products available on the Site.</p>
+                            <p>We may request that you provide certain personally identifiable information or information specific to your business ("<strong>Personal Information</strong>") to view certain areas of the Site and/or purchase products from the Site. We request that you provide (1) contact information, including but not limited to your name, address, e-mail address and phone number and (2) certain credit card information when making a purchase on the Site. <strong>Your credit card information is encrypted and provided to the credit card issuer for verification and approval. We do not retain any credit card information following verification and approval. At your option, you may save your card for future purchases. This information is maintained on our credit card processor, not on our website.</strong>
+                          </p>
                           </li>
                         </ul>
                       </li>
@@ -213,14 +214,8 @@ const PrivacyPolicy = () => {
                           </li>
                         </ul>
                       </li>
-                      <p>
-                        <strong><u>California's "Shine the Light" law</u></strong>
-                      </p>
-                      <ul>
-                        <li>
-                          <p>California's "Shine the Light" law (Civil Code Section § 1798.83) permits users of our Site that are California residents to request certain information regarding our disclosure of personal information to third parties for their direct marketing purposes. To make such a request, please send an email to privacy@ssctivewear.com or write us at: 220 Remington Blvd, Bolingbrook, IL 60440, Attention: Customer Service.</p>
-                        </li>
-                      </ul>
+                   
+                      
                     </ul>
                 </div>
 

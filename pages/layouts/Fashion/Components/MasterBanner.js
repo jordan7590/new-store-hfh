@@ -9,9 +9,27 @@ const MasterBanner = ({ img, title, desc, link, classes, btn, btnClass }) => {
           <Row>
             <Col>
               <div className="slider-contain">
-                <div className="slider-content" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-                  <h4>{title}</h4>
-                  <h1>{desc}</h1>
+                <div
+                  className="slider-content"
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "flex-start",
+                  }}
+                >
+                  <h1
+                    style={{
+                      color: "#fff",
+                      marginBottom: "10px",
+                      fontFamily: "avertaextrabold, Segoe UI, Helvetica Neue",
+                      fontSize: "70px",
+                      fontWeight: "900",
+                    }}
+                  >
+                    {title}
+                  </h1>
+                  <h4>{desc}</h4>
+
                   <Link href={link}>
                     <a className={`btn ${btnClass ? btnClass : "btn-solid"}`}>
                       {btn ? btn : "Shop Now"}{" "}

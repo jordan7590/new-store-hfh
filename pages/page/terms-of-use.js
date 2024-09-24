@@ -35,10 +35,9 @@ const TermsOfUse = () => {
                               <p> <strong><u>ACCEPTANCE OF TERMS</u></strong> </p>
                               <ul>
                                   <li>
-                                      <p>Welcome to ssactivewear.com (the 'Site'), a web site operated on behalf of S&amp;S
-                                          Activewear, LLC ('S&amp;S'). The Terms and Conditions of Use include any posted guidelines
+                                      <p>Welcome to medicallogowear.com (the 'Site'), a web site operated on behalf of Hoyt & Company, LLC. The Terms and Conditions of Use include any posted guidelines
                                           or rules applicable to particular Content or Services (as defined below) and, as updated
-                                          by S&amp;S from time to time, are collectively referred to as the 'Terms and Conditions' and
+                                          by Hoyt & Company from time to time, are collectively referred to as the 'Terms and Conditions' and
                                           govern the use of the Site either as a guest or a registered user. You should carefully
                                           read the Terms and Conditions before using the Site. You can review the most current
                                           version of the Terms and Conditions at any time at http://www.medicallogowear.com. By using
@@ -63,11 +62,11 @@ const TermsOfUse = () => {
                                           provided only to users and/or businesses who have registered (the 'Registered Users').
                                           The login and password are provided for the use of the Registered User only and are not
                                           transferable. If you have received a login and password that belong to another person,
-                                          you are not authorized to use that login account and we request that you notify S&amp;S of
+                                          you are not authorized to use that login account and we request that you notify Hoyt & Company of
                                           the misdirected login information. Misuse of a login account, including, without
-                                          limitation, unauthorized sharing of the login and password, may result, at S&amp;S's sole
+                                          limitation, unauthorized sharing of the login and password, may result, at Hoyt & Company's sole
                                           discretion, in cancellation of the Registered User's registration and other remedies,
-                                          and S&amp;S shall have no liability to the Registered User.</p>
+                                          and Hoyt & Company shall have no liability to the Registered User.</p>
                                   </li>
                               </ul>
                           </li>
@@ -77,13 +76,13 @@ const TermsOfUse = () => {
                                   <li>
                                       <p>The Site may provide certain content (including, without limitation, documents,
                                           photographs, advertisements, marketing materials, pricing information, text, graphics
-                                          and images) and services that S&amp;S may change or update from time to time (the 'Content'
+                                          and images) and services that Hoyt & Company may change or update from time to time (the 'Content'
                                           and 'Services'). The Content and Services offered on the Site are provided solely to
-                                          enable S&amp;S to provide information about its products. Any disclosures made through the
+                                          enable Hoyt & Company to provide information about its products. Any disclosures made through the
                                           Site should only be made after reviewing and agreeing to the Privacy Policy found at
                                           http://www.medicallogowear.com. In the event that any posted Content appears to be
                                           inappropriate for display on this Site for any reason, users and Registered Users are
-                                          encouraged to contact S&amp;S in accordance with Section 5 to request removal of such
+                                          encouraged to contact Hoyt & Company in accordance with Section 5 to request removal of such
                                           Content.</p>
                                   </li>
                                   <li><p>The Site will process and store data in the United States.</p></li>
@@ -96,16 +95,16 @@ const TermsOfUse = () => {
                                       <p>Use of the Site is voluntary. You may choose not to use the Site and you may choose not
                                           to register as a Registered User. You may use or download Content for your business only
                                           as specifically permitted on the Site, or for your personal, noncommercial purposes. The
-                                          information S&amp;S obtains from users and Registered Users will be used only in accordance
-                                          with S&amp;S's Privacy Policy. You may deactivate your account at any time by contacting S&amp;S
+                                          information Hoyt & Company obtains from users and Registered Users will be used only in accordance
+                                          with Hoyt & Company's Privacy Policy. You may deactivate your account at any time by contacting Hoyt & Company
                                           at the addresses provided in Section 5. In addition, you may have to pay a fee for
-                                          access to the Site pursuant to a separate agreement with S&amp;S. If you choose to register
+                                          access to the Site pursuant to a separate agreement with Hoyt & Company. If you choose to register
                                           as a Registered User, you agree that you will be responsible for maintaining your
                                           password as confidential and for any activity that occurs as a result of your enabling
                                           or permitting another person or entity to use your password. You agree to immediately
-                                          notify S&amp;S in accordance with Section 5 in the event that (i) your password is lost or
+                                          notify Hoyt & Company in accordance with Section 5 in the event that (i) your password is lost or
                                           stolen, or (ii) you become aware of any unauthorized use of your password or of any
-                                          other breach of security related to the Site. S&amp;S is not responsible for any loss or
+                                          other breach of security related to the Site. Hoyt & Company is not responsible for any loss or
                                           damage arising from your failure to comply with the provisions of this section. We have
                                           the right to disable any user name, password, or other identifier, whether chosen by you
                                           or provided by us, at any time in our sole discretion for any or no reason, including
@@ -116,8 +115,8 @@ const TermsOfUse = () => {
                           <li>
                               <p> <strong><u>CONTACT INFORMATION</u></strong> </p>
                               <ul>
-                                  <li>You may contact S&amp;S as follows: E-mail: info@ssactivewear.com Telephone: 800.523.2155 Mail:
-                                      220 Remington Blvd, Bolingbrook, IL 60440</li>
+                                  <li>You may contact Hoyt & Company as follows: E-mail:sales@hoytcompany.com Telephone: 810-547-1646 Mail:
+                                  12555 M Saginaw Rd, Clio, MI 48420</li>
                               </ul>
                           </li>
                           <li>
@@ -125,9 +124,9 @@ const TermsOfUse = () => {
                               <ul>
                                   <li>
                                       <p>You are responsible for all Content that you upload, post, email or otherwise transmit
-                                          using the Site. Likewise, you are responsible for respecting S&amp;S's and third parties'
+                                          using the Site. Likewise, you are responsible for respecting Hoyt & Company's and third parties'
                                           rights with respect to Content that appears on the Site and agree not to download, email
-                                          or otherwise transmit such Content in violation of S&amp;S's and third parties' rights. You
+                                          or otherwise transmit such Content in violation of Hoyt & Company's and third parties' rights. You
                                           agree to use the Site solely to accommodate your own personal or business needs. You may
                                           not use or exploit any portion of the Site, Content or Services to provide any
                                           commercial services, 'spam' or other unsolicited communications to third parties or
@@ -150,7 +149,7 @@ const TermsOfUse = () => {
                                       </li>
                                       <li>
                                           <p>Impersonate another person or entity, including without limitation, a representative
-                                              of S&amp;S or its officers, directors, employees or agents, falsely represent or
+                                              of Hoyt & Company or its officers, directors, employees or agents, falsely represent or
                                               misrepresent your affiliation with another person or entity, or forge headers or
                                               otherwise manipulate identifiers that would disguise the origin of any Content
                                               transmitted to or through the Site;</p>
@@ -162,7 +161,7 @@ const TermsOfUse = () => {
                                       </li>
                                       <li>
                                           <p>Directly or indirectly, intentionally disrupt or interfere with the Site in any
-                                              manner that may materially adversely affect S&amp;S or any third party; or</p>
+                                              manner that may materially adversely affect Hoyt & Company or any third party; or</p>
                                       </li>
                                       <li>
                                           <p>Upload, post, email or otherwise transmit without authorization any material that
@@ -194,9 +193,9 @@ const TermsOfUse = () => {
                                       <li>Attack the Site via a denial-of-service attack or a distributed denial-of-service
                                           attack; or</li>
                                       <li>Otherwise attempt to interfere with the proper working of the Site.</li>
-                                      <li>Engaging in any of the foregoing prohibited actions may result, at S&amp;S’s sole
+                                      <li>Engaging in any of the foregoing prohibited actions may result, at Hoyt & Company’s sole
                                           discretion, in cancellation of the Registered User’s registration and other remedies,
-                                          and S&amp;S shall have no liability to the Registered User.</li>
+                                          and Hoyt & Company shall have no liability to the Registered User.</li>
                                   </ul>
                               </ul>
                           </li>
@@ -216,13 +215,13 @@ const TermsOfUse = () => {
                                           ANY SERVICES OR ITEMS OBTAINED THROUGH THE SITE OR TO YOUR DOWNLOADING OF ANY MATERIAL
                                           POSTED ON IT, OR ON ANY WEBSITE LINKED TO IT. THE USE OF THE SITE AND SERVICES IS SOLELY
                                           AT YOUR OWN RISK. THE SITE AND SERVICES ARE PROVIDED ON AN 'AS IS' AND 'AS AVAILABLE'
-                                          BASIS. S&amp;S EXPRESSLY DISCLAIMS ALL WARRANTIES OF ANY KIND WITH RESPECT TO THE SITE
+                                          BASIS. Hoyt & Company EXPRESSLY DISCLAIMS ALL WARRANTIES OF ANY KIND WITH RESPECT TO THE SITE
                                           (INCLUDING, WITHOUT LIMITATION, THE CONTENT AND/OR SERVICES OFFERED ON THE SITE) WHETHER
                                           EXPRESS OR IMPLIED INCLUDING IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
-                                          PARTICULAR PURPOSE AND NON-INFRINGEMENT. S&amp;S EXPRESSLY DISCLAIMS ANY RESPONSIBILITY FOR
+                                          PARTICULAR PURPOSE AND NON-INFRINGEMENT. Hoyt & Company EXPRESSLY DISCLAIMS ANY RESPONSIBILITY FOR
                                           THE ACTIONS OF ANY REGISTERED USER OR OTHER USER WHO USES THE SITE. SOME STATES DO NOT
                                           ALLOW THE EXCLUSION OF IMPLIED WARRANTIES, SO THE ABOVE EXCLUSIONS MAY NOT APPLY TO YOU.
-                                          S&amp;S MAKES NO WARRANTY THAT THE SITE, CONTENT OR SERVICES WILL MEET YOUR REQUIREMENTS, OR
+                                          Hoyt & Company MAKES NO WARRANTY THAT THE SITE, CONTENT OR SERVICES WILL MEET YOUR REQUIREMENTS, OR
                                           WILL BE UNINTERRUPTED, TIMELY, SECURE, CURRENT, ACCURATE, COMPLETE OR ERROR-FREE OR THAT
                                           THE RESULTS THAT MAY BE OBTAINED BY USE OF THE SITE, CONTENT OR SERVICES WILL BE
                                           ACCURATE OR RELIABLE. YOU UNDERSTAND AND ACKNOWLEDGE THAT YOUR SOLE AND EXCLUSIVE REMEDY
@@ -236,11 +235,11 @@ const TermsOfUse = () => {
                               <p> <strong><u>EXCLUSIONS AND LIMITATION OF LIABILITY</u></strong> </p>
                               <ul>
                                   <li>
-                                      <p>YOU EXPRESSLY UNDERSTAND AND AGREE THAT S&amp;S SHALL NOT BE LIABLE FOR ANY DIRECT, INDIRECT,
+                                      <p>YOU EXPRESSLY UNDERSTAND AND AGREE THAT Hoyt & Company SHALL NOT BE LIABLE FOR ANY DIRECT, INDIRECT,
                                           INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR EXEMPLARY DAMAGES, INCLUDING WITHOUT LIMITATION,
                                           DAMAGES FOR LOSS OF PROFITS, LOSS OF BUSINESS OR ANTICIPATED SAVINGS, PERSONAL INJURY,
                                           PAIN AND SUFFERING, EMOTIONAL DISTRESS, LOSS OF GOODWILL, LOSS OF USE, DATA LOSS, OR
-                                          OTHER LOSSES (EVEN IF S&amp;S HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES) RESULTING
+                                          OTHER LOSSES (EVEN IF Hoyt & Company HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES) RESULTING
                                           FROM ANY MATTER RELATED TO YOUR USE OF THE SITE, CONTENT OR SERVICES, AND WHETHER CAUSED
                                           BY TORT (INCLUDING NEGLIGENCE), BREACH OF CONTRACT, OR OTHERWISE, EVEN IF FORESEABLE.
                                       </p>
@@ -263,11 +262,11 @@ const TermsOfUse = () => {
                                                   permission of their respective owners. You may not reproduce, distribute,
                                                   modify, create derivative works of, publicly display, publicly perform,
                                                   republish, download, store, or transmit any of the Content the Site without the
-                                                  prior written permission of S&amp;S, except that, subject to your compliance with
-                                                  the Terms and Conditions, S&amp;S authorizes you to view or download a single copy
+                                                  prior written permission of Hoyt & Company, except that, subject to your compliance with
+                                                  the Terms and Conditions, Hoyt & Company authorizes you to view or download a single copy
                                                   of the Content provided that you keep intact all copyright, trademark, and other
                                                   proprietary notices. Modification or use of Content for any other purpose is a
-                                                  violation of the rights of S&amp;S, or third parties.</p>
+                                                  violation of the rights of Hoyt & Company, or third parties.</p>
                                           </li>
                                           <li>
                                               <p>If you print, copy, modify, download, or otherwise use or provide any other
@@ -275,7 +274,7 @@ const TermsOfUse = () => {
                                                   Conditions, your right to use the Site will stop immediately and you must, at
                                                   our option, return or destroy any copies of the materials you have made. No
                                                   right, title, or interest in or to the Site or any of its Content is transferred
-                                                  to you, and all rights not expressly granted are reserved by S&amp;S. Any use of the
+                                                  to you, and all rights not expressly granted are reserved by Hoyt & Company. Any use of the
                                                   Site not expressly permitted by these Terms and Conditions is a breach of these
                                                   Terms and Conditions and may violate copyright, trademark, and other laws.</p>
                                           </li>
@@ -285,9 +284,9 @@ const TermsOfUse = () => {
                                       <p><strong>Trademarks</strong></p>
                                       <ul>
                                           <li>
-                                              <p>'S&amp;S ACTIVEWEAR' is a trademark in which S&amp;S claims priority and ownership. Other
+                                              <p>'Hoyt & Company' is a trademark in which Hoyt & Company claims priority and ownership. Other
                                                   trademarks are used with the permission of their respective owners. You agree
-                                                  not to use or display trademarks without the prior written consent of S&amp;S or the
+                                                  not to use or display trademarks without the prior written consent of Hoyt & Company or the
                                                   owner of such mark.</p>
                                           </li>
                                       </ul>
@@ -297,9 +296,9 @@ const TermsOfUse = () => {
                                       <ul>
                                           <li>
                                               <p>Pursuant to the Digital Millenium Copyright Act of 1998, 17 U.S.C. 512(c)(2),
-                                                  S&amp;S’s designated agent for notice of alleged copyright infringement in
-                                                  connection with the Site is info@ssactivewear.com. To file a notice of
-                                                  infringement with S&amp;S, the requirements specified in Title II of the Digital
+                                                  Hoyt & Company’s designated agent for notice of alleged copyright infringement in
+                                                  connection with the Site is sales@hoytcompany.com. To file a notice of
+                                                  infringement with Hoyt & Company, the requirements specified in Title II of the Digital
                                                   Millennium Copyright Act of 1998 must be fulfilled. The text of this statute can
                                                   be found at the U.S. Copyright Office web site, located at
                                                   http://www.copyright.gov.</p>
@@ -354,10 +353,10 @@ const TermsOfUse = () => {
                                       <p>The Site may include links to other World Wide Web sites. This includes links contained
                                           in advertisements, including banner advertisements and sponsored links. You acknowledge
                                           and agree that such links are provided for your convenience and do not reflect any
-                                          endorsement by S&amp;S with respect to the provider of such linked site or the linked site.
+                                          endorsement by Hoyt & Company with respect to the provider of such linked site or the linked site.
                                           If you decide to access any of the third-party websites linked to this Site, you do so
                                           entirely at your own risk and subject to the terms and conditions of use for such
-                                          websites. S&amp;S MAKES NO REPRESENTATIONS OR WARRANTIES WITH RESPECT TO ANY LINKED SITE:
+                                          websites. Hoyt & Company MAKES NO REPRESENTATIONS OR WARRANTIES WITH RESPECT TO ANY LINKED SITE:
                                           YOUR USE OF ANY LINKED SITE IS SOLELY AT YOUR OWN RISK.</p>
                                   </li>
                               </ul>
@@ -379,7 +378,7 @@ const TermsOfUse = () => {
                               <p> <strong><u>INDEMNITY</u></strong> </p>
                               <ul>
                                   <li>
-                                      <p>You agree to defend, indemnify, and hold S&amp;S, its officers, directors, employees, agents,
+                                      <p>You agree to defend, indemnify, and hold Hoyt & Company, its officers, directors, employees, agents,
                                           licensors, and suppliers, harmless from and against any claims, actions, or demands,
                                           liabilities and settlements including without limitation, reasonable legal and
                                           accounting fees, resulting from, or alleged to result from, your violation of these
@@ -391,9 +390,9 @@ const TermsOfUse = () => {
                               <p> <strong><u>JURISDICTION AND VENUE</u></strong> </p>
                               <ul>
                                   <li>
-                                      <p>You agree that this Agreement and the relationship between you and S&amp;S will be governed
+                                      <p>You agree that this Agreement and the relationship between you and Hoyt & Company will be governed
                                           by the laws of the State of Illinois, without respect to its conflict of laws provisions
-                                          and that venue with respect to any dispute between you and S&amp;S will rest exclusively in
+                                          and that venue with respect to any dispute between you and Hoyt & Company will rest exclusively in
                                           the state or federal courts located in Will County, Illinois.</p>
                                   </li>
                               </ul>
@@ -402,14 +401,14 @@ const TermsOfUse = () => {
                               <p> <strong><u>CHANGES</u></strong> </p>
                               <ul>
                                   <li>
-                                      <p>S&amp;S may change the Terms and Conditions from time-to-time. If such a change is made, S&amp;S
+                                      <p>Hoyt & Company may change the Terms and Conditions from time-to-time. If such a change is made, Hoyt & Company
                                           will post the revised Terms and Conditions on the Site. All changes are effective
                                           immediately when we post them, and apply to all access to and use of the Site
                                           thereafter. Your continued use of the Site following the posting of revised Terms and
                                           Conditions means that you accept and agree to the changes. You are expected to check
                                           this page from time to time so you are aware of any changes, as they are binding on you.
-                                          S&amp;S reserves the right to add to or change the Site or cease offering the Site (or any
-                                          Content or Services on the Site) at any time and without liability. S&amp;S reserves the
+                                          Hoyt & Company reserves the right to add to or change the Site or cease offering the Site (or any
+                                          Content or Services on the Site) at any time and without liability. Hoyt & Company reserves the
                                           right to refuse to offer access to the Site to anyone at anytime without notice.</p>
                                   </li>
                               </ul>
@@ -418,14 +417,14 @@ const TermsOfUse = () => {
                               <p> <strong><u>MISCELLANEOUS</u></strong> </p>
                               <ul>
                                   <li>
-                                      <p>The Terms and Conditions constitute the entire agreement between you and S&amp;S relating to
+                                      <p>The Terms and Conditions constitute the entire agreement between you and Hoyt & Company relating to
                                           the Site. There is no agency, partnership, joint venture, employee-employer or
-                                          attorney-client relationship between any user and S&amp;S arising solely through the use of
+                                          attorney-client relationship between any user and Hoyt & Company arising solely through the use of
                                           the Site. The Terms and Conditions are binding upon your successors, assigns, heirs and
                                           executors. If any provision of the Terms and Conditions is found to be invalid by any
                                           court having competent jurisdiction, the invalidity of such provision shall not affect
                                           the validity of the remaining provisions of the Terms and Conditions, which shall remain
-                                          in full force and effect. The failure of S&amp;S to exercise or enforce any right or
+                                          in full force and effect. The failure of Hoyt & Company to exercise or enforce any right or
                                           provision of the Terms and Conditions shall not constitute a waiver of such right or
                                           condition. Any claim or cause of action arising out of or related to the Site, Content,
                                           Services or the Terms and Conditions must be filed within one year after such claim or
