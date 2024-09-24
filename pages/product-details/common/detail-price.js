@@ -7,9 +7,6 @@ import CountdownComponent from "../../../components/common/widgets/countdownComp
 import MasterSocial from "./master_social";
 import { toast } from "react-toastify";
 
-
-
-
 const DetailsWithPrice = ({ item, stickyClass, changeColorVar, variants }) => {
   const [modal, setModal] = useState(false);
   // const [variants, setVariants] = useState([]);
@@ -50,15 +47,12 @@ const DetailsWithPrice = ({ item, stickyClass, changeColorVar, variants }) => {
   //   }
   // };
 
-
-
-
   const calculateTotalPrice = () => {
     let totalPrice = 0;
-  
+
     // console.log("Selected Color:", selectedColor);
     // console.log("Size Quantities:", sizeQuantities);
-  
+
     for (const size in sizeQuantities) {
       if (sizeQuantities.hasOwnProperty(size)) {
         const quantity = sizeQuantities[size];
@@ -67,17 +61,17 @@ const DetailsWithPrice = ({ item, stickyClass, changeColorVar, variants }) => {
             variant.attributes[0].option === size &&
             variant.attributes[1].option === selectedColor
         );
-  
+
         // console.log("Size:", size, "Quantity:", quantity, "Selected Item:", selectedItem);
-  
+
         if (selectedItem && quantity > 0) {
           totalPrice += selectedItem.price * quantity;
         }
       }
     }
-  
+
     // console.log("Total Price:", totalPrice);
-  
+
     // Format totalPrice to two decimal places
     return totalPrice.toFixed(2);
   };
@@ -86,7 +80,7 @@ const DetailsWithPrice = ({ item, stickyClass, changeColorVar, variants }) => {
     const selectedColor = e.target.value;
     setSelectedColor(selectedColor);
     changeColorVar(selectedColor); // Call changeColorVar with the selected color
-    console.log("color selected : ", selectedColor)
+    console.log("color selected : ", selectedColor);
   };
 
   const changeQty = (e) => {
@@ -98,12 +92,8 @@ const DetailsWithPrice = ({ item, stickyClass, changeColorVar, variants }) => {
     context.setQuantity(value);
   };
 
-
-
-
-
-   // Function to check if at least one size has a quantity greater than zero
-   const isSizeSelected = () => {
+  // Function to check if at least one size has a quantity greater than zero
+  const isSizeSelected = () => {
     for (const size in sizeQuantities) {
       if (sizeQuantities.hasOwnProperty(size) && sizeQuantities[size] > 0) {
         return true;
@@ -112,21 +102,22 @@ const DetailsWithPrice = ({ item, stickyClass, changeColorVar, variants }) => {
     return false;
   };
 
+  // Update the quantity for a specific size
+  const handleSizeQuantityChange = (size, quantity) => {
+    const availableStock = getAvailableStock(size);
+    const newQuantities = {
+      ...sizeQuantities,
+      [size]: quantity > availableStock ? availableStock : quantity,
+    };
+    setSizeQuantities(newQuantities);
 
- // Update the quantity for a specific size
-const handleSizeQuantityChange = (size, quantity) => {
-  const availableStock = getAvailableStock(size);
-  const newQuantities = { ...sizeQuantities, [size]: quantity > availableStock ? availableStock : quantity };
-  setSizeQuantities(newQuantities);
+    // Log message when user crosses the maximum available stock
+    if (quantity > availableStock) {
+      // console.log(`User exceeded the maximum available stock for ${size} : ${availableStock}.`);
+      toast.error(`Maximum available stock for ${size} :  ${availableStock}.`);
+    }
+  };
 
-  // Log message when user crosses the maximum available stock
-  if (quantity > availableStock) {
-    // console.log(`User exceeded the maximum available stock for ${size} : ${availableStock}.`);
-    toast.error(`Maximum available stock for ${size} :  ${availableStock}.`);
-  }
-};
-
-  
   const renderSizeQuantities = () => {
     const availableSizes = selectedColor
       ? variants
@@ -163,7 +154,7 @@ const handleSizeQuantityChange = (size, quantity) => {
             />
           </span>
           <span className="size-box-size-value">{size}</span>
-          <span className="size-box-size-value" style={{fontSize:'12px', textAlign: 'center'}}>{availableStock} available</span>
+          {/* <span className="size-box-size-value" style={{fontSize:'12px', textAlign: 'center'}}>{availableStock} available</span> */}
         </div>
       );
     });
@@ -194,15 +185,13 @@ const handleSizeQuantityChange = (size, quantity) => {
         return acc;
       }, []);
       // Set available sizes
-      setSizeQuantities({}); ; // Reset size quanities when color changes
+      setSizeQuantities({}); // Reset size quanities when color changes
 
-      
-     // Check if any available stock exists
-     const totalAvailableStock = filteredVariants.reduce((acc, curr) => {
-      return acc + curr.stock_quantity;
-    }, 0);
-    setIsInStock(totalAvailableStock > 0);
-
+      // Check if any available stock exists
+      const totalAvailableStock = filteredVariants.reduce((acc, curr) => {
+        return acc + curr.stock_quantity;
+      }, 0);
+      setIsInStock(totalAvailableStock > 0);
     }
   }, [selectedColor, variants]);
 
@@ -220,26 +209,39 @@ const handleSizeQuantityChange = (size, quantity) => {
     for (const size in sizeQuantities) {
       if (sizeQuantities.hasOwnProperty(size) && sizeQuantities[size] > 0) {
         const selectedItem = variants.find(
-          (variant) => variant.attributes[0].option === size && variant.attributes[1].option === selectedColor
+          (variant) =>
+            variant.attributes[0].option === size &&
+            variant.attributes[1].option === selectedColor
         );
-  
+
         if (selectedItem) {
           // Create an object containing size, quantity, and item_number
           const sizeQuantityInfo = {
             size: size,
             quantity: sizeQuantities[size],
-            item_number: selectedItem.id
+            item_number: selectedItem.id,
           };
-  
+
           // Push the size, quantity, and item_number object to selectedSizesQuantities array
           selectedSizesQuantities.push(sizeQuantityInfo);
         }
       }
     }
-  
+
     // Call addToCart method in CartContext with the product, selectedColor, and selectedSizesQuantities
-    context.addToCart(product, selectedColor, selectedSizesQuantities, totalPrice);
-    console.log("added to cart", product, selectedColor, selectedSizesQuantities, totalPrice);
+    context.addToCart(
+      product,
+      selectedColor,
+      selectedSizesQuantities,
+      totalPrice
+    );
+    console.log(
+      "added to cart",
+      product,
+      selectedColor,
+      selectedSizesQuantities,
+      totalPrice
+    );
   };
 
   return (
@@ -260,77 +262,83 @@ const handleSizeQuantityChange = (size, quantity) => {
         </h3>
         {/* Render color dropdown */}
         <div className="product-description border-product customColorSize">
-          <h6 className="product-title">Choose your colors : </h6>
-          
+          <h6 className="product-title">
+            <span>1</span>Choose your colors :{" "}
+          </h6>
+
           <div className="colorChange">
-          {variants.length > 0 && (
-          <div className="colorSelect">
-            <select value={selectedColor} onChange={handleColorChange}>
-              <option value="">Select Color</option>
-              {uniqueColors.map((color) => (
-                <option key={color} value={color}>
-                  {color}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
+            {variants.length > 0 && (
+              <div className="colorSelect">
+                <select value={selectedColor} onChange={handleColorChange}>
+                  <option value="">Select Color</option>
+                  {uniqueColors.map((color) => (
+                    <option key={color} value={color}>
+                      {color}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
           </div>
         </div>
 
-        
         {/* Render quantity input */}
         <div className="product-description border-product customColorSize">
           {/* <span className="instock-cls">{stock}</span> */}
-          <h6 className="product-title">Select Sizes & Quantities : 
-             <span className="sizeChart">
+          <h6 className="product-title">
+            <span>2</span> Select Sizes & Quantities :
+            <span className="sizeChart" style={{ float: "right" }}>
               <Link href="/assets/images/default/size-chart.jpg">
-                <a data-lng="en" target="_blank">Size Chart</a>
+                <a data-lng="en" target="_blank">
+                  Size Chart
+                </a>
               </Link>
-             </span>
+            </span>
           </h6>
-          
-          <div style={{display:"flex"}}>
-          {renderSizeQuantities()}
-          </div>
+
+          <div style={{ display: "flex" }}>{renderSizeQuantities()}</div>
         </div>
 
-       
-
-          <div className="productFooter">
+        <div className="productFooter">
           <div className="productionTime">
             <div class="primaryTime">Production Time:</div>
             <div class="secondaryTime">Standard - 14 Business Days</div>
-            </div>
-            
-            <div className="totalPrice">
-              <p>Total Price:</p>
-              <h6>{symbol} {calculateTotalPrice()}</h6>
-            </div>
-            <div className="cartButton">
-            {isInStock ? (
-                      <div className="product-buttons">
-                        <button
-                          className="btn btn-solid"
-                          onClick={handleAddToCart} // to call the handleAddToCart function
-                          disabled={!isSizeSelected()} // Disable button if no size with quantity selected
-                        >
-                          add to cart
-                        </button>             
-                      </div>
-                    ) : (
-                      <div className="product-buttons">
-                        <button className="btn btn-solid" disabled>
-                          add to cart
-                        </button>
-                      </div>
-                    )}
-            </div>
           </div>
-          
 
-       
-      
+          <div className="productionTime">
+            <div class="primaryTime">Total Price:</div>
+
+            <h6 class="secondaryTime">
+              {symbol} {calculateTotalPrice()}
+            </h6>
+          </div>
+          <div className="cartButton">
+            {isInStock ? (
+              <div className="product-buttons">
+                <button
+                  className="btn btn-solid"
+                  onClick={handleAddToCart} // to call the handleAddToCart function
+                  disabled={!isSizeSelected()} // Disable button if no size with quantity selected
+                >
+                  add to cart
+                </button>
+              </div>
+            ) : (
+              <div className="product-buttons">
+                <button
+                  className="btn btn-solid"
+                  disabled
+                  style={{
+                    padding: "11px 20px 10px 20px",
+                    letterSpacing: "3px",
+                  }}
+                >
+                  add to cart
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </>
   );

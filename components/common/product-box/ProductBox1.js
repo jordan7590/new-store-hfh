@@ -89,8 +89,8 @@ const ProductItem = ({
           {/* <button title="Add to cart" onClick={addCart}>
             <i className="fa fa-shopping-cart" aria-hidden="true"></i>
           </button> */}
-          <a href={null} title="Add to Wishlist" onClick={addWishlist}>
-            <i className="fa fa-heart" aria-hidden="true"></i>
+        <a href={null} title="Add to Wishlist" onClick={addWishlist} className="wishlist-button">
+        <i className="fa fa-heart" aria-hidden="true"></i>
           </a>
           {/* <a href={null} title="Quick View" onClick={toggle}>
             <i className="fa fa-search" aria-hidden="true"></i>

@@ -23,7 +23,6 @@ import { CompareContext } from "../../../helpers/Compare/CompareContext";
 import axios from "axios";
 import { UniqueOperationTypesRule } from "graphql";
 
-
 const ProductList = ({ colClass, layoutList, openSidebar, noSidebar }) => {
   const cartContext = useContext(CartContext);
   const quantity = cartContext.quantity;
@@ -71,18 +70,18 @@ const ProductList = ({ colClass, layoutList, openSidebar, noSidebar }) => {
     const fetchProducts = async () => {
       try {
         setIsLoading(true);
-  
+
         let apiUrl = `https://hfh.tonserve.com/wp-json/wc/v3/products?per_page=${limit}&page=${currentPage}&order=${sortBy}`;
-  
+
         if (selectedCategory) {
           apiUrl += `&category=${selectedCategory}`;
         }
-  
+
         const response = await axios.get(apiUrl, {
           auth: {
-            username: 'ck_86a3fc5979726afb7a1dd66fb12329bef3b365e2',
-            password: 'cs_19bb38d1e28e58f10b3ee8829b3cfc182b8eb3ea'
-          }
+            username: "ck_86a3fc5979726afb7a1dd66fb12329bef3b365e2",
+            password: "cs_19bb38d1e28e58f10b3ee8829b3cfc182b8eb3ea",
+          },
         });
 
         // Debugging logs
@@ -91,9 +90,9 @@ const ProductList = ({ colClass, layoutList, openSidebar, noSidebar }) => {
         console.log("Selected Cat:", selectedCategory);
         console.log("Filtered products:", response.data.results);
         console.log("Selected Page:", currentPage);
-  
-        setTotalCount(response.headers['x-wp-total']);
-        setTotalPages(response.headers['x-wp-totalpages']);
+
+        setTotalCount(response.headers["x-wp-total"]);
+        setTotalPages(response.headers["x-wp-totalpages"]);
         setProducts(response.data);
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -101,11 +100,9 @@ const ProductList = ({ colClass, layoutList, openSidebar, noSidebar }) => {
         setIsLoading(false);
       }
     };
-  
+
     fetchProducts();
   }, [selectedCategory, limit, currentPage, sortBy]);
-
-  
 
   // Pagination Component
   const PaginationComponent = ({
@@ -141,8 +138,11 @@ const ProductList = ({ colClass, layoutList, openSidebar, noSidebar }) => {
     const pageNumbers = getPageNumbers();
 
     return (
-      <Pagination aria-label="Products Pagination" className="custom-pagination">
-      <PaginationItem disabled={currentPage === 1}>
+      <Pagination
+        aria-label="Products Pagination"
+        className="custom-pagination"
+      >
+        <PaginationItem disabled={currentPage === 1}>
           <PaginationLink
             className="custom-pagination-link"
             previous
@@ -309,7 +309,6 @@ const ProductList = ({ colClass, layoutList, openSidebar, noSidebar }) => {
             <div className="collection-product-wrapper">
               {/* Product Filter  */}
 
-
               <div className="product-top-filter">
                 {!noSidebar ? (
                   <Row>
@@ -318,15 +317,41 @@ const ProductList = ({ colClass, layoutList, openSidebar, noSidebar }) => {
                         className="filter-main-btn sideCategory"
                         onClick={() => openSidebar()}
                       >
-                        <span className="filter-btn btn btn-theme">
-                          <i className="fa fa-filter" aria-hidden="true"></i>{" "}
-                          Categories
-                        </span>
+                        <button
+                          className=""
+                          style={{
+                            border: "1px solid #ffffff",
+                            borderRadius: "50%",
+                            boxShadow: "0 10px 20px 0 rgba(0, 0, 0, 0.05)",
+                            height: 60,
+                            margin: "10px 5px",
+                            opacity: 0.8,
+                            padding: 10,
+                            position: "relative",
+                            width: 60,
+                            backgroundColor: "#8056bf",
+                          }}
+                        >
+                          <i
+                            className="fa fa-filter"
+                            style={{ color: "#fff" , fontSize:"20px"}}
+                            aria-hidden="true"
+                          ></i>
+                        </button>
+                        <p
+                          style={{
+                            color: "#8056bf",
+                            fontFamily:
+                              " avertabold, San Francisco, Roboto, Segoe UI, Helvetica Neue, Lucida Grande, Arial, sans-serif",
+                            fontWeight: "800",
+                          }}
+                        >
+                          {" "}
+                          CATEGORIES
+                        </p>
                       </div>
                     </Col>
                   </Row>
-
-
                 ) : (
                   ""
                 )}
