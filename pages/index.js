@@ -155,9 +155,8 @@ const Fashion = () => {
                       className="hp_img-fluid hp_rounded-circle"
                       width="360"
                       height="360"
-                      src="https://cdn.ssactivewear.com/cdn-cgi/image/quality=80,w=360,f=auto/images/sns/home/2023/11-nov/category-tops.jpg"
-                      alt="Variety of shirts"
-                      data-src="https://cdn.ssactivewear.com/images/sns/home/2023/11-nov/category-tops.jpg?w=360"
+                      src="/assets/images/misc/category1.png"
+                      // alt="Variety of shirts"
                     />
                   </div>
                   <a
@@ -173,9 +172,9 @@ const Fashion = () => {
                       className="hp_img-fluid hp_rounded-circle"
                       width="360"
                       height="360"
-                      src="https://cdn.ssactivewear.com/cdn-cgi/image/quality=80,w=360,f=auto/images/sns/home/2023/11-nov/category-fleece.jpg"
-                      alt="Variety of sweatshirts and Fleece"
-                      data-src="https://cdn.ssactivewear.com/images/sns/home/2023/11-nov/category-fleece.jpg?w=360"
+                      src="/assets/images/misc/category2.png"
+                      // alt="Variety of sweatshirts and Fleece"
+                      
                     />
                   </div>
                   <a
@@ -191,9 +190,9 @@ const Fashion = () => {
                       className="hp_img-fluid hp_rounded-circle"
                       width="360"
                       height="360"
-                      src="https://cdn.ssactivewear.com/cdn-cgi/image/quality=80,w=360,f=auto/images/sns/home/2023/11-nov/category-headwear.jpg"
-                      alt="Variety of headwear"
-                      data-src="https://cdn.ssactivewear.com/images/sns/home/2023/11-nov/category-headwear.jpg?w=360"
+                      src="/assets/images/misc/category3.png"
+                      // alt="Variety of headwear"
+
                     />
                   </div>
                   <a
@@ -209,9 +208,9 @@ const Fashion = () => {
                       className="hp_img-fluid hp_rounded-circle"
                       width="360"
                       height="360"
-                      src="https://cdn.ssactivewear.com/cdn-cgi/image/quality=80,w=360,f=auto/images/sns/home/2023/11-nov/category-bags.jpg"
-                      alt="Variety of bags"
-                      data-src="https://cdn.ssactivewear.com/images/sns/home/2023/11-nov/category-bags.jpg?w=360"
+                      src="/assets/images/misc/category4.png"
+                      // alt="Variety of bags"
+                      
                     />
                   </div>
                   <a
@@ -357,8 +356,8 @@ const Fashion = () => {
                   <img
                     width="87"
                     height="77"
-                    src="https://cdn.ssactivewear.com/images/sns/home/2023/04-apr/temp/catalogs-2.91f930db.svg"
-                    alt="Catalogs"
+                    src="/assets/images/homepage/home-contact-us.png"
+                    alt= "Contact Us"
                   />
                   <a
                     className="hp_btn hp_btn-sm hp_btn-tertiary hp_stretched-link"
@@ -371,8 +370,8 @@ const Fashion = () => {
                   <img
                     width="79"
                     height="77"
-                    src="https://cdn.ssactivewear.com/images/sns/home/2023/04-apr/temp/customization-2.81968f21.svg"
-                    alt="Customization"
+                    src="/assets/images/homepage/home-what-we-do.png"
+                    alt="What We Do"
                   />
                   <a
                     className="hp_btn hp_btn-sm hp_btn-tertiary hp_stretched-link"
@@ -385,8 +384,8 @@ const Fashion = () => {
                   <img
                     width="86"
                     height="77"
-                    src="https://cdn.ssactivewear.com/images/sns/home/2023/04-apr/temp/assets-2.f7bc3c40.svg"
-                    alt="Marketing Assets"
+                    src="/assets/images/homepage/home-hfh-standard.png"
+                    alt="HFH Brand Standards"
                   />
                   <a
                     className="hp_btn hp_btn-sm hp_btn-tertiary hp_stretched-link"
@@ -399,8 +398,8 @@ const Fashion = () => {
                   <img
                     width="69"
                     height="77"
-                    src="https://cdn.ssactivewear.com/images/sns/home/2023/04-apr/temp/techresources-2.6b8734ba.svg"
-                    alt="Technology Resources"
+                    src="/assets/images/homepage/home-faq.png"
+                    alt="FAQ"
                   />
                   <a
                     className="hp_btn hp_btn-sm hp_btn-tertiary hp_stretched-link"

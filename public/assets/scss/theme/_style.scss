@@ -16446,6 +16446,7 @@ span.sizeChart {
   will-change: transform;
   transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
   transform: translate(0, 0);
+  border: solid 1px #5f95d5;
 }
 
 .hp_category .hp_column-content:hover > .hp_ratio img,
@@ -17011,7 +17012,7 @@ a.hp_btn.hp_btn-icon.hp_btn-link.hp_stretched-link {
 .header-image__image___hv4HR {
   width: 50%;
   background-size: cover;
-  background-position: center;
+  background-position: right;
 }
 @media (min-width: 769px) and (max-width: 1024px) {
   .header-image__container___xmXph {

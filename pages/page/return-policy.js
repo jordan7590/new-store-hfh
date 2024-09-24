@@ -12,7 +12,7 @@ const ReturnPolicy = () => {
      
          <div className="bg-img main-img subpage"
                    style={{
-                    backgroundImage: 'url(/assets/images/icon/returns-header.jpg)',
+                    backgroundImage: 'url(/assets/images/misc/return-policy.jpg)',
                     backgroundPositionY: '68%'
                 }}>
                 <Container>

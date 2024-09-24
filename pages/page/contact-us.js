@@ -46,7 +46,7 @@ const Contact = () => {
             </span>
           </div>
         </div>
-        <div className="header-image__image___hv4HR contact__newHeaderImage___vysSP" style={{ backgroundImage: 'url(/assets/images/icon/contact-header.jpg)'}}></div>
+        <div className="header-image__image___hv4HR contact__newHeaderImage___vysSP" style={{ backgroundImage: 'url(/assets/images/misc/contact-us.jpg)'}}></div>
       </div>
 
       <div className="contact__findUsSection___TA7CH" style={{ backgroundImage: 'url(/assets/images/icon/contact-bg-pc.svg)'}}>
