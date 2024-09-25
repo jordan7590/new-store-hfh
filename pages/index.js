@@ -354,8 +354,8 @@ const Fashion = () => {
               <div className="hp_grid hp_resources-card-wrap">
                 <div className="hp_align-items-center hp_d-flex hp_flex-column hp_justify-content-start hp_position-relative hp_resources-card">
                   <img
-                    width="87"
-                    height="77"
+                    width="139px"
+                    height="139px"
                     src="/assets/images/homepage/home-contact-us.png"
                     alt= "Contact Us"
                   />
@@ -368,8 +368,8 @@ const Fashion = () => {
                 </div>
                 <div className="hp_align-items-center hp_d-flex hp_flex-column hp_justify-content-start hp_position-relative hp_resources-card">
                   <img
-                    width="79"
-                    height="77"
+                    width="139px"
+                    height="139px"
                     src="/assets/images/homepage/home-what-we-do.png"
                     alt="What We Do"
                   />
@@ -382,8 +382,8 @@ const Fashion = () => {
                 </div>
                 <div className="hp_align-items-center hp_d-flex hp_flex-column hp_justify-content-start hp_position-relative hp_resources-card">
                   <img
-                    width="86"
-                    height="77"
+                    width="139px"
+                    height="139px"
                     src="/assets/images/homepage/home-hfh-standard.png"
                     alt="HFH Brand Standards"
                   />
@@ -396,8 +396,8 @@ const Fashion = () => {
                 </div>
                 <div className="hp_align-items-center hp_d-flex hp_flex-column hp_justify-content-start hp_position-relative hp_resources-card">
                   <img
-                    width="69"
-                    height="77"
+                    width="139px"
+                    height="139px"
                     src="/assets/images/homepage/home-faq.png"
                     alt="FAQ"
                   />

@@ -10,18 +10,18 @@ import MasterServiceContent from "./MasterServiceConternt";
 const Data = [
   {
     link: svgFreeShipping,
-    title: "free shipping",
-    service: "free shipping world wide",
+    title: "Free Shipping",
+    service: "Free Shipping on Orders $75+",
   },
   {
     link: svgservice,
-    title: "24 X 7 service",
-    service: "online service for 24 x 7",
+    title: "24 X 7 ORDERING",
+    service: "Order online 24 X 7, 365 Days a Year",
   },
   {
     link: svgoffer,
-    title: "festival offer",
-    service: "new online special festival offer",
+    title: "SPECIAL SERVICES",
+    service: "We take care of everything so you save time and money",
   },
 ];
 

@@ -53,8 +53,8 @@ const TopBarDark = ({ topClass, fluid, direction }) => {
                     >
                       What We Offer
                       <img
-src="/assets/images/icon/angle-arrow-down-white.svg"
-alt="White arrow pointing downwards"
+                        src="/assets/images/icon/angle-arrow-down-white.svg"
+                        alt="White arrow pointing downwards"
                         style={{ height: "10px", margin: "0px 0px 0px 7px" }}
                       />
                     </button>
@@ -66,9 +66,11 @@ alt="White arrow pointing downwards"
                             <div class="wwo-horizontalLine"></div>
                             <Link href="/bulk-ordering">
                               <span>
-                                <span className="wwo-title">Bulk Ordering </span>
+                                <span className="wwo-title">
+                                  Bulk Ordering{" "}
+                                </span>
                                 <span className="wwo-description">
-                                - Save time and money with our bulk ordering
+                                  - Save time and money with our bulk ordering
                                   discounts. Whether it's a Charity Walk, Team
                                   Building event, etc., we have you covered.
                                 </span>
@@ -80,9 +82,11 @@ alt="White arrow pointing downwards"
                             <div class="wwo-horizontalLine"></div>
                             <Link href="/individual-ordering">
                               <span>
-                                <span className="wwo-title">Individual Ordering  </span>
+                                <span className="wwo-title">
+                                  Individual Ordering{" "}
+                                </span>
                                 <span className="wwo-description">
-                                - Easily order from our full line of decorated
+                                  - Easily order from our full line of decorated
                                   or blank apparel/uniform options. Our wide
                                   selection of apparel gives you the flexibility
                                   needed to create a professional image.
@@ -95,11 +99,13 @@ alt="White arrow pointing downwards"
                             <div class="wwo-horizontalLine"></div>
                             <Link href="/group-department-ordering">
                               <span>
-                                <span className="wwo-title">Group/Department Ordering </span>
+                                <span className="wwo-title">
+                                  Group/Department Ordering{" "}
+                                </span>
                                 <span className="wwo-description">
-                                - Host a sale without the need to collect order
-                                  forms. We take care of packaging, fulfillment,
-                                  and mailing so you don't have to.
+                                  - Host a sale without the need to collect
+                                  order forms. We take care of packaging,
+                                  fulfillment, and mailing so you don't have to.
                                 </span>
                               </span>
                             </Link>
@@ -109,9 +115,11 @@ alt="White arrow pointing downwards"
                             <div class="wwo-horizontalLine"></div>
                             <Link href="/site-visits-sales">
                               <span>
-                                <span className="wwo-title">Site Visits/Sales </span>
+                                <span className="wwo-title">
+                                  Site Visits/Sales{" "}
+                                </span>
                                 <span className="wwo-description">
-                                - Let us come to you.
+                                  - Let us come to you.
                                 </span>
                               </span>
                             </Link>
@@ -123,7 +131,7 @@ alt="White arrow pointing downwards"
                               <span>
                                 <span className="wwo-title">Fundraising </span>
                                 <span className="wwo-description">
-                               - Take the stress away from fundraising with
+                                  - Take the stress away from fundraising with
                                   Hoyt & Company's risk-free setup. Raise money
                                   and awareness for your department, charity, or
                                   anything you care about.
@@ -135,7 +143,10 @@ alt="White arrow pointing downwards"
                           <li>
                             <Link href="/page/contact-us">
                               <span>
-                                <span className="wwo-title" style={{color:"#000"}}>
+                                <span
+                                  className="wwo-title"
+                                  style={{ color: "#000" }}
+                                >
                                   Want to chat? Contact us
                                 </span>
                               </span>
@@ -175,8 +186,8 @@ alt="White arrow pointing downwards"
               ) : (
                 <>
                   <li>
-                  <Link href="/page/account/login">
-                  <a>Login</a>
+                    <Link href="/page/account/login">
+                      <a>Login</a>
                     </Link>
                   </li>
                   <li>
