@@ -120,7 +120,29 @@ const LeftSidebarPage = ({ pathId }) => {
 
 
   if (loading) {
-    return <PostLoader />;
+    return (
+      <section className="" style={{background:"#FAFAFA"}}>
+      <div className="collection-wrapper">
+        <Container>
+          <Row>
+            <Col lg="12" sm="12" xs="12">
+              <Container fluid={true}>
+                <Row>
+                  <Col lg="4" className="product-thumbnail">
+                  <PostLoader />
+                  </Col>
+                  <Col lg="8" className="rtl-text">
+                  <PostLoader />
+                  </Col>
+                </Row>
+              </Container>
+              <PostLoader />
+            </Col>
+          </Row>
+        </Container>
+      </div>
+    </section>
+    );
   }
 
   if (!product || !product.variations || product.variations.length === 0) {
