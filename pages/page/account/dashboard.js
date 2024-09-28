@@ -25,7 +25,7 @@ const Dashboard = () => {
     if (!userData) {
         return <div>Loading...</div>;
     }else{
-        console.log(userData);
+        console.log("User data",userData);
     }
 
     return (

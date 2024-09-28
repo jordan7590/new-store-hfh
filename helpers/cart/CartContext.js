@@ -28,46 +28,43 @@ const CartProvider = (props) => {
     localStorage.setItem("cartList", JSON.stringify(cartItems));
   }, [cartItems]);
   
-
   // Add Product To Cart
-const addToCart = (product, selectedColor, selectedSizesQuantities, totalPrice ) => {
-  toast.success("Product Added Successfully !");
+  const addToCart = (product, selectedColor, selectedSizesQuantities, totalPrice ) => {
+    toast.success("Product Added Successfully !");
 
+    const newProduct = {
+      ...product,
+      color: selectedColor,
+      sizesQuantities: selectedSizesQuantities,
+      totalPrice
+    };
 
-  const newProduct = {
-    ...product,
-    color: selectedColor,
-    sizesQuantities: selectedSizesQuantities,
-    totalPrice
+    setCartItems([...cartItems, newProduct]);
+    console.log([...cartItems, newProduct]);
   };
 
-  setCartItems([...cartItems, newProduct]);
-  console.log([...cartItems, newProduct]);
+  const removeFromCart = (product) => {
+    toast.error("Product Removed Successfully !");
+    
+    // Filter out the specific product to remove based on its product_number
+    const updatedCartItems = cartItems.filter((item) => item.id !== product.id);
+    setCartItems(updatedCartItems);
+  };
 
-};
+  // Decrement Product Quantity
+  const minusQty = (product) => {
+    if (quantity > 1) {
+      setQuantity(quantity - 1);
+    } else {
+      toast.error("You can't have less than one item.");
+    }
+  };
 
-const removeFromCart = (product) => {
-  toast.error("Product Removed Successfully !");
-  
-  // Filter out the specific product to remove based on its ID or another unique identifier
-  const updatedCartItems = cartItems.filter((item) => item.product_number !== product.product_number);
-  setCartItems(updatedCartItems);
-};
-
- // Decrement Product Quantity
- const minusQty = (product) => {
-  if (quantity > 1) {
-    setQuantity(quantity - 1);
-  } else {
-    toast.error("You can't have less than one item.");
-  }
-};
-
-// Increment Product Quantity
-const plusQty = () => {
-  // Simply increments the quantity by 1
-  setQuantity(quantity + 1);
-};
+  // Increment Product Quantity
+  const plusQty = () => {
+    // Simply increments the quantity by 1
+    setQuantity(quantity + 1);
+  };
   
   // Update Product Quantity
   const updateQty = (product, quantity) => {
@@ -89,22 +86,21 @@ const plusQty = () => {
     }
   };
 
-
   return (
     <Context.Provider
-    value={{
-      ...props,
-      state: cartItems,
-      cartTotal,
-      setQuantity,
-      quantity,
-      addToCart: addToCart,
-      removeFromCart: removeFromCart,
-      plusQty: plusQty,
-      minusQty: minusQty,
-      updateQty: updateQty,
-    }}
-  >
+      value={{
+        ...props,
+        state: cartItems,
+        cartTotal,
+        setQuantity,
+        quantity,
+        addToCart: addToCart,
+        removeFromCart: removeFromCart,
+        plusQty: plusQty,
+        minusQty: minusQty,
+        updateQty: updateQty,
+      }}
+    >
       {props.children}
     </Context.Provider>
   );

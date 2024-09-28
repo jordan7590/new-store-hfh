@@ -9,7 +9,7 @@ const Data = [
     img: "home1",
     title: "Uniforms Simplified.",
     desc: "Your all-in one Henry Ford Health employee unform platform. Browse and shop the highest quality HFH Apparel Unforms and Promotional Products with the click of a button.",
-    link: "/left-sidebar/collection ",
+    link: "/shop/left_sidebar ",
   },
   // {
   //   img: "home2",
