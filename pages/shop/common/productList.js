@@ -1,13 +1,9 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef, useCallback } from "react";
 import {
   Col,
   Row,
   Media,
   Button,
-  Spinner,
-  Pagination,
-  PaginationItem,
-  PaginationLink,
 } from "reactstrap";
 import Menu2 from "../../../public/assets/images/mega-menu/2.jpg";
 import { useQuery } from "@apollo/client";
@@ -42,14 +38,27 @@ const ProductList = ({ colClass, layoutList, openSidebar, noSidebar }) => {
   const [sortBy, setSortBy] = useState("asc");
   const [layout, setLayout] = useState(layoutList);
   const [url, setUrl] = useState();
-  // State to store fetched products
   const [products, setProducts] = useState([]);
-  // State to handle loading status
   const [isLoading, setIsLoading] = useState(true);
-  const [totalPages, setTotalPages] = useState(0); // Total number of pages
-  const [totalCount, setTotalCount] = useState(0); // Total number of Products
-  const [currentPage, setCurrentPage] = useState(1); // Current page
-  // routeing here
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalCount, setTotalCount] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+
+  const observer = useRef();
+  const lastProductElementRef = useCallback(
+    (node) => {
+      if (isLoading) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          setCurrentPage((prevPage) => prevPage + 1);
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [isLoading, hasMore]
+  );
 
   useEffect(() => {
     const pathname = window.location.pathname;
@@ -61,9 +70,9 @@ const ProductList = ({ colClass, layoutList, openSidebar, noSidebar }) => {
     );
   }, [selectedBrands, selectedColor, selectedSize, selectedPrice]);
 
-  // Reset the current page when selectedCategory changes
   useEffect(() => {
     setCurrentPage(1);
+    setProducts([]);
   }, [selectedCategory]);
 
   useEffect(() => {
@@ -84,7 +93,6 @@ const ProductList = ({ colClass, layoutList, openSidebar, noSidebar }) => {
           },
         });
 
-        // Debugging logs
         console.log("Received products:", response.data);
         console.log("Total products:", response.data.count);
         console.log("Selected Cat:", selectedCategory);
@@ -93,7 +101,8 @@ const ProductList = ({ colClass, layoutList, openSidebar, noSidebar }) => {
 
         setTotalCount(response.headers["x-wp-total"]);
         setTotalPages(response.headers["x-wp-totalpages"]);
-        setProducts(response.data);
+        setProducts((prevProducts) => [...prevProducts, ...response.data]);
+        setHasMore(currentPage < parseInt(response.headers["x-wp-totalpages"]));
       } catch (error) {
         console.error("Error fetching products:", error);
       } finally {
@@ -103,109 +112,6 @@ const ProductList = ({ colClass, layoutList, openSidebar, noSidebar }) => {
 
     fetchProducts();
   }, [selectedCategory, limit, currentPage, sortBy]);
-
-  // Pagination Component
-  const PaginationComponent = ({
-    currentPage,
-    totalPages,
-    handlePageChange,
-  }) => {
-    const displayPages = 5; // Number of page numbers to display
-
-    const getPageNumbers = () => {
-      if (totalPages <= displayPages) {
-        return Array.from({ length: totalPages }, (_, index) => index + 1);
-      }
-
-      const middleIndex = Math.floor(displayPages / 2);
-      let start = currentPage - middleIndex;
-      let end = currentPage + middleIndex;
-
-      if (currentPage <= middleIndex) {
-        start = 1;
-        end = displayPages;
-      } else if (currentPage >= totalPages - middleIndex) {
-        start = totalPages - displayPages + 1;
-        end = totalPages;
-      }
-
-      return Array.from(
-        { length: end - start + 1 },
-        (_, index) => start + index
-      );
-    };
-
-    const pageNumbers = getPageNumbers();
-
-    return (
-      <Pagination
-        aria-label="Products Pagination"
-        className="custom-pagination"
-      >
-        <PaginationItem disabled={currentPage === 1}>
-          <PaginationLink
-            className="custom-pagination-link"
-            previous
-            href="#"
-            onClick={() => handlePageChange(currentPage - 1)}
-          />
-        </PaginationItem>
-
-        {currentPage > displayPages / 2 && totalPages > displayPages && (
-          <>
-            <PaginationItem>
-              <PaginationLink onClick={() => handlePageChange(1)} href="#">
-                1
-              </PaginationLink>
-            </PaginationItem>
-            <PaginationItem disabled>
-              <PaginationLink>...</PaginationLink>
-            </PaginationItem>
-          </>
-        )}
-
-        {pageNumbers.map((page) => (
-          <PaginationItem key={page} active={currentPage === page}>
-            <PaginationLink onClick={() => handlePageChange(page)} href="#">
-              {page}
-            </PaginationLink>
-          </PaginationItem>
-        ))}
-
-        {currentPage <= totalPages - displayPages / 2 &&
-          totalPages > displayPages && (
-            <>
-              <PaginationItem disabled>
-                <PaginationLink>...</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink
-                  onClick={() => handlePageChange(totalPages)}
-                  href="#"
-                >
-                  {totalPages}
-                </PaginationLink>
-              </PaginationItem>
-            </>
-          )}
-
-        <PaginationItem disabled={currentPage === totalPages}>
-          <PaginationLink
-            next
-            href="#"
-            onClick={() => handlePageChange(currentPage + 1)}
-          />
-        </PaginationItem>
-      </Pagination>
-    );
-  };
-
-  // Function to handle page changes
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  };
-
-  //infinity scroll
 
   const removeBrand = (val) => {
     const temp = [...selectedBrands];
@@ -460,69 +366,43 @@ const ProductList = ({ colClass, layoutList, openSidebar, noSidebar }) => {
               <div className={`product-wrapper-grid ${layout}`}>
                 <Row>
                   {/* Product Box */}
-                  {isLoading
-                    ? // Render loaders when fetching data
-                      // Render the same number of loaders as the per_page limit
-                      Array.from({ length: limit }, (_, index) => (
-                        <div className={grid} key={index}>
-                          <PostLoader />
+                  {products.map((product, i) => (
+                    <div className={grid} key={i} ref={i === products.length - 1 ? lastProductElementRef : null}>
+                      <div className="product">
+                        <div>
+                          <ProductItem
+                            des={true}
+                            product={product}
+                            symbol={symbol}
+                            backImage={false}
+                            cartClass="cart-info cart-wrap"
+                            addCompare={() =>
+                              compareContext.addToCompare(product)
+                            }
+                            addWishlist={() =>
+                              wishlistContext.addToWish(product)
+                            }
+                            addCart={() =>
+                              cartContext.addToCart(product, quantity)
+                            }
+                          />
                         </div>
-                      ))
-                    : products.map((product, i) => (
-                        <div className={grid} key={i}>
-                          <div className="product">
-                            <div>
-                              <ProductItem
-                                des={true}
-                                product={product}
-                                symbol={symbol}
-                                backImage={false}
-                                cartClass="cart-info cart-wrap"
-                                addCompare={() =>
-                                  compareContext.addToCompare(product)
-                                }
-                                addWishlist={() =>
-                                  wishlistContext.addToWish(product)
-                                }
-                                addCart={() =>
-                                  cartContext.addToCart(product, quantity)
-                                }
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      ))}
+                      </div>
+                    </div>
+                  ))}
                 </Row>
               </div>
 
-              {/* Load More / Pagination  */}
-
-              <div className="section-t-space">
-                <div className="text-center">
-                  <Row>
-                    <Col xl="12" md="12" sm="12">
-                      {/* Pagination Component */}
-
-                      <div
-                        className="pagination-section"
-                        style={{
-                          display: "flex",
-                          flexDirection: "row",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <PaginationComponent
-                          currentPage={currentPage}
-                          totalPages={totalPages}
-                          handlePageChange={handlePageChange}
-                        />{" "}
-                      </div>
-
-                      {/* infinity scroll */}
+              {/* Infinite Scroll Loader */}
+              {isLoading && (
+                <Row>
+                  {[...Array(4)].map((_, index) => (
+                    <Col xl="3" sm="6" key={index}>
+                      <PostLoader />
                     </Col>
-                  </Row>
-                </div>
-              </div>
+                  ))}
+                </Row>
+              )}
             </div>
           </Col>
         </Row>

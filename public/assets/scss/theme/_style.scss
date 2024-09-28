@@ -18051,3 +18051,50 @@ ul.header-dropdown.headerTop-account {
 li.mobile-wishlist > a {
   color: #fff !important;
 }
+
+.user-dropdown {
+  position: relative;
+}
+
+.user-dropdown-toggle {
+  color: white;
+  text-decoration: none;
+}
+
+.user-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding:0;
+  display: none;
+  z-index: 1000;
+  width: 100px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.user-dropdown:hover .user-dropdown-menu,
+.user-dropdown-menu.show {
+  display: block;
+}
+
+.user-dropdown-menu li {
+  padding: 0;
+  white-space: nowrap;
+  width: 100%;
+
+}
+
+.user-dropdown-item {
+  color: #333;
+  text-decoration: none;
+  display: block;
+  padding: 8px 15px;
+  font-size: 14px;
+}
+
+.user-dropdown-item:hover {
+  background-color: #f0f0f0;
+}

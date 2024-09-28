@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Container, Row, Col } from "reactstrap";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -12,6 +12,8 @@ const TopBarDark = ({ topClass, fluid, direction }) => {
   const router = useRouter();
   const { isLoggedIn, userData, logout } = useAuth();
   const [isDropdownOpen, setDropdownOpen] = useState(false); // Add dropdown state
+  const [isUserDropdownOpen, setUserDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
   const handleLogout = () => {
     logout();
@@ -27,6 +29,23 @@ const TopBarDark = ({ topClass, fluid, direction }) => {
     setDropdownOpen(!isDropdownOpen);
     console.log("Dropdown toggled:", !isDropdownOpen); // Log to confirm toggle
   };
+ 
+  const toggleUserDropdown = () => {
+    setUserDropdownOpen(!isUserDropdownOpen);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setUserDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <div className="headerTop">
@@ -175,14 +194,26 @@ const TopBarDark = ({ topClass, fluid, direction }) => {
             <div className="hfh-account_divider__vYQzs"></div>
             <ul className="header-dropdown headerTop-account">
               {isLoggedIn && userData ? (
-                <>
-                  Welcome, {userData.name}
-                  <img
-                    src="/assets/images/icon/angle-arrow-down-white.svg"
-                    alt="White arrow pointing downwards"
-                    style={{ height: "10px", margin: "0px 0px 0px 7px" }}
-                  />
-                </>
+                <li className="user-dropdown" ref={dropdownRef}>
+                  <span onClick={toggleUserDropdown} className="user-dropdown-toggle" style={{ cursor: 'pointer' }}>
+                    Welcome, {userData.name}
+                    <img
+                      src="/assets/images/icon/angle-arrow-down-white.svg"
+                      alt="White arrow pointing downwards"
+                      style={{ height: "10px", margin: "0px 0px 0px 7px" }}
+                    />
+                  </span>
+                  <ul className={`user-dropdown-menu ${isUserDropdownOpen ? 'show' : ''}`}>
+                    <li>
+                      <Link href="/page/account/dashboard">
+                        <a className="user-dropdown-item">Dashboard</a>
+                      </Link>
+                    </li>
+                    <li>
+                      <a href="#" onClick={handleLogout} className="user-dropdown-item">Log Out</a>
+                    </li>
+                  </ul>
+                </li>
               ) : (
                 <>
                   <li>
