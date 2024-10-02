@@ -9,6 +9,7 @@ import DetailsWithPrice from '../common/detail-price';
 import Filter from '../common/filter';
 import { Container, Row, Col, Media } from 'reactstrap';
 import PostLoader from "../../../components/common/PostLoader";
+import ProductSection from '../common/product_section';
 
 const LeftSidebarPage = ({ pathId }) => {
   const [product, setProduct] = useState(null);
@@ -18,6 +19,7 @@ const LeftSidebarPage = ({ pathId }) => {
   const slider2 = useRef();
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [variants, setVariants] = useState([]);
+  const [relatedProducts, setRelatedProducts] = useState([]);
 
   const productsSliderSettings = {
     slidesToShow: 1,
@@ -81,7 +83,26 @@ const LeftSidebarPage = ({ pathId }) => {
     }
   };
 
+  useEffect(() => {
+    const fetchRelatedProducts = async () => {
+      if (product && product.related_ids && product.related_ids.length > 0) {
+        try {
+          const relatedIds = product.related_ids.join(',');
+          const response = await axios.get(`https://hfh.tonserve.com/wp-json/wc/v3/products?include=${relatedIds}`, {
+            auth: {
+              username: 'ck_86a3fc5979726afb7a1dd66fb12329bef3b365e2',
+              password: 'cs_19bb38d1e28e58f10b3ee8829b3cfc182b8eb3ea'
+            }
+          });
+          setRelatedProducts(response.data);
+        } catch (error) {
+          console.error('Error fetching related products:', error);
+        }
+      }
+    };
 
+    fetchRelatedProducts();
+  }, [product]);
 
   const handleImageChange = (index) => {
     setSelectedImageIndex(index);
@@ -225,8 +246,10 @@ const LeftSidebarPage = ({ pathId }) => {
             </Col>
           </Row>
         </Container>
+        <ProductSection relatedProducts={relatedProducts} />
       </div>
     </section>
+    
   );
 };
 

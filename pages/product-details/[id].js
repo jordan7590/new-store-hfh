@@ -1,7 +1,6 @@
 import React from 'react';
 import { useRouter } from 'next/router'
 import CommonLayout from '../../components/shop/common-layout';
-import ProductSection from './common/product_section';
 // import { withApollo } from '../../helpers/apollo/apollo';
 import LeftSidebarPage from './product/leftSidebarPage';
 
@@ -13,8 +12,7 @@ const LeftSidebar = () => {
   return (
     <CommonLayout parent="Home" title="Product">
         <LeftSidebarPage pathId={id} />
-        {/* console.log({id}); */}
-      <ProductSection />
+        {/* console.log({related_ids}); */}
     </CommonLayout>
   );
 }

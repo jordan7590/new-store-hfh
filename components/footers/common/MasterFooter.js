@@ -39,9 +39,8 @@ const MasterFooter = ({
     window.addEventListener("resize", changeCollapse);
 
     return () => {
-      window.removeEventListener('resize', changeCollapse)
-    }
-
+      window.removeEventListener("resize", changeCollapse);
+    };
   }, []);
   return (
     <div>
@@ -90,8 +89,9 @@ const MasterFooter = ({
             <Row className="footer-theme partition-f">
               <Col lg="4" md="6">
                 <div
-                  className={`footer-title ${isOpen && collapse == 1 ? "active" : ""
-                    } footer-mobile-title`}
+                  className={`footer-title ${
+                    isOpen && collapse == 1 ? "active" : ""
+                  } footer-mobile-title`}
                 >
                   <h4
                     onClick={() => {
@@ -109,11 +109,22 @@ const MasterFooter = ({
                   <div className="footer-contant">
                     <div className="footer-logo">
                       {/* <LogoImage logo={logoName} /> */}
-                      <img src={`/assets/images/icon/hc-full-no-background.png`} alt="Hoyt & Company Logo" style={{height:"80px", margin:"0px 0px 0px 7px"}} />
+                      <img
+                        src={`/assets/images/icon/hc-full-no-background.png`}
+                        alt="Hoyt & Company Logo"
+                        style={{ height: "80px", margin: "0px 0px 0px 7px" }}
+                      />
                     </div>
                     <p>
-                    Welcome to Henry Ford Health Employee Uniform website provided by Hoyt & Company.
-                    Our company offers a full line of decorated or blank apparel, uniforms, and promotional products. Our wide selection of apparel and promotional merchandise gives you the flexibility needed to create the professional image. Our orders are custom to fit your needs, please make sure you order correct sizes and approved colors for your department due to all items are custom and non-returnable.
+                      Welcome to Henry Ford Health Employee Uniform website
+                      provided by Hoyt & Company. Our company offers a full line
+                      of decorated or blank apparel, uniforms, and promotional
+                      products. Our wide selection of apparel and promotional
+                      merchandise gives you the flexibility needed to create the
+                      professional image. Our orders are custom to fit your
+                      needs, please make sure you order correct sizes and
+                      approved colors for your department due to all items are
+                      custom and non-returnable.
                     </p>
                   </div>
                 </Collapse>
@@ -121,8 +132,9 @@ const MasterFooter = ({
               <Col className="offset-xl-1">
                 <div className="sub-title">
                   <div
-                    className={`footer-title ${isOpen && collapse == 2 ? "active" : ""
-                      } `}
+                    className={`footer-title ${
+                      isOpen && collapse == 2 ? "active" : ""
+                    } `}
                   >
                     <h4
                       onClick={() => {
@@ -167,8 +179,9 @@ const MasterFooter = ({
                 </div>
                 <div className="sub-title">
                   <div
-                    className={`footer-title ${isOpen && collapse == 3 ? "active" : ""
-                      } `}
+                    className={`footer-title ${
+                      isOpen && collapse == 3 ? "active" : ""
+                    } `}
                   >
                     <h4
                       onClick={() => {
@@ -178,7 +191,7 @@ const MasterFooter = ({
                         } else setIsOpen(true);
                       }}
                     >
-                      Services
+                      My Account
                       <span className="according-menu"></span>
                     </h4>
                   </div>
@@ -188,22 +201,31 @@ const MasterFooter = ({
                     <div className="footer-contant">
                       <ul>
                         <li>
-                          <a href="#">shipping & return</a>
+                          <Link href={`/page/account/login`}>
+                            <a>Login</a>
+                          </Link>
                         </li>
                         <li>
-                          <a href="#">secure shopping</a>
+                          <Link href={`/page/account/register`}>
+                            <a>Sign Up</a>
+                          </Link>
                         </li>
-                        
+                        <li>
+                          <Link href={`/page/account/wishlist`}>
+                            <a>Wishlist</a>
+                          </Link>
+                        </li>
                       </ul>
                     </div>
                   </Collapse>
                 </div>
               </Col>
               <Col>
-              <div className="sub-title">
+                <div className="sub-title">
                   <div
-                    className={`footer-title ${isOpen && collapse == 2 ? "active" : ""
-                      } `}
+                    className={`footer-title ${
+                      isOpen && collapse == 2 ? "active" : ""
+                    } `}
                   >
                     <h4
                       onClick={() => {
@@ -246,11 +268,12 @@ const MasterFooter = ({
                     </div>
                   </Collapse>
                 </div>
-               
+
                 <div className="sub-title">
                   <div
-                    className={`footer-title ${isOpen && collapse == 3 ? "active" : ""
-                      } `}
+                    className={`footer-title ${
+                      isOpen && collapse == 3 ? "active" : ""
+                    } `}
                   >
                     <h4
                       onClick={() => {
@@ -275,7 +298,6 @@ const MasterFooter = ({
                         <li>
                           <a href="#">secure shopping</a>
                         </li>
-                       
                       </ul>
                     </div>
                   </Collapse>
@@ -284,8 +306,9 @@ const MasterFooter = ({
               <Col>
                 <div className="sub-title">
                   <div
-                    className={`footer-title ${isOpen && collapse == 4 ? "active" : ""
-                      } `}
+                    className={`footer-title ${
+                      isOpen && collapse == 4 ? "active" : ""
+                    } `}
                   >
                     <h4
                       onClick={() => {
@@ -302,38 +325,40 @@ const MasterFooter = ({
                   <Collapse
                     isOpen={width ? (collapse === 4 ? isOpen : false) : true}
                   >
-
-                 
                     <div className="footer-social social-custom">
                       <ul>
                         <li>
-                          <a href="https://www.facebook.com/HoytCompany/" target="_blank">
+                          <a
+                            href="https://www.facebook.com/HoytCompany/"
+                            target="_blank"
+                          >
                             <i
                               className="fa fa-facebook"
                               aria-hidden="true"
                             ></i>
                           </a>
                         </li>
-                        
+
                         <li>
-                          <a href="https://www.instagram.com/hoytcompany/" target="_blank">
+                          <a
+                            href="https://www.instagram.com/hoytcompany/"
+                            target="_blank"
+                          >
                             <i
                               className="fa fa-instagram"
                               aria-hidden="true"
                             ></i>
                           </a>
                         </li>
-                       
                       </ul>
                     </div>
-                    
-                   
                   </Collapse>
                 </div>
                 <div className="sub-title">
                   <div
-                    className={`footer-title ${isOpen && collapse == 4 ? "active" : ""
-                      } `}
+                    className={`footer-title ${
+                      isOpen && collapse == 4 ? "active" : ""
+                    } `}
                   >
                     <h4
                       onClick={() => {
@@ -350,8 +375,6 @@ const MasterFooter = ({
                   <Collapse
                     isOpen={width ? (collapse === 4 ? isOpen : false) : true}
                   >
-
-                    
                     <Form className="form-inline subscribe-form">
                       <div className="my-sm-3">
                         <Input
