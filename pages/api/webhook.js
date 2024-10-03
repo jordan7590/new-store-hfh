@@ -40,6 +40,7 @@ export default async function handler(req, res) {
         const shippingData = JSON.parse(session.metadata.shipping);
         const orderItems = JSON.parse(session.metadata["order-items"]);
         const shippingLines = JSON.parse(session.metadata.shipping_lines);
+        const orderNotes = JSON.parse(session.metadata.orderNotes);
 
         
          // Construct order data for WooCommerce
@@ -98,6 +99,36 @@ export default async function handler(req, res) {
         );
 
         console.log("Order created in WooCommerce:", createdOrder.data);
+
+           // Create order note
+if (orderNotes) {
+  const orderId = createdOrder.data.id;
+  const noteData = {
+    note: orderNotes
+  };
+
+  try {
+    const createdNote = await axios.post(
+      `${process.env.WOOCOMMERCE_URL}/wp-json/wc/v3/orders/${orderId}/notes`,
+      noteData,
+      {
+        params: {
+          consumer_key: process.env.WOOCOMMERCE_CONSUMER_KEY,
+          consumer_secret: process.env.WOOCOMMERCE_CONSUMER_SECRET,
+        },
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    console.log("Order note created:", createdNote.data);
+  } catch (error) {
+    console.error("Error creating order note:", error.response ? error.response.data : error.message);
+  }
+}
+
+
         res.status(200).json({ received: true });
         processedEvents[event.id] = true; // Mark event as processed
       } else {

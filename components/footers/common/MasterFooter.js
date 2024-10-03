@@ -246,22 +246,22 @@ const MasterFooter = ({
                       <ul>
                         <li>
                           <Link href={`/shop/left_sidebar`}>
-                            <a>womens</a>
+                            <a>New Items</a>
                           </Link>
                         </li>
                         <li>
                           <Link href={`/shop/left_sidebar`}>
-                            <a> clothing </a>
+                            <a>T-Shirts </a>
                           </Link>
                         </li>
                         <li>
                           <Link href={`/shop/left_sidebar`}>
-                            <a>accessories</a>
+                            <a>Sweatshirts/Fleece</a>
                           </Link>
                         </li>
                         <li>
                           <Link href={`/shop/left_sidebar`}>
-                            <a> featured </a>
+                            <a>Promotional Items </a>
                           </Link>
                         </li>
                       </ul>
@@ -293,11 +293,13 @@ const MasterFooter = ({
                     <div className="footer-contant">
                       <ul>
                         <li>
-                          <a href="#">shipping & return</a>
+                        <Link href={`/page/contact-us`}>
+                            <a> Contact Us </a>
+                          </Link>
                         </li>
-                        <li>
+                        {/* <li>
                           <a href="#">secure shopping</a>
-                        </li>
+                        </li> */}
                       </ul>
                     </div>
                   </Collapse>

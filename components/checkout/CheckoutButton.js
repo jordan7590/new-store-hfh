@@ -15,7 +15,8 @@ const CheckoutButton = ({
    taxRate,
    billingFormValid,
    shippingFormValid,
-   shippingAvailable}) => {
+   shippingAvailable,
+   orderNotes}) => {
   const router = useRouter();
   const [billingFormErrors, setBillingFormErrors] = useState({}); // State to store billing form errors
   const [shippingFormErrors, setShippingFormErrors] = useState({}); // State to store shipping form errors
@@ -57,7 +58,8 @@ const CheckoutButton = ({
           shippingFormData: shippingFormData,
           cartData: cartData,
           stripeShippingOptions: stripeShippingOptions,
-          taxRate: taxRate
+          taxRate: taxRate,
+          orderNotes: orderNotes
         }),
       });
 

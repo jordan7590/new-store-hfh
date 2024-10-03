@@ -8,7 +8,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 export default async function handler(req, res) {
   if (req.method === "POST") {
     try {
-      const { billingFormData, shippingFormData, cartData, stripeShippingOptions, cartTotal, shippingCost, taxAmount, taxRate } = req.body;
+      const { billingFormData, shippingFormData, cartData, stripeShippingOptions, cartTotal, shippingCost, taxAmount, taxRate, orderNotes } = req.body;
 
       const billingData = JSON.stringify(billingFormData);
       const shippingData = JSON.stringify(shippingFormData);   
@@ -67,12 +67,13 @@ export default async function handler(req, res) {
         line_items: lineItems,
         mode: "payment",
         success_url: `${req.headers.origin}/success`,
-        cancel_url: `${req.headers.origin}/`,
+        cancel_url: `${req.headers.origin}/page/account/checkout`,
         metadata: {
           'billing': billingData, 
           'shipping': shippingData,
           'order-items': orderItems,
-          'shipping_lines': shippingline
+          'shipping_lines': shippingline,
+          'orderNotes' : orderNotes
         },
         shipping_options: shippingOptions,
         
