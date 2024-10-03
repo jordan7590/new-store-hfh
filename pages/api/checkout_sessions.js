@@ -12,7 +12,8 @@ export default async function handler(req, res) {
 
       const billingData = JSON.stringify(billingFormData);
       const shippingData = JSON.stringify(shippingFormData);   
-
+      const orderNotes = JSON.stringify(orderNotes);   
+      
       // Construct line items based on cart data
       const lineItems = cartData.map(item => {
         const itemQuantity = item.sizesQuantities && Array.isArray(item.sizesQuantities) && item.sizesQuantities.length > 0 ?
