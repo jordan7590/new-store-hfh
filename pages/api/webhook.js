@@ -4,7 +4,6 @@ import axios from "axios";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-// Object to store processed webhook event IDs
 const processedEvents = {};
 
 export const config = {
@@ -15,6 +14,9 @@ export const config = {
 };
 
 async function createOrderNote(orderId, orderNotes) {
+  console.log("DEBUG: Entering createOrderNote function");
+  console.log(`DEBUG: orderId: ${orderId}, orderNotes: ${orderNotes}`);
+  
   let config = {
     method: 'post',
     maxBodyLength: Infinity,
@@ -28,16 +30,21 @@ async function createOrderNote(orderId, orderNotes) {
   };
 
   try {
+    console.log("DEBUG: Attempting to create order note with config:", JSON.stringify(config));
     const response = await axios.request(config);
-    console.log("Order note created:", JSON.stringify(response.data));
+    console.log("DEBUG: Order note created successfully. Response:", JSON.stringify(response.data));
     return response.data;
   } catch (error) {
-    console.error("Error creating order note:", error.response ? error.response.data : error.message);
+    console.error("DEBUG: Error creating order note:", error.response ? JSON.stringify(error.response.data) : error.message);
     throw error;
   }
 }
 
 async function createWooCommerceOrder(orderData, orderNotes) {
+  console.log("DEBUG: Entering createWooCommerceOrder function");
+  console.log("DEBUG: orderData:", JSON.stringify(orderData));
+  console.log("DEBUG: orderNotes:", orderNotes);
+
   try {
     const createdOrder = await axios.post(
       `${process.env.WOOCOMMERCE_URL}/wp-json/wc/v3/orders`,
@@ -53,61 +60,61 @@ async function createWooCommerceOrder(orderData, orderNotes) {
       }
     );
 
-    console.log("Order created:", createdOrder.data);
+    console.log("DEBUG: Order created. Response:", JSON.stringify(createdOrder.data));
 
-    // Create order note
     if (createdOrder.data && createdOrder.data.id && orderNotes) {
       const orderId = createdOrder.data.id;
+      console.log(`DEBUG: Attempting to create order note for order ${orderId}`);
       try {
         await createOrderNote(orderId, orderNotes);
-        console.log("Order note created successfully");
+        console.log("DEBUG: Order note created successfully");
       } catch (noteError) {
-        console.error("Failed to create order note:", noteError);
-        // Note: We're not throwing this error to avoid failing the whole process
+        console.error("DEBUG: Failed to create order note:", noteError);
       }
     } else {
-      console.log("Skipping order note creation. Order ID or notes missing.");
-      console.log("Order ID:", createdOrder.data ? createdOrder.data.id : 'undefined');
-      console.log("Order Notes:", orderNotes);
+      console.log("DEBUG: Skipping order note creation. Details:");
+      console.log("DEBUG: Order ID:", createdOrder.data ? createdOrder.data.id : 'undefined');
+      console.log("DEBUG: Order Notes:", orderNotes);
     }
 
     return createdOrder.data;
   } catch (error) {
-    console.error("Error creating order:", error.response ? error.response.data : error.message);
+    console.error("DEBUG: Error creating order:", error.response ? JSON.stringify(error.response.data) : error.message);
     throw error;
   }
 }
 
 export default async function handler(req, res) {
+  console.log("DEBUG: Webhook handler triggered");
   if (req.method === "POST") {
     try {
       const buf = await buffer(req);
       const sig = req.headers["stripe-signature"];
 
-      // Construct event from Stripe webhook payload
+      console.log("DEBUG: Constructing Stripe event");
       const event = stripe.webhooks.constructEvent(buf.toString(), sig, process.env.STRIPE_WEBHOOK_SECRET);
 
-      // Check if event ID has already been processed
+      console.log("DEBUG: Stripe event type:", event.type);
+
       if (processedEvents[event.id]) {
-        console.log("Webhook event already processed:", event.id);
+        console.log("DEBUG: Webhook event already processed:", event.id);
         return res.status(200).json({ received: true });
       }
 
-      // Handle the event
       if (event.type === "checkout.session.completed") {
-        // Extract necessary data from the event
+        console.log("DEBUG: Processing checkout.session.completed event");
         const session = event.data.object;
+
+        console.log("DEBUG: Session metadata:", JSON.stringify(session.metadata));
 
         const billingData = JSON.parse(session.metadata.billing);
         const shippingData = JSON.parse(session.metadata.shipping);
         const orderItems = JSON.parse(session.metadata["order-items"]);
         const shippingLines = JSON.parse(session.metadata.shipping_lines);
-        // Remove the extra JSON.parse for order_notes
         const orderNotes = session.metadata.order_notes.replace(/^"|"$/g, '');
 
-        console.log("Parsed Order Notes:", orderNotes);
+        console.log("DEBUG: Parsed Order Notes:", orderNotes);
 
-        // Construct order data for WooCommerce
         const orderData = {
           payment_method: "Stripe",
           payment_method_title: "Credit Card",
@@ -120,7 +127,7 @@ export default async function handler(req, res) {
             city: billingData.city,
             state: billingData.state,
             postcode: billingData.pincode,
-            country: "US", // Assuming the country is always US
+            country: "US",
             email: billingData.email,
             phone: billingData.phone
           },
@@ -132,10 +139,10 @@ export default async function handler(req, res) {
             city: shippingData.city,
             state: shippingData.state,
             postcode: shippingData.pincode,
-            country: "US", // Assuming the country is always US
+            country: "US",
           },
           line_items: orderItems.map(item => ({
-            product_id: item.item_number, //  item_number corresponds to the product_id
+            product_id: item.item_number,
             quantity: item.quantity
           })),
           shipping_lines: [
@@ -148,22 +155,25 @@ export default async function handler(req, res) {
         };
 
         try {
+          console.log("DEBUG: Calling createWooCommerceOrder");
           const createdOrder = await createWooCommerceOrder(orderData, orderNotes);
-          console.log("Order created in WooCommerce:", createdOrder);
-          processedEvents[event.id] = true; // Mark event as processed
+          console.log("DEBUG: Order created in WooCommerce:", JSON.stringify(createdOrder));
+          processedEvents[event.id] = true;
           res.status(200).json({ received: true });
         } catch (error) {
-          console.error("Error creating WooCommerce order:", error);
+          console.error("DEBUG: Error creating WooCommerce order:", error);
           res.status(500).json({ error: "Error creating WooCommerce order" });
         }
       } else {
+        console.log("DEBUG: Unhandled event type");
         res.status(200).json({ received: true });
       }
     } catch (err) {
-      console.error("Error handling Stripe webhook:", err.message);
+      console.error("DEBUG: Error handling Stripe webhook:", err.message);
       res.status(400).send(`Webhook Error: ${err.message}`);
     }
   } else {
+    console.log("DEBUG: Method not allowed");
     res.setHeader("Allow", "POST");
     res.status(405).end("Method Not Allowed");
   }
