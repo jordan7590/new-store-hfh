@@ -15,15 +15,17 @@ export const config = {
 };
 
 async function createOrderNote(orderId, orderNotes) {
-  let config = {
-    method: 'post',
-    maxBodyLength: Infinity,
-    url: `${process.env.WOOCOMMERCE_URL}/wp-json/wc/v3/orders/4906/notes?consumer_key=${process.env.WOOCOMMERCE_CONSUMER_KEY}&consumer_secret=${process.env.WOOCOMMERCE_CONSUMER_SECRET}&note=hellowwwwwwwwwwwwwwwwwwwwwwwww`,
-  };
+ 
+let config = {
+  method: 'post',
+  maxBodyLength: Infinity,
+  url: 'https://hfh.tonserve.com/wp-json/wc/v3/orders/4906/notes?consumer_key=ck_86a3fc5979726afb7a1dd66fb12329bef3b365e2&consumer_secret=cs_19bb38d1e28e58f10b3ee8829b3cfc182b8eb3ea&note=45454545454545454545',
+  headers: { }
+};
 
   try {
     const response = await axios.request(config);
-    console.log("Order note created:", JSON.stringify(response.data));
+    log("Order note created:", JSON.stringify(response.data));
     return response.data;
   } catch (error) {
     console.error("Error creating order note:", error.response ? error.response.data : error.message);
