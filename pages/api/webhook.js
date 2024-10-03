@@ -66,7 +66,7 @@ async function createWooCommerceOrder(orderData, orderNotes) {
         // Note: We're not throwing this error to avoid failing the whole process
       }
     } else {
-      console.log("Skipping order note creation. Order ID or notes missing.");
+      log("Skipping order note creation. Order ID or notes missing.");
     }
 
     return createdOrder.data;
