@@ -15,17 +15,21 @@ export const config = {
 };
 
 async function createOrderNote(orderId, orderNotes) {
- 
-let config = {
-  method: 'post',
-  maxBodyLength: Infinity,
-  url: 'https://hfh.tonserve.com/wp-json/wc/v3/orders/4906/notes?consumer_key=ck_86a3fc5979726afb7a1dd66fb12329bef3b365e2&consumer_secret=cs_19bb38d1e28e58f10b3ee8829b3cfc182b8eb3ea&note=45454545454545454545',
-  headers: { }
-};
+  let config = {
+    method: 'post',
+    maxBodyLength: Infinity,
+    url: `${process.env.WOOCOMMERCE_URL}/wp-json/wc/v3/orders/${orderId}/notes`,
+    params: {
+      consumer_key: process.env.WOOCOMMERCE_CONSUMER_KEY,
+      consumer_secret: process.env.WOOCOMMERCE_CONSUMER_SECRET,
+      note: orderNotes
+    },
+    headers: { }
+  };
 
   try {
     const response = await axios.request(config);
-    log("Order note created:", JSON.stringify(response.data));
+    console.log("Order note created:", JSON.stringify(response.data));
     return response.data;
   } catch (error) {
     console.error("Error creating order note:", error.response ? error.response.data : error.message);
@@ -33,7 +37,6 @@ let config = {
   }
 }
 
-// Usage within your existing code
 async function createWooCommerceOrder(orderData, orderNotes) {
   try {
     const createdOrder = await axios.post(
@@ -53,9 +56,18 @@ async function createWooCommerceOrder(orderData, orderNotes) {
     console.log("Order created:", createdOrder.data);
 
     // Create order note
+    if (createdOrder.data && createdOrder.data.id && orderNotes) {
       const orderId = createdOrder.data.id;
-      await createOrderNote(orderId, orderNotes);
-    
+      try {
+        await createOrderNote(orderId, orderNotes);
+        console.log("Order note created successfully");
+      } catch (noteError) {
+        console.error("Failed to create order note:", noteError);
+        // Note: We're not throwing this error to avoid failing the whole process
+      }
+    } else {
+      console.log("Skipping order note creation. Order ID or notes missing.");
+    }
 
     return createdOrder.data;
   } catch (error) {
