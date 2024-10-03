@@ -14,76 +14,6 @@ export const config = {
   },
 };
 
-export default async function handler(req, res) {
-  if (req.method === "POST") {
-    try {
-
-      const buf = await buffer(req);
-      const sig = req.headers["stripe-signature"];
-
-      // Construct event from Stripe webhook payload
-      const event = stripe.webhooks.constructEvent(buf.toString(), sig, process.env.STRIPE_WEBHOOK_SECRET);
-
-      // Check if event ID has already been processed
-      if (processedEvents[event.id]) {
-        console.log("Webhook event already processed:", event.id);
-        return res.status(200).json({ received: true });
-      }
-
-      // Handle the event
-      if (event.type === "checkout.session.completed") {
-        // Extract necessary data from the event
-        const session = event.data.object;
-        // const lineItems = session.line_items;
-
-        const billingData = JSON.parse(session.metadata.billing);
-        const shippingData = JSON.parse(session.metadata.shipping);
-        const orderItems = JSON.parse(session.metadata["order-items"]);
-        const shippingLines = JSON.parse(session.metadata.shipping_lines);
-        const orderNotes = JSON.parse(session.metadata.order_notes);
-
-        
-         // Construct order data for WooCommerce
-         const orderData ={
-         payment_method: "Stripe",
-         payment_method_title: "Credit Card",
-         set_paid: true,
-         billing: {
-          first_name: billingData.first_name,
-          last_name: billingData.last_name,
-          address_1: billingData.address1,
-          address_2: billingData.address2,
-          city: billingData.city,
-          state: billingData.state,
-          postcode: billingData.pincode,
-          country: "US", // Assuming the country is always US
-          email: billingData.email,
-          phone: billingData.phone
-        },
-        shipping: {
-          first_name: shippingData.first_name,
-          last_name: shippingData.last_name,
-          address_1: shippingData.address1,
-          address_2: shippingData.address2,
-          city: shippingData.city,
-          state: shippingData.state,
-          postcode: shippingData.pincode,
-          country: "US", // Assuming the country is always US
-        },
-        line_items: orderItems.map(item => ({
-          product_id: item.item_number, //  item_number corresponds to the product_id
-          quantity: item.quantity
-        })),
-         shipping_lines: [
-           {
-             method_id: shippingLines.method_id,
-             method_title: shippingLines.method_title,
-             total: shippingLines.total
-           }
-         ]
-       };
-
-     // Create order in WooCommerce using Axios
 async function createWooCommerceOrder(orderData, orderNotes) {
   try {
     const createdOrder = await axios.post(
@@ -137,11 +67,81 @@ async function createWooCommerceOrder(orderData, orderNotes) {
   }
 }
 
-        console.log("Order created in WooCommerce:", createdOrder.data);
+export default async function handler(req, res) {
+  if (req.method === "POST") {
+    try {
+      const buf = await buffer(req);
+      const sig = req.headers["stripe-signature"];
 
+      // Construct event from Stripe webhook payload
+      const event = stripe.webhooks.constructEvent(buf.toString(), sig, process.env.STRIPE_WEBHOOK_SECRET);
 
-        res.status(200).json({ received: true });
-        processedEvents[event.id] = true; // Mark event as processed
+      // Check if event ID has already been processed
+      if (processedEvents[event.id]) {
+        console.log("Webhook event already processed:", event.id);
+        return res.status(200).json({ received: true });
+      }
+
+      // Handle the event
+      if (event.type === "checkout.session.completed") {
+        // Extract necessary data from the event
+        const session = event.data.object;
+
+        const billingData = JSON.parse(session.metadata.billing);
+        const shippingData = JSON.parse(session.metadata.shipping);
+        const orderItems = JSON.parse(session.metadata["order-items"]);
+        const shippingLines = JSON.parse(session.metadata.shipping_lines);
+        const orderNotes = JSON.parse(session.metadata.order_notes);
+
+        // Construct order data for WooCommerce
+        const orderData = {
+          payment_method: "Stripe",
+          payment_method_title: "Credit Card",
+          set_paid: true,
+          billing: {
+            first_name: billingData.first_name,
+            last_name: billingData.last_name,
+            address_1: billingData.address1,
+            address_2: billingData.address2,
+            city: billingData.city,
+            state: billingData.state,
+            postcode: billingData.pincode,
+            country: "US", // Assuming the country is always US
+            email: billingData.email,
+            phone: billingData.phone
+          },
+          shipping: {
+            first_name: shippingData.first_name,
+            last_name: shippingData.last_name,
+            address_1: shippingData.address1,
+            address_2: shippingData.address2,
+            city: shippingData.city,
+            state: shippingData.state,
+            postcode: shippingData.pincode,
+            country: "US", // Assuming the country is always US
+          },
+          line_items: orderItems.map(item => ({
+            product_id: item.item_number, //  item_number corresponds to the product_id
+            quantity: item.quantity
+          })),
+          shipping_lines: [
+            {
+              method_id: shippingLines.method_id,
+              method_title: shippingLines.method_title,
+              total: shippingLines.total
+            }
+          ]
+        };
+
+        try {
+          const createdOrder = await createWooCommerceOrder(orderData, orderNotes);
+          console.log("Order created in WooCommerce:", createdOrder);
+          processedEvents[event.id] = true; // Mark event as processed
+          res.status(200).json({ received: true });
+        } catch (error) {
+          console.error("Error creating WooCommerce order:", error);
+          res.status(500).json({ error: "Error creating WooCommerce order" });
+        }
       } else {
         res.status(200).json({ received: true });
       }
