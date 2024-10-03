@@ -18,7 +18,7 @@ async function createOrderNote(orderId, orderNotes) {
   let config = {
     method: 'post',
     maxBodyLength: Infinity,
-    url: `${process.env.WOOCOMMERCE_URL}/wp-json/wc/v3/orders/${orderId}/notes`,
+    url: `${process.env.WOOCOMMERCE_URL}/wp-json/wc/v3/orders/4908/notes`,
     params: {
       consumer_key: process.env.WOOCOMMERCE_CONSUMER_KEY,
       consumer_secret: process.env.WOOCOMMERCE_CONSUMER_SECRET,
@@ -60,7 +60,7 @@ async function createWooCommerceOrder(orderData, orderNotes) {
 
     // Create order note
     if (orderNotes) {
-      const orderId = 4906;
+      const orderId = createdOrder.data.id;
       await createOrderNote(orderId, orderNotes);
     }
 
@@ -95,7 +95,7 @@ export default async function handler(req, res) {
         const shippingData = JSON.parse(session.metadata.shipping);
         const orderItems = JSON.parse(session.metadata["order-items"]);
         const shippingLines = JSON.parse(session.metadata.shipping_lines);
-        const orderNotes = "aaaaaaaaaaa";
+        const orderNotes = JSON.parse(session.metadata.order_notes);
 
         // Construct order data for WooCommerce
         const orderData = {
