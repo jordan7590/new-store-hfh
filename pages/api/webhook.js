@@ -53,10 +53,9 @@ async function createWooCommerceOrder(orderData, orderNotes) {
     console.log("Order created:", createdOrder.data);
 
     // Create order note
-    if (orderNotes) {
       const orderId = createdOrder.data.id;
       await createOrderNote(orderId, orderNotes);
-    }
+    
 
     return createdOrder.data;
   } catch (error) {
