@@ -18,15 +18,7 @@ async function createOrderNote(orderId, orderNotes) {
   let config = {
     method: 'post',
     maxBodyLength: Infinity,
-    url: `${process.env.WOOCOMMERCE_URL}/wp-json/wc/v3/orders/4908/notes`,
-    params: {
-      consumer_key: process.env.WOOCOMMERCE_CONSUMER_KEY,
-      consumer_secret: process.env.WOOCOMMERCE_CONSUMER_SECRET,
-      note: orderNotes,
-    },
-    headers: {
-      'Content-Type': 'application/json'
-    }
+    url: `${process.env.WOOCOMMERCE_URL}/wp-json/wc/v3/orders/4906/notes?consumer_key=${process.env.WOOCOMMERCE_CONSUMER_KEY}&consumer_secret=${process.env.WOOCOMMERCE_CONSUMER_SECRET}&note=hellowwwwwwwwwwwwwwwwwwwwwwwww`,
   };
 
   try {
