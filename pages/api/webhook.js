@@ -40,7 +40,7 @@ export default async function handler(req, res) {
         const shippingData = JSON.parse(session.metadata.shipping);
         const orderItems = JSON.parse(session.metadata["order-items"]);
         const shippingLines = JSON.parse(session.metadata.shipping_lines);
-        const orderNotes = JSON.parse(session.metadata.orderNotes);
+        const orderNotes = JSON.parse(session.metadata.order_notes);
 
         
          // Construct order data for WooCommerce

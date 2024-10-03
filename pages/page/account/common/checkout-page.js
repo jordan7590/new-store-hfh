@@ -57,7 +57,7 @@ const CheckoutPage = () => {
   const [shippingFormValid, setShippingFormValid] = useState(false);
   const [billingFormErrors, setBillingFormErrors] = useState({});
   const [shippingFormErrors, setShippingFormErrors] = useState({});
-  const [orderNotesData, setorderNotesData] = useState("");
+  const [orderNotes, setOrderNotes] = useState("");
 
   const {
     register,
@@ -66,8 +66,8 @@ const CheckoutPage = () => {
   } = useForm(); // initialise the hook
   const router = useRouter();
 
-  const handleorderNotesDataChange = (event) => {
-    setorderNotesData(event.target.value);
+  const handleOrderNotesChange = (event) => {
+    setOrderNotes(event.target.value);
   };
 
   const handleBillingInputChange = (event) => {
@@ -442,11 +442,11 @@ const CheckoutPage = () => {
                     <div className="form-group col-md-12 col-sm-12 col-xs-12">
                       <div className="field-label">Order Notes</div>
                       <textarea
-                      name="orderNotesData"
+                      name="orderNotes"
                       rows="4"
                       className="form-control"
-                      onChange={handleorderNotesDataChange}
-                      value={orderNotesData}
+                      onChange={handleOrderNotesChange}
+                      value={orderNotes}
                       placeholder="Optional: Add any special instructions or information about your order here."
                     ></textarea>
                     </div>
@@ -595,10 +595,10 @@ const CheckoutPage = () => {
                     <pre>{JSON.stringify(orderItems, null, 2)}</pre>
                   </div>
                 )}
-                {Object.keys(orderNotesData).length > 0 && (
+                {Object.keys(orderNotes).length > 0 && (
                   <div>
-                    <h4>orderNotesData:</h4>
-                    <pre>{JSON.stringify(orderNotesData, null, 2)}</pre>
+                    <h4>orderNotes:</h4>
+                    <pre>{JSON.stringify(orderNotes, null, 2)}</pre>
                   </div>
                 )}
               </Col>
@@ -756,7 +756,7 @@ const CheckoutPage = () => {
                               billingFormValid={billingFormValid}
                               shippingFormValid={shippingFormValid}
                               shippingAvailable={shippingAvailable}
-                              orderNotesData={orderNotesData} // Pass order notes to CheckoutButton
+                              orderNotes={orderNotes} // Pass order notes to CheckoutButton
                             />
                           </Elements>
                         </div>
