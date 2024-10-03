@@ -13,7 +13,36 @@ export const config = {
     externalResolver: true,
   },
 };
+const axios = require('axios');
 
+async function createOrderNote(orderId, orderNotes) {
+  let config = {
+    method: 'post',
+    maxBodyLength: Infinity,
+    url: `${process.env.WOOCOMMERCE_URL}/wp-json/wc/v3/orders/${orderId}/notes`,
+    params: {
+      consumer_key: process.env.WOOCOMMERCE_CONSUMER_KEY,
+      consumer_secret: process.env.WOOCOMMERCE_CONSUMER_SECRET,
+    },
+    data: {
+      note: orderNotes
+    },
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  };
+
+  try {
+    const response = await axios.request(config);
+    console.log("Order note created:", JSON.stringify(response.data));
+    return response.data;
+  } catch (error) {
+    console.error("Error creating order note:", error.response ? error.response.data : error.message);
+    throw error;
+  }
+}
+
+// Usage within your existing code
 async function createWooCommerceOrder(orderData, orderNotes) {
   try {
     const createdOrder = await axios.post(
@@ -35,29 +64,7 @@ async function createWooCommerceOrder(orderData, orderNotes) {
     // Create order note
     if (orderNotes) {
       const orderId = createdOrder.data.id;
-      const noteData = {
-        note: orderNotes
-      };
-
-      try {
-        const createdNote = await axios.post(
-          `${process.env.WOOCOMMERCE_URL}/wp-json/wc/v3/orders/${orderId}/notes`,
-          noteData,
-          {
-            auth: {
-              username: process.env.WOOCOMMERCE_CONSUMER_KEY,
-              password: process.env.WOOCOMMERCE_CONSUMER_SECRET,
-            },
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        console.log("Order note created:", createdNote.data);
-      } catch (error) {
-        console.error("Error creating order note:", error.response ? error.response.data : error.message);
-      }
+      await createOrderNote(orderId, orderNotes);
     }
 
     return createdOrder.data;
