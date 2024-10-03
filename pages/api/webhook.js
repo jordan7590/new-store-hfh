@@ -66,7 +66,9 @@ async function createWooCommerceOrder(orderData, orderNotes) {
         // Note: We're not throwing this error to avoid failing the whole process
       }
     } else {
-      log("Skipping order note creation. Order ID or notes missing.");
+      console.log("Skipping order note creation. Order ID or notes missing.");
+      console.log("Order ID:", createdOrder.data ? createdOrder.data.id : 'undefined');
+      console.log("Order Notes:", orderNotes);
     }
 
     return createdOrder.data;
@@ -100,7 +102,10 @@ export default async function handler(req, res) {
         const shippingData = JSON.parse(session.metadata.shipping);
         const orderItems = JSON.parse(session.metadata["order-items"]);
         const shippingLines = JSON.parse(session.metadata.shipping_lines);
-        const orderNotes = JSON.parse(session.metadata.order_notes);
+        // Remove the extra JSON.parse for order_notes
+        const orderNotes = session.metadata.order_notes.replace(/^"|"$/g, '');
+
+        console.log("Parsed Order Notes:", orderNotes);
 
         // Construct order data for WooCommerce
         const orderData = {
