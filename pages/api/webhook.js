@@ -116,9 +116,12 @@ export default async function handler(req, res) {
               },
             }
           );
-
-          log("Order created in WooCommerce", { orderId: createdOrder.data.id });
-
+        
+          log("Order created in WooCommerce", { 
+            orderId: createdOrder.data.id,
+            orderStatus: createdOrder.data.status
+          });
+        
           // Create order note
           if (orderNotes) {
             log("Attempting to create order note", { orderId: createdOrder.data.id });
@@ -126,7 +129,7 @@ export default async function handler(req, res) {
             const noteData = {
               note: orderNotes
             };
-
+        
             try {
               const createdNote = await axios.post(
                 `${process.env.WOOCOMMERCE_URL}/wp-json/wc/v3/orders/${orderId}/notes`,
@@ -141,12 +144,13 @@ export default async function handler(req, res) {
                   },
                 }
               );
-
+        
               log("Order note created successfully", { noteId: createdNote.data.id });
             } catch (error) {
               log("Error creating order note", { 
                 error: error.message, 
-                responseData: error.response ? error.response.data : null 
+                responseData: error.response ? JSON.stringify(error.response.data) : null,
+                stack: error.stack
               });
             }
           } else {
@@ -155,10 +159,13 @@ export default async function handler(req, res) {
         } catch (error) {
           log("Error creating WooCommerce order", { 
             error: error.message, 
-            responseData: error.response ? error.response.data : null 
+            responseData: error.response ? JSON.stringify(error.response.data) : null,
+            stack: error.stack
           });
-          throw error; // Re-throw to be caught by the outer try-catch
         }
+        
+        log("Webhook processing completed");
+        
 
         res.status(200).json({ received: true });
         processedEvents[event.id] = true; // Mark event as processed
