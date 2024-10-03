@@ -60,7 +60,7 @@ async function createWooCommerceOrder(orderData, orderNotes) {
 
     // Create order note
     if (orderNotes) {
-      const orderId = createdOrder.data.id;
+      const orderId = 4906;
       await createOrderNote(orderId, orderNotes);
     }
 
