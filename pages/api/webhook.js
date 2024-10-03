@@ -83,10 +83,36 @@ export default async function handler(req, res) {
          ]
        };
 
-        // Create order in WooCommerce using Axios
-        const createdOrder = await axios.post(
-          `${process.env.WOOCOMMERCE_URL}/wp-json/wc/v3/orders`,
-          orderData,
+     // Create order in WooCommerce using Axios
+async function createWooCommerceOrder(orderData, orderNotes) {
+  try {
+    const createdOrder = await axios.post(
+      `${process.env.WOOCOMMERCE_URL}/wp-json/wc/v3/orders`,
+      orderData,
+      {
+        auth: {
+          username: process.env.WOOCOMMERCE_CONSUMER_KEY,
+          password: process.env.WOOCOMMERCE_CONSUMER_SECRET,
+        },
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    console.log("Order created:", createdOrder.data);
+
+    // Create order note
+    if (orderNotes) {
+      const orderId = createdOrder.data.id;
+      const noteData = {
+        note: orderNotes
+      };
+
+      try {
+        const createdNote = await axios.post(
+          `${process.env.WOOCOMMERCE_URL}/wp-json/wc/v3/orders/${orderId}/notes`,
+          noteData,
           {
             auth: {
               username: process.env.WOOCOMMERCE_CONSUMER_KEY,
@@ -98,36 +124,20 @@ export default async function handler(req, res) {
           }
         );
 
-        console.log("Order created in WooCommerce:", createdOrder.data);
-
-           // Create order note
-if (orderNotes) {
-  const orderId = createdOrder.data.id;
-  // const noteData = {
-  //   note: orderNotes
-  // };
-
-  try {
-    const createdNote = await axios.post(
-      `${process.env.WOOCOMMERCE_URL}/wp-json/wc/v3/orders/${orderId}/notes`,
-      orderNotes,
-      {
-        params: {
-          consumer_key: process.env.WOOCOMMERCE_CONSUMER_KEY,
-          consumer_secret: process.env.WOOCOMMERCE_CONSUMER_SECRET,
-          note: orderNotes,
-        },
-        headers: {
-          "Content-Type": "application/json",
-        },
+        console.log("Order note created:", createdNote.data);
+      } catch (error) {
+        console.error("Error creating order note:", error.response ? error.response.data : error.message);
       }
-    );
+    }
 
-    console.log("Order note created:", createdNote.data);
+    return createdOrder.data;
   } catch (error) {
-    console.error("Error creating order note:", error.response ? error.response.data : error.message);
+    console.error("Error creating order:", error.response ? error.response.data : error.message);
+    throw error;
   }
 }
+
+        console.log("Order created in WooCommerce:", createdOrder.data);
 
 
         res.status(200).json({ received: true });
