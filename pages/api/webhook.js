@@ -100,7 +100,6 @@ export default async function handler(req, res) {
           ]
         };
 
-        log("Attempting to create WooCommerce order");
         // Create order in WooCommerce using Axios
         try {
           const createdOrder = await axios.post(
