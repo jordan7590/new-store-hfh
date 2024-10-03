@@ -74,7 +74,7 @@ export default async function handler(req, res) {
           'shipping': shippingData,
           'order-items': orderItems,
           'shipping_lines': shippingline,
-          'order_notes' : orderNotes
+          'order_notes' : order_notes
         },
         shipping_options: shippingOptions,
         
