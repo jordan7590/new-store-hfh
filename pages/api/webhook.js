@@ -22,9 +22,7 @@ async function createOrderNote(orderId, orderNotes) {
     params: {
       consumer_key: process.env.WOOCOMMERCE_CONSUMER_KEY,
       consumer_secret: process.env.WOOCOMMERCE_CONSUMER_SECRET,
-    },
-    data: {
-      note: orderNotes
+      note: orderNotes,
     },
     headers: {
       'Content-Type': 'application/json'
