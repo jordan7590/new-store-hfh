@@ -13,7 +13,6 @@ export const config = {
     externalResolver: true,
   },
 };
-const axios = require('axios');
 
 async function createOrderNote(orderId, orderNotes) {
   let config = {
