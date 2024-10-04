@@ -1,6 +1,7 @@
 import React from 'react';
 import { Container, Row, Col, Table, Alert, Media } from 'reactstrap';
 import Stripe from 'stripe';
+import CommonLayout from '../components/shop/common-layout';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -30,10 +31,17 @@ export async function getServerSideProps(context) {
   }
 }
 
+
+
+
 const SuccessPage = ({ session, error, errorDetails, errorType }) => {
   if (error) {
     return (
-      <Container className="mt-5">
+
+      
+    <CommonLayout parent="home" title="404">
+    <section className="p-0">
+    <Container className="mt-5">
         <Row>
           <Col>
             <Alert color="danger">
@@ -45,6 +53,11 @@ const SuccessPage = ({ session, error, errorDetails, errorType }) => {
           </Col>
         </Row>
       </Container>
+</section>
+</CommonLayout>
+
+
+     
     );
   }
 
@@ -59,7 +72,13 @@ const SuccessPage = ({ session, error, errorDetails, errorType }) => {
   const orderNotes = session.metadata.order_notes ? JSON.parse(session.metadata.order_notes) : null;
 
   return (
-    <>
+
+    <CommonLayout parent="home" title="404">
+                  <section className="p-0">
+                <Container>
+                    <Row>
+                        <Col sm="12">
+                        <>
       <Table
         style={{ marginBottom: "0" }}
         borderless
@@ -271,6 +290,12 @@ const SuccessPage = ({ session, error, errorDetails, errorType }) => {
         }
       `}</style>
     </>
+                        </Col>
+                    </Row>
+                </Container>
+            </section>
+</CommonLayout>
+  
   );
 };
 
