@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
+import React from 'react';
 import Stripe from 'stripe';
 import { Container, Row, Col, Table, Alert } from 'reactstrap';
 
@@ -32,8 +31,6 @@ export async function getServerSideProps(context) {
 }
 
 const SuccessPage = ({ session, error, errorDetails, errorType }) => {
-  const router = useRouter();
-
   if (error) {
     return (
       <Container className="mt-5">
@@ -105,26 +102,28 @@ const SuccessPage = ({ session, error, errorDetails, errorType }) => {
           </Table>
 
           <h3 className="mt-4 mb-3">Billing Information</h3>
-          <p>{billingInfo.firstName} {billingInfo.lastName}</p>
+          <p>{billingInfo.first_name} {billingInfo.last_name}</p>
           <p>{billingInfo.address1}</p>
           {billingInfo.address2 && <p>{billingInfo.address2}</p>}
-          <p>{billingInfo.city}, {billingInfo.state} {billingInfo.postalCode}</p>
+          <p>{billingInfo.city}, {billingInfo.state} {billingInfo.pincode}</p>
           <p>{billingInfo.country}</p>
+          <p>Email: {billingInfo.email}</p>
+          <p>Phone: {billingInfo.phone}</p>
 
           <h3 className="mt-4 mb-3">Shipping Information</h3>
-          <p>{shippingInfo.firstName} {shippingInfo.lastName}</p>
+          <p>{shippingInfo.first_name} {shippingInfo.last_name}</p>
           <p>{shippingInfo.address1}</p>
           {shippingInfo.address2 && <p>{shippingInfo.address2}</p>}
-          <p>{shippingInfo.city}, {shippingInfo.state} {shippingInfo.postalCode}</p>
+          <p>{shippingInfo.city}, {shippingInfo.state} {shippingInfo.pincode}</p>
           <p>{shippingInfo.country}</p>
 
           <h3 className="mt-4 mb-3">Shipping Method</h3>
-          <p>{shippingLines.method_title} - ${parseFloat(shippingLines.total).toFixed(2)}</p>
+          <p>{shippingLines.method_title} - ${parseFloat(shippingLines.total.replace(/"/g, '')).toFixed(2)}</p>
 
           {orderNotes && (
             <>
               <h3 className="mt-4 mb-3">Order Notes</h3>
-              <p>{orderNotes}</p>
+              <p>{orderNotes.replace(/"/g, '')}</p>
             </>
           )}
         </Col>
