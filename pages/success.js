@@ -1,50 +1,65 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import axios from 'axios';
-import { Container, Row, Col, Table } from 'reactstrap';
+import Stripe from 'stripe';
+import { Container, Row, Col, Table, Alert } from 'reactstrap';
 
-const SuccessPage = () => {
-  const [session, setSession] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const router = useRouter();
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-  useEffect(() => {
-    const { session_id } = router.query;
-    if (session_id) {
-      fetchSessionDetails(session_id);
-    }
-  }, [router.query]);
+export async function getServerSideProps(context) {
+  const { session_id } = context.query;
 
-  const fetchSessionDetails = async (sessionId) => {
-    try {
-      const response = await axios.get(`/api/checkout-session?session_id=${sessionId}`);
-      setSession(response.data);
-      setLoading(false);
-    } catch (err) {
-      console.error('Error fetching session details:', err);
-      setError('Failed to load order details. Please try again later.');
-      setLoading(false);
-    }
-  };
-
-  if (loading) {
-    return <div>Loading order details...</div>;
+  if (!session_id) {
+    return { props: { error: 'Missing session_id parameter' } };
   }
 
+  try {
+    console.log('Fetching session with ID:', session_id);
+    const session = await stripe.checkout.sessions.retrieve(session_id, {
+      expand: ['line_items', 'customer'],
+    });
+    console.log('Session retrieved successfully');
+    return { props: { session: JSON.parse(JSON.stringify(session)) } };
+  } catch (err) {
+    console.error('Error retrieving Stripe session:', err);
+    return { 
+      props: { 
+        error: 'Error retrieving Stripe session',
+        errorDetails: err.message,
+        errorType: err.type,
+      } 
+    };
+  }
+}
+
+const SuccessPage = ({ session, error, errorDetails, errorType }) => {
+  const router = useRouter();
+
   if (error) {
-    return <div>{error}</div>;
+    return (
+      <Container className="mt-5">
+        <Row>
+          <Col>
+            <Alert color="danger">
+              <h4>{error}</h4>
+              <p>{errorDetails}</p>
+              <p>Error type: {errorType}</p>
+              <p>Please try again later or contact customer support.</p>
+            </Alert>
+          </Col>
+        </Row>
+      </Container>
+    );
   }
 
   if (!session) {
-    return <div>No order details found.</div>;
+    return <Container className="mt-5"><Row><Col><Alert color="warning">No order details found.</Alert></Col></Row></Container>;
   }
 
   const billingInfo = JSON.parse(session.metadata.billing);
   const shippingInfo = JSON.parse(session.metadata.shipping);
   const orderItems = JSON.parse(session.metadata['order-items']);
   const shippingLines = JSON.parse(session.metadata.shipping_lines);
-  const orderNotes = JSON.parse(session.metadata.order_notes);
+  const orderNotes = session.metadata.order_notes ? JSON.parse(session.metadata.order_notes) : null;
 
   return (
     <Container className="mt-5">
