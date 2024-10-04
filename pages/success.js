@@ -39,7 +39,7 @@ const SuccessPage = ({ session, error, errorDetails, errorType }) => {
     return (
 
       
-    <CommonLayout parent="home" title="404">
+    <CommonLayout parent="home" title="Order Success">
     <section className="p-0">
     <Container className="mt-5">
         <Row>
@@ -73,7 +73,7 @@ const SuccessPage = ({ session, error, errorDetails, errorType }) => {
 
   return (
 
-    <CommonLayout parent="home" title="404">
+    <CommonLayout parent="home" title="Order Success">
                   <section className="p-0">
                 <Container>
                     <Row>
