@@ -8,11 +8,16 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 export default async function handler(req, res) {
   if (req.method === "POST") {
     try {
-      const { billingFormData, shippingFormData, cartData, stripeShippingOptions, cartTotal, shippingCost, taxAmount, taxRate, orderNotes } = req.body;
+      const { billingFormData, shippingFormData, cartData, stripeShippingOptions, cartTotal, shippingCost, taxAmount, taxRate, orderNotes, appliedCoupon, discountAmount } = req.body;
 
       const billingData = JSON.stringify(billingFormData);
       const shippingData = JSON.stringify(shippingFormData);   
       const order_notes = JSON.stringify(orderNotes);   
+      const subtotal = cartData.reduce((total, item) => total + parseFloat(item.totalPrice), 0);
+
+
+      const discountRate = discountAmount / subtotal;
+      
       
       // Construct line items based on cart data
       const lineItems = cartData.map(item => {
@@ -20,13 +25,14 @@ export default async function handler(req, res) {
           item.sizesQuantities.reduce((totalQty, sizeQuantity) => totalQty + sizeQuantity.quantity, 0) :
           0;
       
+        
         return {
           price_data: {
             currency: "usd",
             product_data: {
               name: item.name,
             },
-            unit_amount: Math.round(item.totalPrice * 100 / itemQuantity) + ((item.totalPrice * 100 / itemQuantity * taxRate) / 100),  
+            unit_amount: Math.round((item.totalPrice * 100 / itemQuantity) - (item.totalPrice * 100 / itemQuantity * discountRate)) + ((item.totalPrice * 100 / itemQuantity * taxRate) / 100),  
           },
           quantity: itemQuantity,
         };
@@ -74,10 +80,13 @@ export default async function handler(req, res) {
           'shipping': shippingData,
           'order-items': orderItems,
           'shipping_lines': shippingline,
-          'order_notes' : order_notes
+          'order_notes' : order_notes,
+          'appliedCoupon': appliedCoupon,
+          'discountAmount': discountAmount
         },
         shipping_options: shippingOptions,
-        
+       
+          
         });
 
 

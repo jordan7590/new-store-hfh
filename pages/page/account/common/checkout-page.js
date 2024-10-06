@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import { Media, Container, Form, Row, Col } from "reactstrap";
+import { Container, Form, Row, Col, Input, Button } from "reactstrap";
 import CartContext from "../../../../helpers/cart";
 import paypal from "../../../../public/assets/images/paypal.png";
 import { PayPalButton } from "react-paypal-button-v2";
@@ -58,6 +58,12 @@ const CheckoutPage = () => {
   const [billingFormErrors, setBillingFormErrors] = useState({});
   const [shippingFormErrors, setShippingFormErrors] = useState({});
   const [orderNotes, setOrderNotes] = useState("");
+
+  const [couponCode, setCouponCode] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState(null);
+  const [discountAmount, setDiscountAmount] = useState(0);
+  const [couponError, setCouponError] = useState('');
+
 
   const {
     register,
@@ -320,6 +326,160 @@ const CheckoutPage = () => {
       handleShippingMethodChange({ target: { value: firstShippingMethod.id } }); // Trigger the handleShippingMethodChange function
     }
   }, [shippingMethods, loading]);
+
+
+  const validateCoupon = async (code) => {
+    try {
+      const response = await fetch(`https://hfh.tonserve.com/wp-json/wc/v3/coupons?code=${code}&consumer_key=ck_86a3fc5979726afb7a1dd66fb12329bef3b365e2&consumer_secret=cs_19bb38d1e28e58f10b3ee8829b3cfc182b8eb3ea`);
+      const data = await response.json();
+
+      if (data && data.length > 0) {
+        return data[0];
+      } else {
+        setCouponError('Invalid coupon code');
+        return null;
+      }
+    } catch (error) {
+      console.error('Error validating coupon:', error);
+      setCouponError('Error validating coupon');
+      return null;
+    }
+  };
+
+  const handleApplyCoupon = async () => {
+    setCouponError('');
+    const coupon = await validateCoupon(couponCode);
+    if (!coupon) return;
+
+    const currentDate = new Date();
+    const expiryDate = new Date(coupon.date_expires);
+
+    // Check expiration
+    if (expiryDate < currentDate) {
+      setCouponError('This coupon has expired');
+      return;
+    }
+
+    // Check usage limit
+    if (coupon.usage_limit && coupon.usage_count >= coupon.usage_limit) {
+      setCouponError('This coupon has reached its usage limit');
+      return;
+    }
+
+    // Check usage limit per user
+    if (coupon.usage_limit_per_user) {
+      // You'll need to implement a way to check the current user's usage
+      // This is just a placeholder
+      const currentUserUsage = 0;
+      if (currentUserUsage >= coupon.usage_limit_per_user) {
+        setCouponError('You have reached the usage limit for this coupon');
+        return;
+      }
+    }
+
+    // Check minimum spend
+    if (coupon.minimum_amount && parseFloat(cartTotal) < parseFloat(coupon.minimum_amount)) {
+      setCouponError(`Order must be at least ${symbol}${coupon.minimum_amount} to use this coupon`);
+      return;
+    }
+
+      // Check maximum spend
+      if (coupon.maximum_amount && parseFloat(coupon.maximum_amount) !== 0 && parseFloat(cartTotal) > parseFloat(coupon.maximum_amount)) {
+        setCouponError(`Order must be no more than ${symbol}${coupon.maximum_amount} to use this coupon`);
+        return;
+      }
+
+    // Check if coupon excludes sale items
+    if (coupon.exclude_sale_items) {
+      const hasSaleItem = cartItems.some(item => item.onSale);
+      if (hasSaleItem) {
+        setCouponError('This coupon cannot be used with sale items');
+        return;
+      }
+    }
+
+    // Check excluded products and categories
+    const excludedProductIds = new Set(coupon.excluded_product_ids);
+    const excludedCategoryIds = new Set(coupon.excluded_product_categories);
+    const hasExcludedItem = cartItems.some(item => 
+      excludedProductIds.has(item.id) || 
+      item.categories.some(cat => excludedCategoryIds.has(cat.id))
+    );
+    if (hasExcludedItem) {
+      setCouponError('This coupon cannot be used with some items in your cart');
+      return;
+    }
+
+    // Check if coupon applies to specific products or categories
+    if (coupon.product_ids.length > 0 || coupon.product_categories.length > 0) {
+      const applicableProductIds = new Set(coupon.product_ids);
+      const applicableCategoryIds = new Set(coupon.product_categories);
+      const hasApplicableItem = cartItems.some(item => 
+        applicableProductIds.has(item.id) || 
+        item.categories.some(cat => applicableCategoryIds.has(cat.id))
+      );
+      if (!hasApplicableItem) {
+        setCouponError('This coupon does not apply to any items in your cart');
+        return;
+      }
+    }
+
+    // Apply the coupon
+    setAppliedCoupon(coupon);
+    
+   
+    calculateDiscount(coupon);
+  };
+
+  useEffect(() => {
+    if (appliedCoupon) {
+      console.log('Updated applied coupon:', appliedCoupon);
+    }
+  }, [appliedCoupon]);
+  
+  const calculateDiscount = (coupon) => {
+    let discount = 0;
+    switch (coupon.discount_type) {
+      case 'percent':
+        discount = (parseFloat(cartTotal) * parseFloat(coupon.amount)) / 100;
+        break;
+      case 'fixed_cart':
+        discount = Math.min(parseFloat(coupon.amount), parseFloat(cartTotal));
+        break;
+      case 'fixed_product':
+        discount = cartItems.reduce((total, item) => {
+          if (coupon.product_ids.includes(item.id)) {
+            return total + (parseFloat(coupon.amount) * item.quantity);
+          }
+          return total;
+        }, 0);
+        break;
+      // Add handling for store credit if needed
+      default:
+        console.error('Unknown discount type');
+    }
+    setDiscountAmount(discount);
+
+    // Handle free shipping
+    if (coupon.free_shipping) {
+      setShippingCost(0);
+    }
+  };
+
+  const removeCoupon = () => {
+    setAppliedCoupon(null);
+    setDiscountAmount(0);
+    setCouponCode('');
+    setCouponError('');
+  };
+
+  // Update order total calculation
+  useEffect(() => {
+    const total = parseFloat(cartTotal) + parseFloat(shippingCost) + parseFloat(taxAmount) - discountAmount;
+    setOrderTotal(total);
+  }, [cartTotal, shippingCost, taxAmount, discountAmount]);
+
+
 
   return (
     <section className="section-b-space">
@@ -671,6 +831,16 @@ const CheckoutPage = () => {
                             {cartTotal.toFixed(2)}
                           </span>
                         </li>
+                        {appliedCoupon && (
+                          <li>
+                            Discount ({appliedCoupon.code}){" "}
+                            <span className="count">
+                              -{symbol}
+                              {discountAmount.toFixed(2)}
+                            </span>
+                            <Button onClick={removeCoupon}>Remove</Button>
+                          </li>
+                        )}
                         <li>
                           {/* Shipping options */}
 
@@ -743,10 +913,19 @@ const CheckoutPage = () => {
                       </ul>
                     </div>
                     <div className="payment-box">
+                    <Form onSubmit={(e) => { e.preventDefault(); handleApplyCoupon(); }}>
+                        <Input
+                          type="text"
+                          value={couponCode}
+                          onChange={(e) => setCouponCode(e.target.value)}
+                          placeholder="Enter coupon code"
+                        />
+                        <Button type="submit">Apply Coupon</Button>
+                      </Form>
+                      {couponError && <p style={{ color: 'red' }}>{couponError}</p>}
                       {cartTotal !== 0 ? (
                         <div className="text-end">
                           <Elements stripe={stripePromise}>
-                            {/* Pay with stripe button */}
                             <CheckoutButton
                               billingFormData={billingFormData}
                               shippingFormData={shippingFormData}
@@ -756,7 +935,9 @@ const CheckoutPage = () => {
                               billingFormValid={billingFormValid}
                               shippingFormValid={shippingFormValid}
                               shippingAvailable={shippingAvailable}
-                              orderNotes={orderNotes} // Pass order notes to CheckoutButton
+                              orderNotes={orderNotes}
+                              appliedCoupon={appliedCoupon ? appliedCoupon.code : ''}
+                              discountAmount={discountAmount}
                             />
                           </Elements>
                         </div>

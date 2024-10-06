@@ -112,6 +112,8 @@ export default async function handler(req, res) {
         const orderItems = JSON.parse(session.metadata["order-items"]);
         const shippingLines = JSON.parse(session.metadata.shipping_lines);
         const orderNotes = session.metadata.order_notes.replace(/^"|"$/g, '');
+        const appliedCoupon = session.metadata.appliedCoupon.replace(/^"|"$/g, '');
+        const discountAmount = session.metadata.discountAmount.replace(/^"|"$/g, '');
 
         console.log("DEBUG: Parsed Order Notes:", orderNotes);
 
@@ -151,7 +153,13 @@ export default async function handler(req, res) {
               method_title: shippingLines.method_title,
               total: shippingLines.total
             }
-          ]
+          ],
+          coupon_lines: appliedCoupon ? [
+            {
+              code: appliedCoupon,
+              discount: discountAmount
+            }
+          ] : []
         };
 
         try {

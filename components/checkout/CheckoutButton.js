@@ -6,46 +6,51 @@ const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 );
 
-
 const CheckoutButton = ({
-   billingFormData,
-   shippingFormData,
-   cartData,
-   stripeShippingOptions,
-   taxRate,
-   billingFormValid,
-   shippingFormValid,
-   shippingAvailable,
-   orderNotes}) => {
+  billingFormData,
+  shippingFormData,
+  cartData,
+  stripeShippingOptions,
+  taxRate,
+  billingFormValid,
+  shippingFormValid,
+  shippingAvailable,
+  orderNotes,
+  appliedCoupon,
+  discountAmount,
+}) => {
   const router = useRouter();
   const [billingFormErrors, setBillingFormErrors] = useState({}); // State to store billing form errors
   const [shippingFormErrors, setShippingFormErrors] = useState({}); // State to store shipping form errors
 
   const handleCheckout = async () => {
-      // Validate billing form
-      const billingErrors = {};
-      for (const key in billingFormData) {
-        if (!billingFormData[key]) {
-          billingErrors[key] = `${key.charAt(0).toUpperCase() + key.slice(1)} is a required field.`;
-        }
+    // Validate billing form
+    const billingErrors = {};
+    for (const key in billingFormData) {
+      if (!billingFormData[key]) {
+        billingErrors[key] = `${
+          key.charAt(0).toUpperCase() + key.slice(1)
+        } is a required field.`;
       }
-      setBillingFormErrors(billingErrors);
-  
-      // Validate shipping form
-      const shippingErrors = {};
-      for (const key in shippingFormData) {
-        if (!shippingFormData[key]) {
-          shippingErrors[key] = `${key.charAt(0).toUpperCase() + key.slice(1)} is a required field.`;
-        }
-      }
-      setShippingFormErrors(shippingErrors);
-  
-      if (!billingFormValid || !shippingFormValid || !shippingAvailable) {
-        // If any of the conditions for disabling the button are met, return without proceeding to checkout
-        return;
-      }
+    }
+    setBillingFormErrors(billingErrors);
 
-      
+    // Validate shipping form
+    const shippingErrors = {};
+    for (const key in shippingFormData) {
+      if (!shippingFormData[key]) {
+        shippingErrors[key] = `${
+          key.charAt(0).toUpperCase() + key.slice(1)
+        } is a required field.`;
+      }
+    }
+    setShippingFormErrors(shippingErrors);
+
+    if (!billingFormValid || !shippingFormValid || !shippingAvailable) {
+      // If any of the conditions for disabling the button are met, return without proceeding to checkout
+      return;
+    }
+
     try {
       const stripe = await stripePromise;
       const response = await fetch("/api/checkout_sessions", {
@@ -59,7 +64,9 @@ const CheckoutButton = ({
           cartData: cartData,
           stripeShippingOptions: stripeShippingOptions,
           taxRate: taxRate,
-          orderNotes: orderNotes
+          orderNotes: orderNotes,
+          appliedCoupon: appliedCoupon,
+          discountAmount: discountAmount
         }),
       });
 
@@ -76,7 +83,7 @@ const CheckoutButton = ({
       router.push("/error");
     }
   };
-  
+
   return (
     <div>
       <button
