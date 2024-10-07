@@ -5,7 +5,8 @@ import { useRouter } from "next/router";
 import { useAuth } from './AuthContext';
 import { toast } from "react-toastify";
 
-const Login = () => {
+
+const Login = ({ redirectTo = "/page/account/dashboard" }) => {
   const { login, isLoggedIn } = useAuth();
   const router = useRouter();
   const [username, setUsername] = useState("");
@@ -14,10 +15,9 @@ const Login = () => {
 
   useEffect(() => {
     if (isLoggedIn) {
-      router.push("/page/account/dashboard");
-      // toast.error('You are already Logged In, Logout first to Login again');
+      router.push(redirectTo);
     }
-  }, [isLoggedIn, router]);
+  }, [isLoggedIn, router, redirectTo]);
 
   const handleCreateAccountRouter = () => {
     router.push("/page/account/register");
@@ -53,7 +53,7 @@ const Login = () => {
         });
 
         toast.success('Login successful!');
-        router.push("/page/account/dashboard");
+        router.push(redirectTo);
       } else {
         throw new Error("Token not received");
       }
@@ -64,6 +64,7 @@ const Login = () => {
       toast.error(error.message || "Login failed");
     }
   };
+
 
   return (
     <CommonLayout parent="home" title="login">

@@ -466,35 +466,52 @@ const CheckoutPage = () => {
 
     // Handle free shipping
    
-    // Handle free shipping
-    if (coupon.free_shipping) {
-      const freeShippingMethod = {
-        id: 'free_shipping_coupon',
-        method_id: 'free_shipping',
-        title: 'Free Shipping (Coupon)',
-        price: '0',
-      };
+   // Handle shipping methods
+   if (coupon.free_shipping) {
+    const freeShippingMethod = {
+      id: 'free_shipping_coupon',
+      method_id: 'free_shipping',
+      title: 'Free Shipping (Coupon)',
+      price: '0',
+    };
 
-      setShippingCost(0);
-      setShippingMethods([freeShippingMethod]);
-      setSelectedShippingMethod(freeShippingMethod.id);
-      setStripeShippingOptions([
-        {
-          method_id: freeShippingMethod.method_id,
-          title: freeShippingMethod.title,
-          amount: 0,
-        },
-      ]);
-    } else {
-      // If the coupon doesn't provide free shipping, reset to default shipping methods
-      fetchShippingMethods().then(methods => {
-        setShippingMethods(methods);
-        if (methods.length > 0) {
-          handleShippingMethodChange({ target: { value: methods[0].id } });
+    setShippingCost(0);
+    setShippingMethods([freeShippingMethod]);
+    setSelectedShippingMethod(freeShippingMethod.id);
+    setStripeShippingOptions([
+      {
+        method_id: freeShippingMethod.method_id,
+        title: freeShippingMethod.title,
+        amount: 0,
+      },
+    ]);
+  } else {
+    // If the coupon doesn't provide free shipping, keep the existing shipping methods
+    fetchShippingMethods().then(methods => {
+      const filteredMethods = methods.filter((method) => {
+        if (method.method_id === "free_shipping") {
+          if (
+            method.settings &&
+            method.settings.min_amount &&
+            cartTotal >= method.settings.min_amount.value
+          ) {
+            method.price = 0;
+            return true;
+          }
+        } else if (method.method_id === "flat_rate") {
+          method.price = method.settings.cost.value;
+          return true;
         }
+        return false;
       });
-    }
-  };
+
+      setShippingMethods(filteredMethods);
+      if (filteredMethods.length > 0) {
+        handleShippingMethodChange({ target: { value: filteredMethods[0].id } });
+      }
+    });
+  }
+};
 
   const removeCoupon = async () => {
     setAppliedCoupon(null);
@@ -506,17 +523,15 @@ const CheckoutPage = () => {
     const methods = await fetchShippingMethods();
     const filteredMethods = methods.filter((method) => {
       if (method.method_id === "free_shipping") {
-        // Check if free shipping has a minimum amount set
         if (
           method.settings &&
           method.settings.min_amount &&
           cartTotal >= method.settings.min_amount.value
         ) {
-          method.price = 0; // Set price for free shipping as 0
-          return true; // Include free shipping method if the cart total meets the minimum amount
+          method.price = 0;
+          return true;
         }
       } else if (method.method_id === "flat_rate") {
-        // Set price for flat rate shipping
         method.price = method.settings.cost.value;
         return true;
       }
