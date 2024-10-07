@@ -85,10 +85,14 @@ const CheckoutButton = ({
   };
 
   return (
-    <div>
+    <div style={{marginTop:'50px'}}>
       <button
         onClick={handleCheckout}
         className="btn btn-solid"
+        style={{ width:'100%', 
+          backgroundImage: `linear-gradient(30deg, var(--theme-deafult) 100%, transparent 80%)`
+
+        }}
         // disabled={!billingFormValid || !shippingFormValid || !shippingAvailable}
       >
         Buy Now

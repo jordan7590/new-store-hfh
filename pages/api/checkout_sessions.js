@@ -32,7 +32,7 @@ export default async function handler(req, res) {
             product_data: {
               name: item.name,
             },
-            unit_amount: Math.round((item.totalPrice * 100 / itemQuantity) - (item.totalPrice * 100 / itemQuantity * discountRate)) + ((item.totalPrice * 100 / itemQuantity * taxRate) / 100),  
+            unit_amount: Math.round(((item.totalPrice - (item.totalPrice * discountRate)) * 100 / itemQuantity)) + (((item.totalPrice - (item.totalPrice * discountRate)) * 100 / itemQuantity * taxRate) / 100),  
           },
           quantity: itemQuantity,
         };
@@ -82,7 +82,9 @@ export default async function handler(req, res) {
           'shipping_lines': shippingline,
           'order_notes' : order_notes,
           'appliedCoupon': appliedCoupon,
-          'discountAmount': discountAmount
+          'discountAmount': discountAmount,
+          'subtotal': subtotal,
+          'discountRate': discountRate
         },
         shipping_options: shippingOptions,
        

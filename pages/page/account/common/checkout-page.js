@@ -47,7 +47,7 @@ const CheckoutPage = () => {
   const [shippingMethods, setShippingMethods] = useState([]); // State to store available shipping methods
   const [loading, setLoading] = useState(true); // State to track loading state
   const [error, setError] = useState(null); // State to store error
-  const [selectedShippingMethod, setSelectedShippingMethod] = useState(null); // State to store selected shipping method
+  const [selectedShippingMethod, setSelectedShippingMethod] = useState(shippingMethods[0]?.id || null);
   const [shippingCost, setShippingCost] = useState(0); // State to store shipping cost
   const [stripeShippingOptions, setStripeShippingOptions] = useState(0); // State to store shipping cost
   const [orderTotal, setOrderTotal] = useState(0);
@@ -105,16 +105,21 @@ const CheckoutPage = () => {
     console.log("Shipping Form Data:", { ...shippingFormData, [name]: value });
     setShippingFormData((prevFormData) => {
       const updatedFormData = { ...prevFormData, [name]: value };
+      
+      // Check if all fields in the updated form data are filled
+      const isFormValidShipping = Object.keys(updatedFormData).every(
+        (fieldName) => updatedFormData[fieldName].trim() !== ""
+      );
+      
+      setShippingFormValid(isFormValidShipping);
+      
+      setShippingFormErrors((prevErrors) => ({
+        ...prevErrors,
+        [name]: value.trim() === "" ? "Field is required" : "",
+      }));
+      
       return updatedFormData;
     });
-    const isFormValidShipping = Object.keys(updatedShippingFormData).every(
-      (fieldName) => updatedShippingFormData[fieldName].trim() !== ""
-    );
-    setBillingFormValid(isFormValidShipping);
-    setShippingFormErrors((prevErrors) => ({
-      ...prevErrors,
-      [name]: value.trim() === "" ? "Field is required" : "",
-    }));
   };
 
   // only for test, delete latter
@@ -254,28 +259,21 @@ const CheckoutPage = () => {
   // };
 
   // Function to calculate tax based on billing address and cart total
-  const calculateTax = async () => {
+   // Updated calculateTax function
+   const calculateTax = async () => {
     try {
-      // Fetch taxes
-      const response = await fetch(
-        `https://hfh.tonserve.com/wp-json/wc/v3/taxes?consumer_key=ck_86a3fc5979726afb7a1dd66fb12329bef3b365e2&consumer_secret=cs_19bb38d1e28e58f10b3ee8829b3cfc182b8eb3ea`
-      );
+      const response = await fetch(`https://hfh.tonserve.com/wp-json/wc/v3/taxes?consumer_key=ck_86a3fc5979726afb7a1dd66fb12329bef3b365e2&consumer_secret=cs_19bb38d1e28e58f10b3ee8829b3cfc182b8eb3ea`);
       if (!response.ok) {
         throw new Error("Failed to fetch taxes");
       }
       const taxes = await response.json();
 
-      // Extract relevant information from billing address
       const billingCountry = billingFormData.country || "";
       const billingState = billingFormData.state || "";
       const billingPostcode = billingFormData.pincode || "";
       const billingCity = billingFormData.city || "";
 
-      // Find matching tax rate based on the hierarchy of matching conditions
-      let matchingTax = "";
-
-      // Match by country, state, postcode, and city
-      matchingTax = taxes.find((tax) => {
+      let matchingTax = taxes.find((tax) => {
         return (
           (tax.country === billingCountry || tax.country === "") &&
           (tax.state === billingState || tax.state === "") &&
@@ -284,38 +282,37 @@ const CheckoutPage = () => {
         );
       });
 
-      // If matching tax is found, set tax rate and calculate tax amount
       if (matchingTax) {
         const taxRate = parseFloat(matchingTax.rate);
         setTaxRate(taxRate);
-        const tax = (cartTotal * taxRate) / 100;
+        
+        // Calculate tax on the discounted cart total
+        const discountedTotal = parseFloat(cartTotal) - parseFloat(discountAmount);
+        const tax = (discountedTotal * taxRate) / 100;
         setTaxAmount(tax);
         console.log("tax rate", taxRate);
+        console.log("tax amount", tax);
       } else {
-        // If no matching tax is found, set tax rate to blank and tax amount to 0
         setTaxRate("");
         setTaxAmount(0);
       }
     } catch (error) {
       console.error("Error calculating tax:", error);
-      // Handle error
     }
   };
 
-  // Call calculateTax function when billing address is set or updated
+  // Update useEffect to recalculate tax when discount changes
   useEffect(() => {
     if (Object.keys(billingFormData).length > 0) {
       calculateTax();
     }
-  }, [billingFormData]);
+  }, [billingFormData, discountAmount]); // Add discountAmount as a dependency
 
-  // calclulating Total Order Price here (cart price + shipping + tax - discount[coupons])
+  // Update order total calculation
   useEffect(() => {
-    // Convert cartTotal and shippingCost to numbers using parseFloat
-    const total =
-      parseFloat(cartTotal) + parseFloat(shippingCost) + parseFloat(taxAmount);
-    setOrderTotal(total); // Update orderTotal
-  }, [cartTotal, shippingCost, taxAmount]);
+    const total = parseFloat(cartTotal) - parseFloat(discountAmount) + parseFloat(shippingCost) + parseFloat(taxAmount);
+    setOrderTotal(total);
+  }, [cartTotal, shippingCost, taxAmount, discountAmount]);
 
   useEffect(() => {
     // Check if shipping methods are available and not loading
@@ -348,6 +345,13 @@ const CheckoutPage = () => {
 
   const handleApplyCoupon = async () => {
     setCouponError('');
+
+    // Check if the coupon code is empty
+    if (!couponCode.trim()) {
+      setCouponError('Please enter a coupon code');
+      return;
+    }
+
     const coupon = await validateCoupon(couponCode);
     if (!coupon) return;
 
@@ -461,24 +465,84 @@ const CheckoutPage = () => {
     setDiscountAmount(discount);
 
     // Handle free shipping
+   
+    // Handle free shipping
     if (coupon.free_shipping) {
+      const freeShippingMethod = {
+        id: 'free_shipping_coupon',
+        method_id: 'free_shipping',
+        title: 'Free Shipping (Coupon)',
+        price: '0',
+      };
+
       setShippingCost(0);
+      setShippingMethods([freeShippingMethod]);
+      setSelectedShippingMethod(freeShippingMethod.id);
+      setStripeShippingOptions([
+        {
+          method_id: freeShippingMethod.method_id,
+          title: freeShippingMethod.title,
+          amount: 0,
+        },
+      ]);
+    } else {
+      // If the coupon doesn't provide free shipping, reset to default shipping methods
+      fetchShippingMethods().then(methods => {
+        setShippingMethods(methods);
+        if (methods.length > 0) {
+          handleShippingMethodChange({ target: { value: methods[0].id } });
+        }
+      });
     }
   };
 
-  const removeCoupon = () => {
+  const removeCoupon = async () => {
     setAppliedCoupon(null);
     setDiscountAmount(0);
     setCouponCode('');
     setCouponError('');
+
+    // Reset shipping methods to default
+    const methods = await fetchShippingMethods();
+    const filteredMethods = methods.filter((method) => {
+      if (method.method_id === "free_shipping") {
+        // Check if free shipping has a minimum amount set
+        if (
+          method.settings &&
+          method.settings.min_amount &&
+          cartTotal >= method.settings.min_amount.value
+        ) {
+          method.price = 0; // Set price for free shipping as 0
+          return true; // Include free shipping method if the cart total meets the minimum amount
+        }
+      } else if (method.method_id === "flat_rate") {
+        // Set price for flat rate shipping
+        method.price = method.settings.cost.value;
+        return true;
+      }
+      return false;
+    });
+
+    setShippingMethods(filteredMethods);
+    
+    // Select the first available shipping method
+    if (filteredMethods.length > 0) {
+      setSelectedShippingMethod(filteredMethods[0].id);
+      handleShippingMethodChange({ target: { value: filteredMethods[0].id } });
+    }
   };
+
 
   // Update order total calculation
   useEffect(() => {
-    const total = parseFloat(cartTotal) + parseFloat(shippingCost) + parseFloat(taxAmount) - discountAmount;
-    setOrderTotal(total);
-  }, [cartTotal, shippingCost, taxAmount, discountAmount]);
-
+    const subtotal = parseFloat(cartTotal) || 0;
+    const discount = parseFloat(discountAmount) || 0;
+    const shipping = parseFloat(shippingCost) || 0;
+    const tax = parseFloat(taxAmount) || 0;
+    
+    const total = subtotal - discount + shipping + tax;
+    setOrderTotal(Math.max(0, Math.round(total * 100) / 100)); // Ensure non-negative and round to 2 decimal places
+  }, [cartTotal, discountAmount, shippingCost, taxAmount]);
 
 
   return (
@@ -735,7 +799,7 @@ const CheckoutPage = () => {
                     </div>
                   </Form>
                 )}
-
+{/* 
                 {Object.keys(billingFormData).length > 0 && (
                   <div>
                     <h4>Billing Form Data:</h4>
@@ -760,7 +824,9 @@ const CheckoutPage = () => {
                     <h4>orderNotes:</h4>
                     <pre>{JSON.stringify(orderNotes, null, 2)}</pre>
                   </div>
-                )}
+                )} */}
+
+
               </Col>
               <Col lg="6" sm="12" xs="12">
                 {cartItems && cartItems.length > 0 > 0 ? (
@@ -845,36 +911,33 @@ const CheckoutPage = () => {
                           {/* Shipping options */}
 
                           {!loading && shippingAvailable ? (
-                            <div className="shipping-methods">
-                              <ul>
-                                <li>
-                                  Shipping:
-                                  <ul>
-                                    {shippingMethods.map((method, index) => (
-                                      <li key={method.id}>
-                                        <span className="count">
-                                          <input
-                                            type="radio"
-                                            name="shippingMethod"
-                                            value={method.id}
-                                            // defaultChecked={selectedShippingMethod === method.id}
-                                            onChange={
-                                              handleShippingMethodChange
-                                            }
-                                            defaultChecked={index === 0}
-                                          />
-                                          <label>
-                                            {method.title}
-                                            {method.method_id === "flat_rate" &&
-                                              ` : ${method.price}`}
-                                          </label>
-                                        </span>
-                                      </li>
-                                    ))}
-                                  </ul>
-                                </li>
-                              </ul>
-                            </div>
+                         <div className="shipping-methods">
+                         <ul>
+                           <li>
+                             Shipping:
+                             <ul>
+                               {shippingMethods.map((method) => (
+                                 <li key={method.id}>
+                                   <span className="count">
+                                     <input
+                                       type="radio"
+                                       name="shippingMethod"
+                                       value={method.id}
+                                       onChange={handleShippingMethodChange}
+                                       defaultChecked={selectedShippingMethod === method.id}
+                                       id={`shipping-${method.id}`}
+                                     />
+                                     <label htmlFor={`shipping-${method.id}`} style={{marginLeft:'5px'}}>
+                                       {method.title}
+                                       {method.method_id !== "free_shipping" && ` : ${symbol}${method.price}`}
+                                     </label>
+                                   </span>
+                                 </li>
+                               ))}
+                             </ul>
+                           </li>
+                         </ul>
+                       </div>
                           ) : (
                             <div className="shipping-methods">
                               <ul>
@@ -913,16 +976,17 @@ const CheckoutPage = () => {
                       </ul>
                     </div>
                     <div className="payment-box">
-                    <Form onSubmit={(e) => { e.preventDefault(); handleApplyCoupon(); }}>
-                        <Input
+                    <form onSubmit={(e) => { e.preventDefault(); handleApplyCoupon(); }} className="coupon-form">
+                        <input
                           type="text"
                           value={couponCode}
                           onChange={(e) => setCouponCode(e.target.value)}
                           placeholder="Enter coupon code"
+                          className="coupon-input"
                         />
-                        <Button type="submit">Apply Coupon</Button>
-                      </Form>
-                      {couponError && <p style={{ color: 'red' }}>{couponError}</p>}
+                        <Button type="submit" className="coupon-button">Apply Coupon</Button>
+                      </form>
+                      {couponError && <p style={{ color: 'red', marginTop: '2px'}}>{couponError}</p>}
                       {cartTotal !== 0 ? (
                         <div className="text-end">
                           <Elements stripe={stripePromise}>
