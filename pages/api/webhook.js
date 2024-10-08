@@ -114,7 +114,7 @@ export default async function handler(req, res) {
         const orderNotes = session.metadata.order_notes.replace(/^"|"$/g, '');
         const appliedCoupon = session.metadata.appliedCoupon.replace(/^"|"$/g, '');
         const discountAmount = session.metadata.discountAmount.replace(/^"|"$/g, '');
-        const customerId = session.metadata.customerId.replace(/^"|"$/g, '');
+        const customerID = session.metadata.customerID.replace(/^"|"$/g, '');
 
         console.log("DEBUG: Parsed Order Notes:", orderNotes);
 
@@ -122,7 +122,7 @@ export default async function handler(req, res) {
           payment_method: "Stripe",
           payment_method_title: "Credit Card",
           set_paid: true,
-          customer_id: customerId,
+          customer_id: customerID,
           customer_note: orderNotes,
           billing: {
             first_name: billingData.first_name,

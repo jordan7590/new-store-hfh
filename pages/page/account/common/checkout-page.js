@@ -1061,7 +1061,7 @@ const CheckoutPage = ({ customerId }) => {
                         <div className="text-end">
                           <Elements stripe={stripePromise}>
                             <CheckoutButton
-                              customerId={customerId}
+                              customerID={customerID}
                               billingFormData={billingFormData}
                               shippingFormData={shippingFormData}
                               cartData={cartItems}
