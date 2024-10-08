@@ -18,6 +18,7 @@ const CheckoutButton = ({
   orderNotes,
   appliedCoupon,
   discountAmount,
+  customerId
 }) => {
   const router = useRouter();
   const [billingFormErrors, setBillingFormErrors] = useState({}); // State to store billing form errors
@@ -66,7 +67,8 @@ const CheckoutButton = ({
           taxRate: taxRate,
           orderNotes: orderNotes,
           appliedCoupon: appliedCoupon,
-          discountAmount: discountAmount
+          discountAmount: discountAmount,
+          customerId: customerId
         }),
       });
 

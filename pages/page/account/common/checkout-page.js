@@ -9,6 +9,7 @@ import { CurrencyContext } from "../../../../helpers/Currency/CurrencyContext";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import CheckoutButton from "../../../../components/checkout/CheckoutButton";
+import { useAuth } from '../AuthContext';
 
 const stripePromise = loadStripe("pk_test_I8XFeUwEEFSEVuNZm11k8btS"); // Replace with your actual Stripe publishable key
 
@@ -65,7 +66,9 @@ const CheckoutPage = ({ customerId }) => {
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [discountAmount, setDiscountAmount] = useState(0);
   const [couponError, setCouponError] = useState("");
-
+  const { isLoggedIn, customerID: initialCustomerID, userData } = useAuth();
+  const [customerID, setCustomerID] = useState(initialCustomerID);
+  
   const {
     register,
     handleSubmit,
@@ -73,6 +76,17 @@ const CheckoutPage = ({ customerId }) => {
   } = useForm(); // initialise the hook
   const router = useRouter();
 
+
+
+
+  useEffect(() => {
+    if (initialCustomerID === null && userData && userData.id) {
+      setCustomerID(userData.id);
+    }
+  }, [initialCustomerID, userData]);
+  
+  console.log("customerID : ", customerID);
+  
   const handleOrderNotesChange = (event) => {
     setOrderNotes(event.target.value);
   };

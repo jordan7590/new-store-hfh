@@ -5,7 +5,6 @@ import { useRouter } from "next/router";
 import { useAuth } from './AuthContext';
 import { toast } from "react-toastify";
 
-
 const Login = ({ redirectTo = "/page/account/dashboard" }) => {
   const { login, isLoggedIn } = useAuth();
   const router = useRouter();
@@ -49,7 +48,8 @@ const Login = ({ redirectTo = "/page/account/dashboard" }) => {
           nicename: data.data.nicename,
           firstName: data.data.firstName,
           lastName: data.data.lastName,
-          displayName: data.data.displayName
+          displayName: data.data.displayName,
+          customerID: data.data.id // Set customerID to the user's ID
         });
 
         toast.success('Login successful!');
@@ -64,7 +64,6 @@ const Login = ({ redirectTo = "/page/account/dashboard" }) => {
       toast.error(error.message || "Login failed");
     }
   };
-
 
   return (
     <CommonLayout parent="home" title="login">

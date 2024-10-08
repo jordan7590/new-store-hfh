@@ -5,13 +5,13 @@ import Login from './login'
 import { useAuth } from './AuthContext';
 
 const Checkout = () => {
-    const { isLoggedIn, user } = useAuth();
+    const { isLoggedIn} = useAuth();
 
     return (
         <>
             {isLoggedIn ?
                 <CommonLayout parent="home" title="checkout">
-                    <CheckoutPage customerId={user.id} />
+                    <CheckoutPage/>
                     </CommonLayout>
                 :
                 <Login redirectTo="/page/account/checkout" />
