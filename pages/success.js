@@ -100,7 +100,7 @@ const SuccessPage = ({ session, order, error, errorDetails, errorType }) => {
               <div className="checkmark"></div>
             </div>
             <h2 style={{textTransform:'capitalize'}}>Thank you <span style={{color:'#009bda'}}>{order.billing.first_name}!</span> </h2>
-            <p>Your order #{order.number} is completed successfully</p>
+            <p>Your order <b> #{order.number} </b> is completed successfully</p>
           </div>
 
           <Row>
