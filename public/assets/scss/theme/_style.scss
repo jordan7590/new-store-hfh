@@ -4862,7 +4862,7 @@ header {
   .modal-content {
     border: none;
     .modal-body {
-      padding: 0;
+      padding: 20px;
     }
   }
 }
@@ -18115,4 +18115,68 @@ li.mobile-wishlist > a {
   margin-left: 10px;
   padding: 5px 10px;
   font-size: 12px;
+}
+
+.order-list {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.order-item {
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.order-status {
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 12px;
+  text-transform: capitalize;
+}
+
+.status-processing, .status-in-progress {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.status-completed, .status-delivered {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status-cancelled {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.order-date, .order-id {
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+.order-thumbnail {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+}
+
+.no-image-placeholder {
+  background-color: #e9ecef;
+  color: #6c757d;
+  text-align: center;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.order-item-name {
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.order-item-price, .order-total {
+  font-weight: 600;
+  color: #28a745;
 }

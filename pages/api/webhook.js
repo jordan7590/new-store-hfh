@@ -126,6 +126,11 @@ export default async function handler(req, res) {
           console.log("DEBUG: Calling createWooCommerceOrder");
           const createdOrder = await createWooCommerceOrder(orderData);
           console.log("DEBUG: Order created in WooCommerce:", JSON.stringify(createdOrder));
+          
+          await stripe.checkout.sessions.update(session.id, {
+            metadata: { woocommerce_order_id: createdOrder.id.toString() }
+          });
+          
           processedEvents[event.id] = true;
           res.status(200).json({ received: true });
         } catch (error) {

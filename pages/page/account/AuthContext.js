@@ -120,10 +120,19 @@ export const AuthProvider = ({ children }) => {
     await login(token, user);
   };
 
+  const updateUserData = (data) => {
+    setUserData(prevData => ({
+        ...prevData,
+        ...data
+    }));
+};
+
+
   return (
     <AuthContext.Provider value={{ 
       accessToken, 
       userData, 
+      updateUserData,
       isLoggedIn, 
       login: loginHandler, 
       logout, 

@@ -5,6 +5,7 @@ import CommonLayout from '../components/shop/common-layout';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
+
 export async function getServerSideProps(context) {
   const { session_id } = context.query;
 
@@ -18,7 +19,16 @@ export async function getServerSideProps(context) {
       expand: ['line_items', 'customer'],
     });
     console.log('Session retrieved successfully');
-    return { props: { session: JSON.parse(JSON.stringify(session)) } };
+
+    // Retrieve the WooCommerce order ID from the session metadata
+    const woocommerceOrderId = session.metadata.woocommerce_order_id;
+
+    return { 
+      props: { 
+        session: JSON.parse(JSON.stringify(session)),
+        woocommerceOrderId // Pass this to the component
+      } 
+    };
   } catch (err) {
     console.error('Error retrieving Stripe session:', err);
     return { 
@@ -32,9 +42,7 @@ export async function getServerSideProps(context) {
 }
 
 
-
-
-const SuccessPage = ({ session, error, errorDetails, errorType }) => {
+const SuccessPage = ({ session, error, errorDetails, errorType, woocommerceOrderId }) => {
   if (error) {
     return (
 
@@ -78,6 +86,8 @@ const SuccessPage = ({ session, error, errorDetails, errorType }) => {
                 <Container>
                     <Row>
                         <Col sm="12">
+                        <p>WooCommerce Order ID: {woocommerceOrderId}</p>
+
                         <>
       <Table
         style={{ marginBottom: "0" }}
