@@ -70,9 +70,7 @@ const SuccessPage = ({ session, error, errorDetails, errorType }) => {
   const orderItems = JSON.parse(session.metadata['order-items']);
   const shippingLines = JSON.parse(session.metadata.shipping_lines);
   const orderNotes = session.metadata.order_notes ? JSON.parse(session.metadata.order_notes) : null;
-  const wooCommerceOrderId = session.metadata.woocommerce_order_id;
 
-  console.log("wooCommerceOrderId:" , wooCommerceOrderId)
   return (
 
     <CommonLayout parent="home" title="Order Success">
@@ -112,7 +110,6 @@ const SuccessPage = ({ session, error, errorDetails, errorType }) => {
                     <td>
                       <p>Payment Is Successfully Processed And Your Order Is On The Way</p>
                       <p>Transaction ID: {session.id}</p>
-                      {wooCommerceOrderId && <p>Order ID: {wooCommerceOrderId}</p>}
                     </td>
                   </tr>
                   <tr>

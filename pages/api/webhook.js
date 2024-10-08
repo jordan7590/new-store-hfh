@@ -119,20 +119,19 @@ export default async function handler(req, res) {
               code: appliedCoupon,
               discount: discountAmount
             }
-          ] : []
+          ] : [],
+          meta_data: [
+            {
+              key: "stripe_session_id",
+              value: session.id
+            }
+          ]
         };
 
         try {
           console.log("DEBUG: Calling createWooCommerceOrder");
           const createdOrder = await createWooCommerceOrder(orderData);
           console.log("DEBUG: Order created in WooCommerce:", JSON.stringify(createdOrder));
-
-          // Store the WooCommerce order ID in the Stripe session metadata
-      await stripe.checkout.sessions.update(session.id, {
-        metadata: { ...session.metadata, woocommerce_order_id: createdOrder.id.toString() }
-      });
-
-      
           processedEvents[event.id] = true;
           res.status(200).json({ received: true });
         } catch (error) {
