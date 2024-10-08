@@ -14,7 +14,6 @@ export const AuthProvider = ({ children }) => {
   const [accessToken, setAccessToken] = useState(storedToken || '');
   const [userData, setUserData] = useState(storedUserData || null);
   const [isLoggedIn, setIsLoggedIn] = useState(!!storedIsLoggedIn);
-  const [customerID, setCustomerID] = useState(storedUserData?.customerID || null);
 
   useEffect(() => {
     setIsLoggedIn(!!storedToken);
@@ -46,12 +45,10 @@ export const AuthProvider = ({ children }) => {
     if (fullUserData) {
       localStorage.setItem('userData', JSON.stringify(fullUserData));
       setUserData(fullUserData);
-      setCustomerID(fullUserData.id);
     } else {
       // Fallback to initial user data if fetch fails
       localStorage.setItem('userData', JSON.stringify(initialUserData));
       setUserData(initialUserData);
-      setCustomerID(initialUserData.customerID);
     }
   };
 
@@ -62,7 +59,6 @@ export const AuthProvider = ({ children }) => {
     setAccessToken('');
     setUserData(null);
     setIsLoggedIn(false);
-    setCustomerID(null);
   };
 
   const refreshToken = async () => {
@@ -120,13 +116,16 @@ export const AuthProvider = ({ children }) => {
     return response;
   };
 
+  const loginHandler = async (token, user) => {
+    await login(token, user);
+  };
+
   return (
     <AuthContext.Provider value={{ 
       accessToken, 
       userData, 
       isLoggedIn, 
-      customerID,
-      login, 
+      login: loginHandler, 
       logout, 
       refreshToken,
       authenticatedFetch 
