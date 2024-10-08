@@ -122,8 +122,8 @@ export default async function handler(req, res) {
           payment_method: "Stripe",
           payment_method_title: "Credit Card",
           set_paid: true,
-          "customer_id": customerId,
-          "customer_note": orderNotes,
+          customer_id: customerId,
+          customer_note: orderNotes,
           billing: {
             first_name: billingData.first_name,
             last_name: billingData.last_name,
