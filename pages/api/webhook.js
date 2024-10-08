@@ -114,6 +114,7 @@ export default async function handler(req, res) {
         const orderNotes = session.metadata.order_notes.replace(/^"|"$/g, '');
         const appliedCoupon = session.metadata.appliedCoupon.replace(/^"|"$/g, '');
         const discountAmount = session.metadata.discountAmount.replace(/^"|"$/g, '');
+        const customerId = session.metadata.customerId.replace(/^"|"$/g, '');
 
         console.log("DEBUG: Parsed Order Notes:", orderNotes);
 

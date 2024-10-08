@@ -8,7 +8,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 export default async function handler(req, res) {
   if (req.method === "POST") {
     try {
-      const { billingFormData, shippingFormData, cartData, stripeShippingOptions, cartTotal, shippingCost, taxAmount, taxRate, orderNotes, appliedCoupon, discountAmount } = req.body;
+      const { billingFormData, shippingFormData, cartData, stripeShippingOptions, cartTotal, shippingCost, taxAmount, taxRate, orderNotes, appliedCoupon, discountAmount, customerId } = req.body;
 
       const billingData = JSON.stringify(billingFormData);
       const shippingData = JSON.stringify(shippingFormData);   
@@ -84,7 +84,8 @@ export default async function handler(req, res) {
           'appliedCoupon': appliedCoupon,
           'discountAmount': discountAmount,
           'subtotal': subtotal,
-          'discountRate': discountRate
+          'discountRate': discountRate,
+          'customerId': customerId
         },
         shipping_options: shippingOptions,
        
