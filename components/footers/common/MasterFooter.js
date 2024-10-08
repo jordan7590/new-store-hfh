@@ -212,7 +212,7 @@ const MasterFooter = ({
                         </li>
                         <li>
                           <Link href={`/page/account/wishlist`}>
-                            <a>Wishlist</a>
+                            <a>My Favorites</a>
                           </Link>
                         </li>
                       </ul>

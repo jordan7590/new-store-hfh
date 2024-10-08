@@ -260,7 +260,7 @@ const Fashion = () => {
                     <div>
                       <a
                         className="hp_btn hp_btn-rust hp_btn-sm hp_stretched-link"
-                        href="#"
+                        href="https://hoytcompany.logomall.com/"
                         id="kn-pro-1"
                       >
                         Shop Now
@@ -361,7 +361,7 @@ const Fashion = () => {
                   />
                   <a
                     className="hp_btn hp_btn-sm hp_btn-tertiary hp_stretched-link"
-                    href="#"
+                    href="/page/contact-us"
                   >
                     Contact Us
                   </a>

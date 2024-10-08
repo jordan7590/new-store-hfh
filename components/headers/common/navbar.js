@@ -27,8 +27,12 @@ const NavBar = () => {
 
   const closeNav = () => {
     setNavClose({ right: "-410px" });
-    if (router.asPath == "/layouts/Gym")
-      document.querySelector("#topHeader").classList.remove("zindex-class");
+    if (router.asPath == "/layouts/Gym") {
+      const topHeader = document.querySelector("#topHeader");
+      if (topHeader) {
+        topHeader.classList.remove("zindex-class");
+      }
+    }
   };
   // eslint-disable-next-line
 
@@ -113,16 +117,19 @@ const NavBar = () => {
 
   const openMblNav = (event) => {
     if (event.target.classList.contains("sub-arrow")) return;
-
-    if (event.target.nextElementSibling.classList.contains("opensubmenu"))
+  
+    if (event.target.nextElementSibling.classList.contains("opensubmenu")) {
       event.target.nextElementSibling.classList.remove("opensubmenu");
-    else {
+    } else {
       document.querySelectorAll(".nav-submenu").forEach(function (value) {
         value.classList.remove("opensubmenu");
       });
-      document
-        .querySelector(".mega-menu-container")
-        .classList.remove("opensubmenu");
+      
+      const megaMenuContainer = document.querySelector(".mega-menu-container");
+      if (megaMenuContainer) {
+        megaMenuContainer.classList.remove("opensubmenu");
+      }
+      
       event.target.nextElementSibling.classList.add("opensubmenu");
     }
   };
