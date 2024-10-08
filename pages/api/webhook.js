@@ -13,37 +13,9 @@ export const config = {
   },
 };
 
-async function createOrderNote(orderId, orderNotes) {
-  console.log("DEBUG: Entering createOrderNote function");
-  console.log(`DEBUG: orderId: ${orderId}, orderNotes: ${orderNotes}`);
-  
-  let config = {
-    method: 'post',
-    maxBodyLength: Infinity,
-    url: `${process.env.WOOCOMMERCE_URL}/wp-json/wc/v3/orders/${orderId}/notes`,
-    params: {
-      consumer_key: process.env.WOOCOMMERCE_CONSUMER_KEY,
-      consumer_secret: process.env.WOOCOMMERCE_CONSUMER_SECRET,
-      note: orderNotes
-    },
-    headers: { }
-  };
-
-  try {
-    console.log("DEBUG: Attempting to create order note with config:", JSON.stringify(config));
-    const response = await axios.request(config);
-    console.log("DEBUG: Order note created successfully. Response:", JSON.stringify(response.data));
-    return response.data;
-  } catch (error) {
-    console.error("DEBUG: Error creating order note:", error.response ? JSON.stringify(error.response.data) : error.message);
-    throw error;
-  }
-}
-
-async function createWooCommerceOrder(orderData, orderNotes) {
+async function createWooCommerceOrder(orderData) {
   console.log("DEBUG: Entering createWooCommerceOrder function");
   console.log("DEBUG: orderData:", JSON.stringify(orderData));
-  console.log("DEBUG: orderNotes:", orderNotes);
 
   try {
     const createdOrder = await axios.post(
@@ -61,21 +33,6 @@ async function createWooCommerceOrder(orderData, orderNotes) {
     );
 
     console.log("DEBUG: Order created. Response:", JSON.stringify(createdOrder.data));
-
-    if (createdOrder.data && createdOrder.data.id && orderNotes) {
-      const orderId = createdOrder.data.id;
-      console.log(`DEBUG: Attempting to create order note for order ${orderId}`);
-      try {
-        await createOrderNote(orderId, orderNotes);
-        console.log("DEBUG: Order note created successfully");
-      } catch (noteError) {
-        console.error("DEBUG: Failed to create order note:", noteError);
-      }
-    } else {
-      console.log("DEBUG: Skipping order note creation. Details:");
-      console.log("DEBUG: Order ID:", createdOrder.data ? createdOrder.data.id : 'undefined');
-      console.log("DEBUG: Order Notes:", orderNotes);
-    }
 
     return createdOrder.data;
   } catch (error) {
@@ -167,7 +124,7 @@ export default async function handler(req, res) {
 
         try {
           console.log("DEBUG: Calling createWooCommerceOrder");
-          const createdOrder = await createWooCommerceOrder(orderData, orderNotes);
+          const createdOrder = await createWooCommerceOrder(orderData);
           console.log("DEBUG: Order created in WooCommerce:", JSON.stringify(createdOrder));
           processedEvents[event.id] = true;
           res.status(200).json({ received: true });
