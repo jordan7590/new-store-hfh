@@ -1,6 +1,7 @@
 import React from 'react';
-import { Container, Row, Col, Table, Alert, Media } from 'reactstrap';
+import { Container, Row, Col, Card, CardBody } from 'reactstrap';
 import Stripe from 'stripe';
+import axios from 'axios';
 import CommonLayout from '../components/shop/common-layout';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
@@ -18,12 +19,37 @@ export async function getServerSideProps(context) {
       expand: ['line_items', 'customer'],
     });
     console.log('Session retrieved successfully');
-    return { props: { session: JSON.parse(JSON.stringify(session)) } };
+
+    // Fetch WooCommerce order details using the stripe_session_id
+    const wooCommerceOrder = await axios.get(
+      `${process.env.WOOCOMMERCE_URL}/wp-json/wc/v3/orders`,
+      {
+        params: {
+          meta_key: 'stripe_session_id',
+          meta_value: session_id,
+        },
+        auth: {
+          username: process.env.WOOCOMMERCE_CONSUMER_KEY,
+          password: process.env.WOOCOMMERCE_CONSUMER_SECRET,
+        },
+      }
+    );
+
+    if (wooCommerceOrder.data && wooCommerceOrder.data.length > 0) {
+      return { 
+        props: { 
+          session: JSON.parse(JSON.stringify(session)),
+          order: JSON.parse(JSON.stringify(wooCommerceOrder.data[0]))
+        } 
+      };
+    } else {
+      return { props: { error: 'WooCommerce order not found' } };
+    }
   } catch (err) {
-    console.error('Error retrieving Stripe session:', err);
+    console.error('Error retrieving data:', err);
     return { 
       props: { 
-        error: 'Error retrieving Stripe session',
+        error: 'Error retrieving data',
         errorDetails: err.message,
         errorType: err.type,
       } 
@@ -31,271 +57,188 @@ export async function getServerSideProps(context) {
   }
 }
 
-
-
-
-const SuccessPage = ({ session, error, errorDetails, errorType }) => {
+const SuccessPage = ({ session, order, error, errorDetails, errorType }) => {
   if (error) {
     return (
-
-      
-    <CommonLayout parent="home" title="Order Success">
-    <section className="p-0">
-    <Container className="mt-5">
-        <Row>
-          <Col>
-            <Alert color="danger">
-              <h4>{error}</h4>
-              <p>{errorDetails}</p>
-              <p>Error type: {errorType}</p>
-              <p>Please try again later or contact customer support.</p>
-            </Alert>
-          </Col>
-        </Row>
-      </Container>
-</section>
-</CommonLayout>
-
-
-     
+      <CommonLayout parent="home" title="Order Error">
+        <Container className="mt-5">
+          <Row>
+            <Col>
+              <div className="error-message">
+                <h4>{error}</h4>
+                <p>{errorDetails}</p>
+                <p>Error type: {errorType}</p>
+                <p>Please try again later or contact customer support.</p>
+              </div>
+            </Col>
+          </Row>
+        </Container>
+      </CommonLayout>
     );
   }
 
-  if (!session) {
-    return <Container className="mt-5"><Row><Col><Alert color="warning">No order details found.</Alert></Col></Row></Container>;
+  if (!session || !order) {
+    return (
+      <CommonLayout parent="home" title="Order Not Found">
+        <Container className="mt-5">
+          <Row>
+            <Col>
+              <div className="warning-message">No order details found.</div>
+            </Col>
+          </Row>
+        </Container>
+      </CommonLayout>
+    );
   }
 
-  const billingInfo = JSON.parse(session.metadata.billing);
-  const shippingInfo = JSON.parse(session.metadata.shipping);
-  const orderItems = JSON.parse(session.metadata['order-items']);
-  const shippingLines = JSON.parse(session.metadata.shipping_lines);
-  const orderNotes = session.metadata.order_notes ? JSON.parse(session.metadata.order_notes) : null;
-
   return (
-
     <CommonLayout parent="home" title="Order Success">
-                  <section className="p-0">
-                <Container>
-                    <Row>
-                        <Col sm="12">
-                        <>
-      <Table
-        style={{ marginBottom: "0" }}
-        borderless
-        className="email-template-table"
-        cellPadding="0"
-        cellSpacing="0"
-      >
-        <tbody>
-          <tr>
-            <td>
-              <Table className="top-sec" align="center" border="0" cellPadding="0" cellSpacing="0">
-                <tbody>
-                  <tr>
-                    <td>
-                      <Media className="email-media" src="/assets/images/email-temp/delivery.png" alt="" style={{ marginBottom: "0" }} />
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <Media className="email-media" src="/assets/images/email-temp/success.png" alt="" />
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <h2 className="title">thank you</h2>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <p>Payment Is Successfully Processed And Your Order Is On The Way</p>
-                      <p>Transaction ID: {session.id}</p>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <div style={{ borderTop: "1px solid #777", height: "1px" }}></div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <Media className="email-media" src="/assets/images/email-temp/order-success.png" alt="" />
-                    </td>
-                  </tr>
-                </tbody>
-              </Table>
-              <Table border="0" cellPadding="0" cellSpacing="0">
-                <tbody>
-                  <tr>
-                    <td style={{ textAlign: "left" }}>
-                      <h2 className="title">YOUR ORDER DETAILS</h2>
-                    </td>
-                  </tr>
-                </tbody>
-              </Table>
-              <Table className="order-detail" border="0" cellPadding="0" cellSpacing="0" align="left">
-                <tbody>
-                  <tr className="email-tr">
-                    <th>PRODUCT</th>
-                    <th style={{ paddingLeft: "15px" }}>DESCRIPTION</th>
-                    <th>QUANTITY</th>
-                    <th>PRICE</th>
-                  </tr>
-                  {orderItems.map((item, index) => (
-                    <tr key={index} className="email-tr">
-                      <td>
-                        <Media style={{ margin: "0 auto" }} src={`/assets/images/product-${index + 1}.jpg`} alt="" width="70" />
-                      </td>
-                      <td valign="top" style={{ paddingLeft: "15px" }}>
-                        <h5 style={{ marginTop: "15px", textAlign: "left" }}>{item.description}</h5>
-                      </td>
-                      <td valign="top" style={{ paddingLeft: "0" }}>
-                        <h5 style={{ fontSize: "14px", color: "#444", marginTop: "15px", marginBottom: "0px" }}>
-                          QTY : <span>{item.quantity}</span>
-                        </h5>
-                      </td>
-                      <td valign="top" style={{ paddingLeft: "15px" }}>
-                        <h5 style={{ fontSize: "14px", color: "#444", marginTop: "15px" }}>
-                          <b>${item.amount_total / 100}</b>
-                        </h5>
-                      </td>
-                    </tr>
+      <div className="success-page">
+        <Container>
+          <div className="confirmation-message">
+            <div className="checkmark-circle">
+              <div className="checkmark"></div>
+            </div>
+            <h2 style={{textTransform:'capitalize'}}>Thank you <span style={{color:'#009bda'}}>{order.billing.first_name}!</span> </h2>
+            <p>Your order #{order.number} is completed successfully</p>
+          </div>
+
+          <Row>
+            <Col md="6">
+              <Card className="mb-4">
+                <CardBody>
+                  <h4>Your Order is Confirmed</h4>
+                  <p>We have accepted your order, and we're getting it ready. A confirmation email has been sent to {order.billing.email}</p>
+                </CardBody>
+              </Card>
+              <Card>
+                <CardBody>
+                  <h4>Customer Details</h4>
+                  <p><strong>Email:</strong> {order.billing.email}</p>
+                  <Row>
+                    <Col md="6">
+                      <h5>Billing address</h5>
+                      <p>
+                        {order.billing.first_name} {order.billing.last_name}<br />
+                        {order.billing.address_1}<br />
+                        {order.billing.address_2 && `${order.billing.address_2}<br />`}
+                        {order.billing.city}, {order.billing.state} {order.billing.postcode}
+                      </p>
+                    </Col>
+                    <Col md="6">
+                      <h5>Shipping address</h5>
+                      <p>
+                        {order.shipping.first_name} {order.shipping.last_name}<br />
+                        {order.shipping.address_1}<br />
+                        {order.shipping.address_2 && `${order.shipping.address_2}<br />`}
+                        {order.shipping.city}, {order.shipping.state} {order.shipping.postcode}
+                      </p>
+                    </Col>
+                  </Row>
+                </CardBody>
+              </Card>
+            </Col>
+            <Col md="6">
+              <Card>
+                <CardBody>
+                  <h4>Order Details</h4>
+                  {order.line_items.map((item, index) => (
+                    <div key={index} className="d-flex justify-content-between align-items-center mb-2">
+                      <div>
+                        <img src={item.image?.src || '/placeholder-image.jpg'} alt={item.name} className="product-image" />
+                        <span>{item.name} x {item.quantity}</span>
+                      </div>
+                      <span className="price">${parseFloat(item.total).toFixed(2)}</span>
+                    </div>
                   ))}
-                  <tr className="email-tr">
-                    <td colSpan="2" style={{ lineHeight: "49px", fontSize: "13px", color: "#000000", paddingLeft: "20px", textAlign: "left", borderRight: "unset" }}>
-                      Products:
-                    </td>
-                    <td colSpan="3" className="price" style={{ lineHeight: "49px", textAlign: "right", paddingRight: "28px", fontSize: "13px", color: "#000000", borderLeft: "unset" }}>
-                      <b>${session.amount_subtotal / 100}</b>
-                    </td>
-                  </tr>
-                  <tr className="email-tr">
-                    <td colSpan="2" style={{ lineHeight: "49px", fontSize: "13px", color: "#000000", paddingLeft: "20px", textAlign: "left", borderRight: "unset" }}>
-                      Shipping:
-                    </td>
-                    <td colSpan="3" className="price" style={{ lineHeight: "49px", textAlign: "right", paddingRight: "28px", fontSize: "13px", color: "#000000", borderLeft: "unset" }}>
-                      <b>${parseFloat(shippingLines.total.replace(/"/g, '')).toFixed(2)}</b>
-                    </td>
-                  </tr>
-                  <tr className="email-tr">
-                    <td colSpan="2" style={{ lineHeight: "49px", fontSize: "13px", color: "#000000", paddingLeft: "20px", textAlign: "left", borderRight: "unset" }}>
-                      TOTAL PAID:
-                    </td>
-                    <td colSpan="3" className="price" style={{ lineHeight: "49px", textAlign: "right", paddingRight: "28px", fontSize: "13px", color: "#000000", textAlignLast: "right", borderLeft: "unset" }}>
-                      <b>${session.amount_total / 100}</b>
-                    </td>
-                  </tr>
-                </tbody>
-              </Table>
-              <Table className="product-info" cellPadding="0" cellSpacing="0" border="0" align="left" style={{ width: "100%", marginTop: "0", marginBottom: "30px" }}>
-                <tbody>
-                  <tr>
-                    <td style={{ fontSize: "13px", color: "#444444", letterSpacing: "0.2px", width: "50%" }}>
-                      <h5 style={{ fontSize: "16px", color: "#000", lineHeight: "16px", paddingBottom: "13px", borderBottom: "1px solid #e6e8eb", letterSpacing: "-0.65px", marginTop: "0", marginBottom: "13px", textAlign: "left" }}>
-                        BILLING ADDRESS
-                      </h5>
-                      <p style={{ textAlign: "left", fontWeight: "normal", fontSize: "14px", color: "#000000", lineHeight: "21px", marginTop: "0" }}>
-                        {billingInfo.first_name} {billingInfo.last_name}<br />
-                        {billingInfo.address1}<br />
-                        {billingInfo.address2 && `${billingInfo.address2}<br />`}
-                        {billingInfo.city}, {billingInfo.state} {billingInfo.pincode}<br />
-                        {billingInfo.country}
-                      </p>
-                    </td>
-                    <td className="user-info">
-                      <Media src="/assets/images/email-temp/space.jpg" alt=" " height="25" width="57" />
-                    </td>
-                    <td className="user-info" style={{ fontSize: "13px", color: "#444444", letterSpacing: "0.2px", width: "50%" }}>
-                      <h5 style={{ fontSize: "16px", color: "#000", lineHeight: "16px", paddingBottom: "13px", borderBottom: "1px solid #e6e8eb", letterSpacing: "-0.65px", marginTop: "0", marginBottom: "13px", textAlign: "left" }}>
-                        SHIPPING ADDRESS
-                      </h5>
-                      <p style={{ textAlign: "left", fontWeight: "normal", fontSize: "14px", color: "#000000", lineHeight: "21px", marginTop: "0" }}>
-                        {shippingInfo.first_name} {shippingInfo.last_name}<br />
-                        {shippingInfo.address1}<br />
-                        {shippingInfo.address2 && `${shippingInfo.address2}<br />`}
-                        {shippingInfo.city}, {shippingInfo.state} {shippingInfo.pincode}<br />
-                        {shippingInfo.country}
-                      </p>
-                    </td>
-                  </tr>
-                </tbody>
-              </Table>
-            </td>
-          </tr>
-        </tbody>
-      </Table>
+                  <hr />
+                  <div className="d-flex justify-content-between">
+                    <span>Subtotal</span>
+                    <span>${parseFloat(order.total - order.total_tax - parseFloat(order.shipping_total)).toFixed(2)}</span>
+                  </div>
+                  <div className="d-flex justify-content-between">
+                    <span>Tax</span>
+                    <span>${parseFloat(order.total_tax).toFixed(2)}</span>
+                  </div>
+                  <div className="d-flex justify-content-between">
+                    <span>Discount</span>
+                    <span>-${parseFloat(order.discount_total).toFixed(2)}</span>
+                  </div>
+                  <div className="d-flex justify-content-between">
+                    <span>Shipping</span>
+                    <span>${parseFloat(order.shipping_total).toFixed(2)} via {order.shipping_lines[0].method_title}</span>
+                  </div>
+                  <div className="d-flex justify-content-between">
+                    <span>Payment method</span>
+                    <span>{order.payment_method_title}</span>
+                  </div>
+                  <hr />
+                  <div className="d-flex justify-content-between total">
+                    <strong>Total</strong>
+                    <strong>${parseFloat(order.total).toFixed(2)}</strong>
+                  </div>
+                  {order.payment_method === "cod" && (
+                    <p className="payment-note">Pay with cash upon delivery.</p>
+                  )}
+                </CardBody>
+              </Card>
+            </Col>
+          </Row>
+        </Container>
+      </div>
       <style jsx>{`
-        body {
+        .success-page {
+          background-color: #f0f8ff;
+          padding: 2rem 0;
+        }
+        .confirmation-message {
           text-align: center;
-          margin: 30px auto;
-          width: 650px;
-          font-family: "Open Sans", sans-serif;
-          background-color: #e2e2e2;
-          display: block;
+          margin-bottom: 2rem;
         }
-        .email-template-table {
-          padding: 0 30px;
-          background-color: #ffffff;
-          box-shadow: 0px 0px 14px -4px rgba(0, 0, 0, 0.2705882353);
-          width: 100%;
+        .checkmark-circle {
+          width: 60px;
+          height: 60px;
+          background-color: #009bda;
+          border-radius: 50%;
+          display: inline-flex;
+          justify-content: center;
+          align-items: center;
+          margin-bottom: 1rem;
         }
-        .email-tr {
-          border-top: 1px solid #ddd;
-          border-bottom: 1px solid #ddd;
+        .checkmark {
+          width: 18px;
+          height: 36px;
+          border: solid #fff;
+          border-width: 0 8px 8px 0;
+          transform: rotate(45deg);
         }
-        .email-media {
-          margin-top: 30px;
-          display: inline;
+        h2 {
+          color: #333;
+          margin-bottom: 0.5rem;
         }
-        .title {
-          color: #444444;
-          font-size: 22px;
+        h4 {
+          color: #333;
+          margin-bottom: 1rem;
+        }
+        .product-image {
+          width: 50px;
+          height: 50px;
+          object-fit: cover;
+          margin-right: 1rem;
+        }
+        .price {
           font-weight: bold;
-          padding-bottom: 0;
-          text-transform: uppercase;
-          display: inline-block;
-          line-height: 1;
         }
-        table.order-detail,
-        .order-detail th,
-        .order-detail td {
-          border: 1px solid #ddd;
-          border-collapse: collapse;
-          padding: 0;
+        .total {
+          font-size: 1.2em;
+          color: #ff9999;
         }
-        .order-detail th {
-          font-size: 16px;
-          padding: 15px;
-          text-align: center;
-        }
-        @media (max-width: 767px) {
-          .email-template-table {
-            width: 520px;
-          }
-        }
-        @media (max-width: 575px) {
-          .email-template-table {
-            width: 430px;
-          }
-        }
-        @media (max-width: 479px) {
-          .email-template-table {
-            width: 322px;
-          }
-        }
-        @media (max-width: 359px) {
-          .email-template-table {
-            width: 280px;
-          }
+        .payment-note {
+          margin-top: 1rem;
+          font-style: italic;
         }
       `}</style>
-    </>
-                        </Col>
-                    </Row>
-                </Container>
-            </section>
-</CommonLayout>
-  
+    </CommonLayout>
   );
 };
 
