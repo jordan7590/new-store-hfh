@@ -5,7 +5,6 @@ import CommonLayout from '../components/shop/common-layout';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-
 export async function getServerSideProps(context) {
   const { session_id } = context.query;
 
@@ -19,16 +18,7 @@ export async function getServerSideProps(context) {
       expand: ['line_items', 'customer'],
     });
     console.log('Session retrieved successfully');
-
-    // Retrieve the WooCommerce order ID from the session metadata
-    const woocommerceOrderId = session.metadata.woocommerce_order_id;
-
-    return { 
-      props: { 
-        session: JSON.parse(JSON.stringify(session)),
-        woocommerceOrderId // Pass this to the component
-      } 
-    };
+    return { props: { session: JSON.parse(JSON.stringify(session)) } };
   } catch (err) {
     console.error('Error retrieving Stripe session:', err);
     return { 
@@ -42,7 +32,9 @@ export async function getServerSideProps(context) {
 }
 
 
-const SuccessPage = ({ session, error, errorDetails, errorType, woocommerceOrderId }) => {
+
+
+const SuccessPage = ({ session, error, errorDetails, errorType }) => {
   if (error) {
     return (
 
@@ -78,7 +70,9 @@ const SuccessPage = ({ session, error, errorDetails, errorType, woocommerceOrder
   const orderItems = JSON.parse(session.metadata['order-items']);
   const shippingLines = JSON.parse(session.metadata.shipping_lines);
   const orderNotes = session.metadata.order_notes ? JSON.parse(session.metadata.order_notes) : null;
+  const wooCommerceOrderId = session.metadata.woocommerce_order_id;
 
+  console.log("wooCommerceOrderId:" , wooCommerceOrderId)
   return (
 
     <CommonLayout parent="home" title="Order Success">
@@ -86,8 +80,6 @@ const SuccessPage = ({ session, error, errorDetails, errorType, woocommerceOrder
                 <Container>
                     <Row>
                         <Col sm="12">
-                        <p>WooCommerce Order ID: {woocommerceOrderId}</p>
-
                         <>
       <Table
         style={{ marginBottom: "0" }}
@@ -120,6 +112,7 @@ const SuccessPage = ({ session, error, errorDetails, errorType, woocommerceOrder
                     <td>
                       <p>Payment Is Successfully Processed And Your Order Is On The Way</p>
                       <p>Transaction ID: {session.id}</p>
+                      {wooCommerceOrderId && <p>Order ID: {wooCommerceOrderId}</p>}
                     </td>
                   </tr>
                   <tr>
