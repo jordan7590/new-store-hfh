@@ -14,10 +14,17 @@ export const AuthProvider = ({ children }) => {
   const [accessToken, setAccessToken] = useState(storedToken || '');
   const [userData, setUserData] = useState(storedUserData || null);
   const [isLoggedIn, setIsLoggedIn] = useState(!!storedIsLoggedIn);
+  const [customerID, setCustomerID] = useState(null);
+
 
   useEffect(() => {
     setIsLoggedIn(!!storedToken);
+    const storedCustomerID = localStorage.getItem('customerID');
+    if (storedCustomerID) {
+      setCustomerID(storedCustomerID);
+    }
   }, [storedToken]);
+
 
   const fetchUserData = async (accessToken) => {
     try {
@@ -39,27 +46,38 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem('isLoggedIn', 'true');
     setAccessToken(token);
     setIsLoggedIn(true);
-
+  
     // Fetch additional user data
     const fullUserData = await fetchUserData(token);
     if (fullUserData) {
       localStorage.setItem('userData', JSON.stringify(fullUserData));
       setUserData(fullUserData);
+      if (fullUserData.id) {
+        setCustomerID(fullUserData.id);
+        localStorage.setItem('customerID', fullUserData.id);
+      }
     } else {
       // Fallback to initial user data if fetch fails
       localStorage.setItem('userData', JSON.stringify(initialUserData));
       setUserData(initialUserData);
+      if (initialUserData.id) {
+        setCustomerID(initialUserData.id);
+        localStorage.setItem('customerID', initialUserData.id);
+      }
     }
   };
 
-  const logout = () => {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('userData');
-    localStorage.removeItem('isLoggedIn');
-    setAccessToken('');
-    setUserData(null);
-    setIsLoggedIn(false);
-  };
+
+const logout = () => {
+  localStorage.removeItem('accessToken');
+  localStorage.removeItem('userData');
+  localStorage.removeItem('isLoggedIn');
+  localStorage.removeItem('customerID');
+  setAccessToken('');
+  setUserData(null);
+  setIsLoggedIn(false);
+  setCustomerID(null);
+};
 
   const refreshToken = async () => {
     try {
@@ -137,7 +155,8 @@ export const AuthProvider = ({ children }) => {
       login: loginHandler, 
       logout, 
       refreshToken,
-      authenticatedFetch 
+      authenticatedFetch,
+      customerID
     }}>
       {children}
     </AuthContext.Provider>
